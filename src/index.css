@@ -1,0 +1,253 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply text-slate-900;
+}
+
+.gradient-page {
+  background: linear-gradient(180deg, #fffafa 0%, #fff3f3 40%, #ffffff 100%);
+}
+
+.hero-gradient {
+  background: radial-gradient(circle at top left, #fff5f5, #fff);
+}
+
+.section-gradient {
+  background: linear-gradient(180deg, #fff3f3 0%, #ffffff 100%);
+}
+
+.register-gradient {
+  background: linear-gradient(135deg, #fff5f5, #ffe3e3);
+}
+
+.testimonial-gradient {
+  background: radial-gradient(circle at top, #fff5f5, #fff);
+}
+
+.pulse-ring::before,
+.pulse-ring::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 9999px;
+  border: 2px solid rgba(191, 219, 254, 0.9);
+  opacity: 0.7;
+  transform: scale(0.9);
+  animation: pulse-ring 2.4s infinite ease-out;
+}
+
+.pulse-ring::after {
+  animation-delay: 0.6s;
+}
+
+@keyframes pulse-ring {
+  0% {
+    opacity: 0.65;
+    transform: scale(0.85);
+  }
+  70% {
+    opacity: 0;
+    transform: scale(1.25);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.3);
+  }
+}
+
+/* --- TOC WRAPPER --- */
+.ql-toc-block {
+  margin: 20px 0;
+  border-radius: 14px;
+  overflow: hidden;
+  background: #fffafa; /* xanh nhạt */
+  border: 1px solid #dbeafe;
+  box-shadow: 0 4px 14px rgba(26, 86, 168, 0.1);
+}
+
+/* Card bên trong */
+.ql-toc-inner.ql-toc-card {
+  padding: 0;
+}
+
+/* --- TOC HEADER --- */
+.ql-toc-header-row {
+  background: linear-gradient(90deg, #DB1010, #F84A4A);
+  color: #fff;
+  padding: 10px 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ql-toc-icon {
+  font-size: 18px;
+}
+
+/* --- LIST --- */
+.ql-toc-list {
+  list-style: none;
+  margin: 0;
+  padding: 10px 14px;
+}
+
+.ql-toc-item {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.ql-toc-item:last-child {
+  margin-bottom: 0;
+}
+
+/* STT */
+.ql-toc-index {
+  color: #DB1010;
+  font-weight: 600;
+}
+
+/* Link */
+.ql-toc-link {
+  color: #334155;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.ql-toc-link:hover {
+  color: #DB1010;
+  text-decoration: underline;
+}
+
+/* --- LEVELS (nếu multi-level sau này) --- */
+.ql-toc-h2 {
+  padding-left: 0;
+}
+
+.ql-toc-h3 {
+  padding-left: 12px;
+}
+
+.ql-toc-h4 {
+  padding-left: 20px;
+}
+
+/* Nội dung hiện dần khi chuyển trang (RootLayout, bỏ qua lần tải đầu để không ảnh hưởng LCP) */
+/* fill-mode backwards: không giữ transform sau khi chạy → không phá position: fixed bên trong */
+.page-enter {
+  animation: page-enter 0.35s ease-out backwards;
+}
+
+@keyframes page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter {
+    animation: none;
+  }
+}
+
+/* Khối hiện dần khi cuộn tới (thẻ ngành, thẻ liên hệ, các mục Giới thiệu…). CSS thuần theo
+   vị trí cuộn, không cần JS: trình duyệt chưa hỗ trợ / người dùng tắt chuyển động → hiện luôn.
+   Chỉ gắn cho khối dưới màn hình đầu → không ảnh hưởng LCP. Kết thúc ở transform: none nên
+   không phá position: fixed bên trong. */
+@supports (animation-timeline: view()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal {
+      animation: reveal-up linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 45%;
+    }
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Câu trả lời FAQ hiện dần khi mở */
+@media (prefers-reduced-motion: no-preference) {
+  .faq-item[open] > :not(summary) {
+    animation: faq-open 0.3s ease-out;
+  }
+}
+
+@keyframes faq-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* FAQ dạng bấm-để-mở (src/seo/faq.ts): ẩn mũi tên mặc định của <summary> trên Safari */
+.faq-item summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Anchor (#register, mục lục bài viết…) không bị header sticky che mất phần đầu */
+section[id],
+[id].scroll-anchor {
+  scroll-margin-top: 6rem;
+}
+
+/* Dải logo đối tác chạy liên tục (không dùng JS).
+   Danh sách được lặp 2 lần trong markup; chạy hết nửa đầu thì quay lại vị trí 0 → liền mạch.
+   Dừng khi rê chuột và khi người dùng chọn giảm chuyển động. */
+@keyframes partner-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+.partner-marquee {
+  animation: partner-marquee 32s linear infinite;
+  will-change: transform;
+}
+
+.partner-marquee:hover,
+.partner-marquee:focus-within {
+  animation-play-state: paused;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .partner-marquee {
+    animation: none;
+  }
+}
+
+.partner-marquee-mask {
+  mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
+}

@@ -1,0 +1,325 @@
+/* =========================================================
+   GLOBAL RICH TEXT STYLING
+   Hiển thị HTML từ Lexical và nội dung Quill cũ.
+   Dùng chung cho NewsDetailsPage, Programs, v.v.
+   ========================================================= */
+
+.rich-text {
+  line-height: 1.75;
+  font-size: 0.95rem;
+  color: #0f172a; /* slate-900 */
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: break-word;
+  word-break: normal;
+}
+
+/* Paragraph spacing */
+.rich-text p {
+  margin: 0 0 1rem;
+  min-height: 1em;
+}
+
+/* Headings */
+.rich-text h1,
+.rich-text h2,
+.rich-text h3,
+.rich-text h4 {
+  font-weight: 700;
+  line-height: 1.25;
+  color: #0f172a;
+  margin: 1.5rem 0 0.75rem;
+}
+
+.rich-text h1 {
+  font-size: 1.6rem;
+}
+.rich-text h2 {
+  font-size: 1.4rem;
+}
+.rich-text h3 {
+  font-size: 1.2rem;
+}
+.rich-text h4 {
+  font-size: 1.05rem;
+}
+
+/* Không để sticky header che heading khi điều hướng từ mục lục. */
+.rich-text h1[id],
+.rich-text h2[id],
+.rich-text h3[id],
+.rich-text h4[id] {
+  scroll-margin-top: 7rem;
+}
+
+/* Images */
+.rich-text img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.75rem;
+  display: block;
+  margin: 1.25rem auto;
+  object-fit: contain;
+}
+
+/* Lexical xuất kích thước và canh ảnh bằng inline style. */
+.rich-text img.news-image {
+  max-width: 100%;
+}
+
+.rich-text figure.news-image-figure {
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.25rem auto;
+}
+
+.rich-text figure.news-image-figure img {
+  margin: 0;
+}
+
+.rich-text figcaption.news-image-caption {
+  padding-top: 0.5rem;
+  color: #475569;
+  font-size: 0.9rem;
+  font-style: italic;
+  line-height: 1.5;
+}
+
+/* Video/iframe được xuất từ Lexical. */
+.rich-text iframe,
+.rich-text .news-video-embed {
+  display: block;
+  width: min(100%, 720px);
+  aspect-ratio: 16 / 9;
+  height: auto;
+  min-height: 0;
+  margin: 1.25rem auto;
+  border: 0;
+  border-radius: 0.75rem;
+  background: #0f172a;
+}
+
+/* Lists */
+.rich-text ul {
+  padding-left: 1.3rem;
+  margin: 1rem 0;
+  list-style-type: disc;
+}
+
+.rich-text ol {
+  padding-left: 1.3rem;
+  margin: 1rem 0;
+  list-style-type: decimal;
+}
+
+.rich-text li {
+  margin: 0.25rem 0;
+}
+
+/* Checklist do @lexical/list export. */
+.rich-text ul[__lexicalListType="check"] {
+  padding-left: 0;
+  list-style: none;
+}
+
+.rich-text ul[__lexicalListType="check"] > li[role="checkbox"] {
+  position: relative;
+  padding-left: 1.85rem;
+  list-style: none;
+}
+
+.rich-text ul[__lexicalListType="check"] > li[role="checkbox"]::before {
+  content: "";
+  position: absolute;
+  top: 0.38em;
+  left: 0;
+  width: 1.1rem;
+  height: 1.1rem;
+  border: 1px solid #94a3b8;
+  border-radius: 0.25rem;
+  background: #fff;
+}
+
+.rich-text ul[__lexicalListType="check"] > li[role="checkbox"][aria-checked="true"] {
+  color: #64748b;
+  text-decoration: line-through;
+}
+
+.rich-text ul[__lexicalListType="check"] > li[role="checkbox"][aria-checked="true"]::before {
+  content: "✓";
+  display: grid;
+  place-items: center;
+  border-color: #DB1010;
+  background: #DB1010;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+/* Quotes */
+.rich-text blockquote {
+  border-left: 4px solid #DB1010;
+  padding-left: 1rem;
+  margin: 1.2rem 0;
+  color: #475569;
+  font-style: italic;
+}
+
+/* Links: màu xanh thương hiệu (primary), gạch chân mảnh cách chữ, đậm lên khi rê chuột.
+   break-word chỉ ngắt khi 1 từ/URL dài hơn dòng, không ngắt giữa cụm link bình thường. */
+.rich-text a {
+  color: #DB1010; /* primary */
+  font-weight: 500;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-decoration-color: rgba(26, 86, 168, 0.35);
+  text-underline-offset: 3px;
+  overflow-wrap: break-word;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease;
+}
+.rich-text a:hover {
+  color: #C70000; /* primary-dark */
+  text-decoration-color: currentColor;
+}
+.rich-text a:focus-visible {
+  outline: 2px solid #DB1010;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Tables */
+.rich-text table {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: auto;
+  border-collapse: collapse;
+  margin: 1.25rem 0;
+}
+
+.rich-text th,
+.rich-text td {
+  border: 1px solid #e2e8f0;
+  padding: 8px 12px;
+}
+
+.rich-text th {
+  background-color: #f1f5f9;
+  font-weight: 600;
+}
+
+/* Alignment (from Quill) */
+.rich-text .ql-align-center {
+  text-align: center;
+}
+.rich-text .ql-align-right {
+  text-align: right;
+}
+.rich-text .ql-align-justify {
+  text-align: justify;
+}
+
+/* ALSO support when rendering inside editor (admin) */
+.ql-editor .ql-align-center {
+  text-align: center;
+}
+.ql-editor .ql-align-right {
+  text-align: right;
+}
+.ql-editor .ql-align-justify {
+  text-align: justify;
+}
+
+/* Indentation (from Quill) */
+.rich-text .ql-indent-1,
+.ql-editor .ql-indent-1 {
+  margin-left: 1.5rem;
+}
+
+.rich-text .ql-indent-2,
+.ql-editor .ql-indent-2 {
+  margin-left: 3rem;
+}
+
+.rich-text .ql-indent-3,
+.ql-editor .ql-indent-3 {
+  margin-left: 4.5rem;
+}
+
+/* Code blocks */
+.rich-text pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 1rem;
+  border-radius: 0.75rem;
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+.rich-text code {
+  font-family: ui-monospace, monospace;
+  background: #e2e8f0;
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
+.rich-text pre code {
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+}
+
+/* Horizontal rule */
+.rich-text hr {
+  border: none;
+  border-top: 1px solid #e2e8f0;
+  margin: 2rem 0;
+}
+
+@media (max-width: 640px) {
+  .rich-text {
+    font-size: 0.925rem;
+  }
+
+  .rich-text h1 {
+    font-size: 1.45rem;
+  }
+
+  .rich-text h2 {
+    font-size: 1.3rem;
+  }
+
+  .rich-text h3 {
+    font-size: 1.15rem;
+  }
+
+  .rich-text iframe,
+  .rich-text .news-video-embed {
+    width: 100%;
+  }
+}
+
+/* Mục "Câu hỏi thường gặp" trong nội dung CMS (seo/faq.ts → renderFaqAccordion): giữ giao diện
+   giống components/FaqAccordion.jsx — không nhận màu/cỡ chữ heading chung của bài viết */
+.rich-text .faq h2,
+.rich-text .faq summary h3 {
+  color: #C70000; /* primary-dark */
+  line-height: 1.4;
+}
+
+.rich-text .faq h2 {
+  font-size: 1.25rem;
+  margin: 0 0 0.75rem;
+}
+
+.rich-text .faq summary h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.rich-text .faq details > div > :last-child {
+  margin-bottom: 0;
+}

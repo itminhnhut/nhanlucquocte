@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+
+# Trang kết quả tìm kiếm nội bộ: nội dung trùng lặp, không cần index
+Disallow: /tim-kiem
+
+Sitemap: https://trungcapnhanlucquocte.vn/sitemap.xml

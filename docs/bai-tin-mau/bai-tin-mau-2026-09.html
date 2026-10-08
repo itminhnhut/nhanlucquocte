@@ -1,0 +1,711 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bài tin mẫu cho admin</title>
+<style>
+  :root { --ink:#0f172a; --muted:#475569; --line:#e2e8f0; --brand:#1a56a8; --soft:#eff6ff; --bg:#f8fafc; --card:#fff; }
+  @media (prefers-color-scheme: dark) {
+    :root { --ink:#e2e8f0; --muted:#94a3b8; --line:#334155; --brand:#7fb0ff; --soft:#172554; --bg:#0b1220; --card:#111a2e; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 860px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1.page { font-size: 24px; margin: 0 0 4px; }
+  .note { color: var(--muted); margin: 0 0 20px; }
+  .howto { background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 14px 18px; margin-bottom: 28px; }
+  .howto ol { margin: 6px 0 0; padding-left: 20px; }
+  nav.toc a { color: var(--brand); }
+  article.post { background: var(--card); border: 1px solid var(--line); border-radius: 16px; padding: 20px; margin: 28px 0; }
+  .post-no { font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--brand); }
+  table.fields { width: 100%; border-collapse: collapse; margin: 10px 0 18px; font-size: 14px; }
+  table.fields th { text-align: left; width: 150px; color: var(--muted); font-weight: 600; vertical-align: top; padding: 8px 10px 8px 0; }
+  table.fields td { padding: 8px 0; border-bottom: 1px solid var(--line); }
+  table.fields tr:first-child td { border-top: 1px solid var(--line); }
+  table.fields tr:first-child th { border-top: 1px solid var(--line); }
+  table.fields th { border-bottom: 1px solid var(--line); }
+  .copy { font: inherit; font-size: 13px; font-weight: 600; border: 1px solid var(--brand); background: transparent; color: var(--brand); border-radius: 999px; padding: 3px 12px; cursor: pointer; margin-left: 6px; }
+  .copy:hover { background: var(--soft); }
+  .copy.done { background: var(--brand); color: var(--card); }
+  .content-label { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; font-weight: 700; margin-top: 8px; }
+  .content { border: 2px dashed var(--line); border-radius: 12px; padding: 4px 18px 12px; margin-top: 8px; }
+  .content h2 { font-size: 20px; margin: 22px 0 8px; }
+  .content h3 { font-size: 16px; margin: 16px 0 6px; }
+  .content a { color: var(--brand); }
+  .content blockquote { border-left: 4px solid var(--brand); margin: 12px 0; padding: 4px 14px; color: var(--muted); font-style: italic; }
+  code { font-size: 13px; background: var(--soft); padding: 1px 5px; border-radius: 4px; overflow-wrap: anywhere; }
+</style>
+</head>
+<body>
+<main>
+  <h1 class="page">Bài tin mẫu để đăng trong admin</h1>
+  <p class="note">10 bài viết sẵn theo chuẩn SEO cho vietuchcm.edu.vn. Mỗi bài nhắm 1 từ khoá chưa có trang nào trên site dùng, chỉ dùng thông tin đã có trên website, không có học phí hay số liệu.</p>
+
+  <div class="howto">
+    <strong>Cách đăng mỗi bài</strong>
+    <ol>
+      <li>Admin → Tin tức → Thêm bài.</li>
+      <li>Copy từng ô trong bảng (Tiêu đề, Tóm tắt) vào đúng ô trong admin. Admin tự tạo slug từ tiêu đề (URL dài hơn nhưng vẫn có đủ từ khoá, không sao); nếu có ô sửa slug thì dán slug gợi ý, và chỉ sửa trước khi Google index bài.</li>
+      <li>Bấm <strong>Copy nội dung</strong>, rồi dán (Ctrl+V) vào ô soạn thảo. Heading, danh sách, link và chữ đậm giữ nguyên định dạng. Nếu nút copy không chạy: bôi đen phần trong khung nét đứt rồi Ctrl+C.</li>
+      <li>Chọn ảnh bìa (bài 4–10 có sẵn ảnh trong thư mục <code>anh/</code>; bài khác dùng ảnh thật của trường, ngang, khoảng 1200×800) và tick các ngành liên quan.</li>
+      <li>Không cần gõ khối "Thông tin liên hệ": trang tin tự hiện thẻ liên hệ chuẩn ở cuối bài.</li>
+      <li><strong>Đăng bài 2 trước bài 1</strong>, rồi sửa link "hồ sơ đăng ký học trung cấp gồm những gì" trong bài 1 (mục Cách đăng ký) thành URL thật của bài 2.</li>
+      <li>Link trong bài đều là địa chỉ đầy đủ <code>https://vietuchcm.edu.vn/…</code>. Sau khi dán, rê chuột vào 1 link để kiểm tra; nếu thấy tên miền khác thì xoá nội dung và copy lại từ file này.</li>
+      <li>Đăng xong: mở <code>https://vietuchcm.edu.vn/sitemap/refresh?key=…</code>, rồi vào Google Search Console → Kiểm tra URL → Yêu cầu lập chỉ mục.</li>
+    </ol>
+  </div>
+
+  <nav class="toc" aria-label="Danh sách bài">
+    <strong>Các bài:</strong>
+    <a href="#bai-1">1. Tuyển sinh trung cấp 2026</a> ·
+    <a href="#bai-2">2. Hồ sơ đăng ký học trung cấp</a> ·
+    <a href="#bai-3">3. Học nghề ngắn hạn hay trung cấp</a> ·
+    <a href="#bai-4">4. Ngành Công nghệ kỹ thuật ô tô</a> ·
+    <a href="#bai-5">5. Học bếp Âu Á</a> ·
+    <a href="#bai-6">6. Chăm sóc sắc đẹp hệ trung cấp</a> ·
+    <a href="#bai-7">7. Trung cấp tiếng Anh</a> ·
+    <a href="#bai-8">8. Hướng dẫn viên du lịch</a> ·
+    <a href="#bai-9">9. Học CNTT ra làm gì</a> ·
+    <a href="#bai-10">10. Chăm sóc người cao tuổi</a>
+  </nav>
+
+  <!-- ─────────────────────────── BÀI 1 ─────────────────────────── -->
+  <article class="post" id="bai-1">
+    <div class="post-no">Bài 1 · Từ khoá: tuyển sinh trung cấp 2026</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Tuyển sinh trung cấp 2026 TPHCM: ngành học, cách đăng ký</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>tuyen-sinh-trung-cap-2026-tphcm</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Trường Trung cấp Việt Úc tuyển sinh trung cấp 2026 tại TPHCM: nhận học viên tốt nghiệp THCS, THPT, khai giảng nhiều đợt, đăng ký tư vấn miễn phí.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Tick tất cả các ngành đang tuyển sinh</td></tr>
+      <tr><th>Ảnh bìa (alt)</th><td>Ảnh học viên hoặc lễ khai giảng thật của trường. Alt: <span data-copy>Tuyển sinh trung cấp 2026 tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Trường Trung cấp Việt Úc tuyển sinh trung cấp 2026 tại TPHCM</strong> cho người tốt nghiệp THCS và THPT, hệ trung cấp chính quy và các khóa ngắn hạn. Trường ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), khai giảng nhiều đợt trong năm và tư vấn tuyển sinh miễn phí.</p>
+
+      <h2>Đối tượng tuyển sinh</h2>
+      <ul>
+        <li><strong>Tốt nghiệp THPT:</strong> học trung cấp từ 1 đến 2 năm tùy ngành, theo Luật Giáo dục nghề nghiệp.</li>
+        <li><strong>Tốt nghiệp THCS:</strong> được học trung cấp và học thêm khối lượng văn hóa THPT theo quy định. Xem thêm <a href="https://vietuchcm.edu.vn/cam-nang/tot-nghiep-lop-9-nen-hoc-gi">Tốt nghiệp lớp 9 nên học gì?</a></li>
+        <li><strong>Người đang đi làm:</strong> một số ngành có lịch học linh hoạt hoặc hình thức vừa học vừa làm. Xem <a href="https://vietuchcm.edu.vn/cam-nang/hoc-trung-cap-vua-hoc-vua-lam">Học trung cấp vừa học vừa làm</a>.</li>
+      </ul>
+
+      <h2>Các ngành tuyển sinh trung cấp 2026</h2>
+      <h3>Kinh tế – Công nghệ thông tin</h3>
+      <ul>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ke-toan-doanh-nghiep">Kế toán doanh nghiệp</a>: nghiệp vụ kế toán, thuế, lập và phân tích báo cáo tài chính.</li>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-kinh-doanh">Quản trị kinh doanh</a>: quản lý, bán hàng và marketing.</li>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cong-nghe-thong-tin">Công nghệ thông tin</a>: lập trình, thiết kế và quản trị website, quản trị mạng, kiểm thử phần mềm.</li>
+      </ul>
+      <h3>Du lịch – Nhà hàng – Khách sạn</h3>
+      <ul>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-khach-san">Quản trị khách sạn</a>, <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-lu-hanh">Quản trị lữ hành</a>, <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-huong-dan-du-lich">Hướng dẫn du lịch</a>: nghiệp vụ lễ tân, buồng, nhà hàng, điều hành và thiết kế tour, hướng dẫn khách.</li>
+      </ul>
+      <h3>Ẩm thực – Làm đẹp</h3>
+      <ul>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-che-bien-mon-an">Kỹ thuật chế biến món ăn</a> và <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-lam-banh">Kỹ thuật làm bánh</a>: phần lớn thời lượng là thực hành trên nguyên liệu thật.</li>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cham-soc-sac-dep">Chăm sóc sắc đẹp</a>: chăm sóc da, tóc, móng, chăm sóc toàn thân và trang điểm.</li>
+      </ul>
+      <h3>Kỹ thuật – Giáo dục – Y tế – Ngoại ngữ</h3>
+      <ul>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cong-nghe-ky-thuat-o-to">Công nghệ kỹ thuật ô tô</a> (nhận học viên tốt nghiệp THCS, THPT) và <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-xay-dung-he-trung-cap">Kỹ thuật xây dựng</a> (có hình thức vừa học vừa làm).</li>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-su-pham-mam-non">Sư phạm mầm non</a> và <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-dieu-duong">Điều dưỡng</a>.</li>
+        <li><a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ngon-ngu-anh">Ngôn ngữ Anh</a>: tiếng Anh cho công việc.</li>
+      </ul>
+      <p>Ngoài ra, trường có khóa ngắn hạn <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-khoa-hoc-nghiep-vu-bao-mau">Nghiệp vụ bảo mẫu</a> (học buổi tối hoặc cuối tuần, cấp chứng chỉ) và <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-lop-tieng-viet-thuc-hanh-cho-nguoi-nuoc-ngoai">lớp tiếng Việt cho người nước ngoài</a>. Xem đầy đủ tại <a href="https://vietuchcm.edu.vn/nganh-dao-tao">các ngành trung cấp</a>.</p>
+
+      <h2>Học trung cấp tại Việt Úc có gì?</h2>
+      <ul>
+        <li>Chương trình chú trọng thực hành, gắn với nhu cầu của doanh nghiệp.</li>
+        <li>Hoàn thành chương trình được cấp bằng tốt nghiệp trung cấp theo Luật Giáo dục nghề nghiệp; văn bằng tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>.</li>
+        <li>Có thể học liên thông lên cao đẳng, đại học tại các cơ sở có đào tạo liên thông. Xem <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-trung-cap-hay-cao-dang">Nên học trung cấp hay cao đẳng?</a></li>
+        <li>Trường ở khu trung tâm TPHCM, thuận tiện đi lại. Xem <a href="https://vietuchcm.edu.vn/cam-nang/truong-trung-cap-quan-3-tphcm">cách nhận biết đúng trường</a>.</li>
+      </ul>
+
+      <h2>Lịch khai giảng và học phí</h2>
+      <p>Trường khai giảng nhiều đợt trong năm. Ngày khai giảng gần nhất của từng ngành được ghi trên trang ngành đó. Học phí khác nhau theo từng ngành và có ưu đãi cho thí sinh nhập học sớm; xem <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí mới nhất</a>.</p>
+
+      <h2>Cách đăng ký</h2>
+      <ol>
+        <li>Chọn ngành phù hợp. Nếu chưa chắc, đọc <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-nghe-gi">Nên học nghề gì?</a></li>
+        <li>Đăng ký tư vấn qua <a href="https://vietuchcm.edu.vn/#register">form trên trang chủ</a>, gọi hotline 096 28 79680 hoặc nhắn Zalo.</li>
+        <li>Chuẩn bị hồ sơ theo hướng dẫn của nhà trường. Xem trước <a href="https://vietuchcm.edu.vn/tin-tuc/ho-so-dang-ky-hoc-trung-cap">hồ sơ đăng ký học trung cấp gồm những gì</a>.</li>
+        <li>Nộp hồ sơ trực tiếp tại trường, Thứ Hai – Thứ Sáu, 8:00 – 17:00.</li>
+      </ol>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Tốt nghiệp THCS có đăng ký học trung cấp được không?</h3>
+      <p>Được. Người tốt nghiệp THCS được học trung cấp và học thêm văn hóa THPT theo quy định. Tại Việt Úc, ngành Công nghệ kỹ thuật ô tô và khóa Nghiệp vụ bảo mẫu nhận học viên tốt nghiệp THCS; điều kiện đầu vào của các ngành khác được tư vấn khi đăng ký.</p>
+      <h3>Học trung cấp mất bao lâu?</h3>
+      <p>Với người đã tốt nghiệp THPT, học trung cấp từ 1 đến 2 năm tùy ngành theo Luật Giáo dục nghề nghiệp. Thời gian học cụ thể của từng ngành được tư vấn khi đăng ký.</p>
+      <h3>Khi nào khai giảng?</h3>
+      <p>Trường khai giảng nhiều đợt trong năm. Ngày khai giảng gần nhất được ghi trên trang của từng ngành.</p>
+      <h3>Đăng ký tư vấn có mất phí không?</h3>
+      <p>Không. Tư vấn tuyển sinh miễn phí qua hotline, Zalo, email hoặc trực tiếp tại trường.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 2 ─────────────────────────── -->
+  <article class="post" id="bai-2">
+    <div class="post-no">Bài 2 · Từ khoá: hồ sơ đăng ký học trung cấp</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Hồ sơ đăng ký học trung cấp gồm những gì? Cách chuẩn bị</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>ho-so-dang-ky-hoc-trung-cap</span> <button class="copy" type="button">Copy</button> <br><small>Bài 1 có link tới bài này: đăng bài này trước, rồi sửa link trong bài 1 theo URL thật.</small></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Hồ sơ đăng ký học trung cấp thường gồm đơn đăng ký, bản sao bằng tốt nghiệp, học bạ, CCCD, giấy khai sinh, ảnh. Cách chuẩn bị và nộp tại Việt Úc TPHCM.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Tick tất cả các ngành đang tuyển sinh</td></tr>
+      <tr><th>Ảnh bìa (alt)</th><td>Ảnh bàn tư vấn/nhận hồ sơ của trường. Alt: <span data-copy>Nộp hồ sơ đăng ký học trung cấp tại Trường Trung cấp Việt Úc</span> <button class="copy" type="button">Copy</button></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Hồ sơ đăng ký học trung cấp</strong> thường gồm đơn đăng ký học, bản sao bằng tốt nghiệp (hoặc giấy chứng nhận tốt nghiệp tạm thời), học bạ, căn cước công dân, giấy khai sinh và ảnh chân dung. Danh sách chính xác do từng trường quy định; tại Trường Trung cấp Việt Úc, nhà trường hướng dẫn cụ thể khi bạn đăng ký tư vấn.</p>
+
+      <h2>Hồ sơ đăng ký học trung cấp thường gồm những gì?</h2>
+      <ul>
+        <li><strong>Đơn (phiếu) đăng ký học</strong> theo mẫu của trường.</li>
+        <li><strong>Bản sao bằng tốt nghiệp THCS hoặc THPT.</strong> Nếu chưa nhận bằng, có thể dùng giấy chứng nhận tốt nghiệp tạm thời; hỏi trường về thời hạn bổ sung bản sao bằng.</li>
+        <li><strong>Bản sao học bạ</strong> THCS hoặc THPT.</li>
+        <li><strong>Bản sao căn cước công dân (CCCD).</strong> Tại Việt Úc, số CCCD đăng ký khi nhập học cũng dùng để <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a> sau khi tốt nghiệp, nên cần ghi chính xác.</li>
+        <li><strong>Bản sao giấy khai sinh.</strong></li>
+        <li><strong>Ảnh chân dung</strong> cỡ nhỏ (thường là 3×4), ghi họ tên phía sau.</li>
+        <li><strong>Giấy tờ ưu tiên, miễn giảm</strong> (nếu có), để được xét chính sách theo quy định.</li>
+      </ul>
+      <p>Nhà trường có thể yêu cầu thêm hoặc bớt giấy tờ tùy ngành và hình thức học. Hãy hỏi danh sách hồ sơ khi đăng ký tư vấn để chuẩn bị một lần cho đủ.</p>
+
+      <h2>Người tốt nghiệp THCS cần lưu ý gì?</h2>
+      <p>Người tốt nghiệp THCS được học trung cấp và học thêm khối lượng văn hóa THPT theo Luật Giáo dục nghề nghiệp. Khi nộp hồ sơ, hãy hỏi rõ lịch học văn hóa và điều kiện để sau này học liên thông. Tại Việt Úc, ngành <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cong-nghe-ky-thuat-o-to">Công nghệ kỹ thuật ô tô</a> và khóa <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-khoa-hoc-nghiep-vu-bao-mau">Nghiệp vụ bảo mẫu</a> nhận học viên tốt nghiệp THCS. Xem thêm <a href="https://vietuchcm.edu.vn/cam-nang/tot-nghiep-lop-9-nen-hoc-gi">Tốt nghiệp lớp 9 nên học gì?</a></p>
+
+      <h2>Mẹo chuẩn bị hồ sơ nhanh, không thiếu</h2>
+      <ol>
+        <li>Gọi hoặc nhắn trường trước để nhận danh sách hồ sơ đúng với ngành bạn chọn.</li>
+        <li>Chuẩn bị bản sao có chứng thực ở UBND phường hoặc văn phòng công chứng; mang theo bản gốc để đối chiếu khi cần.</li>
+        <li>Kiểm tra họ tên, ngày sinh, số CCCD giống nhau trên mọi giấy tờ.</li>
+        <li>Để tất cả vào một bìa hồ sơ, ghi họ tên và ngành đăng ký bên ngoài.</li>
+        <li>Hỏi trường về học phí, ưu đãi nhập học sớm cùng lúc. Xem <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a>.</li>
+      </ol>
+
+      <h2>Nộp hồ sơ ở đâu?</h2>
+      <p>Nộp trực tiếp tại Trường Trung cấp Việt Úc, 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh, Thứ Hai – Thứ Sáu, 8:00 – 17:00. Nên gọi hotline 096 28 79680 hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn</a> trước để được hẹn giờ và kiểm tra hồ sơ.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Chưa có bằng tốt nghiệp THPT thì nộp hồ sơ được không?</h3>
+      <p>Thường có thể dùng giấy chứng nhận tốt nghiệp tạm thời và bổ sung bản sao bằng sau. Hãy hỏi nhà trường về thời hạn bổ sung.</p>
+      <h3>Có cần công chứng giấy tờ không?</h3>
+      <p>Bản sao giấy tờ thường cần chứng thực. Nhà trường sẽ hướng dẫn giấy tờ nào cần chứng thực khi bạn đăng ký.</p>
+      <h3>Có nộp hồ sơ online được không?</h3>
+      <p>Bạn có thể đăng ký tư vấn online qua form trên website hoặc Zalo; nhà trường sẽ hướng dẫn cách nộp hồ sơ phù hợp.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 3 ─────────────────────────── -->
+  <article class="post" id="bai-3">
+    <div class="post-no">Bài 3 · Từ khoá: học nghề ngắn hạn hay học trung cấp</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Học nghề ngắn hạn hay học trung cấp: nên chọn cái nào?</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>hoc-nghe-ngan-han-hay-trung-cap</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Học nghề ngắn hạn hay học trung cấp? So sánh thời gian học, văn bằng, lịch học và cơ hội học lên để chọn đúng. Các khóa tại Việt Úc TPHCM.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Nghiệp vụ bảo mẫu, Tiếng Việt cho người nước ngoài, Chăm sóc sắc đẹp, Kỹ thuật làm bánh</td></tr>
+      <tr><th>Ảnh bìa (alt)</th><td>Ảnh giờ thực hành của học viên. Alt: <span data-copy>Học viên thực hành tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Học nghề ngắn hạn hay học trung cấp</strong> tùy vào mục tiêu của bạn. Khóa ngắn hạn học nhanh, thường học buổi tối hoặc cuối tuần và cấp chứng chỉ. Trung cấp học bài bản hơn, cấp bằng tốt nghiệp trung cấp và có thể học liên thông lên cao đẳng, đại học. Bài viết giúp bạn so sánh để chọn đúng.</p>
+
+      <h2>Học nghề ngắn hạn và học trung cấp khác nhau thế nào?</h2>
+      <ul>
+        <li><strong>Văn bằng:</strong> khóa ngắn hạn cấp chứng chỉ; trung cấp cấp bằng tốt nghiệp trung cấp.</li>
+        <li><strong>Thời gian học:</strong> khóa ngắn hạn ngắn, tập trung vào một kỹ năng; trung cấp từ 1 đến 2 năm với người tốt nghiệp THPT.</li>
+        <li><strong>Lịch học:</strong> khóa ngắn hạn thường học buổi tối hoặc cuối tuần; trung cấp học theo chương trình, một số ngành có lịch linh hoạt.</li>
+        <li><strong>Nội dung:</strong> khóa ngắn hạn học một nhóm kỹ năng nghề; trung cấp học kiến thức và kỹ năng nghề đầy đủ, phần lớn là thực hành.</li>
+        <li><strong>Học lên:</strong> chứng chỉ ngắn hạn không dùng để học liên thông; bằng trung cấp học liên thông lên cao đẳng, đại học được.</li>
+      </ul>
+
+      <h2>Khi nào nên học nghề ngắn hạn?</h2>
+      <ul>
+        <li>Bạn cần đi làm nhanh và chỉ cần một kỹ năng cụ thể.</li>
+        <li>Bạn đang đi làm ban ngày, chỉ học được buổi tối hoặc cuối tuần.</li>
+        <li>Bạn muốn thử một nghề trước khi quyết định học dài hạn.</li>
+      </ul>
+      <p>Tại Trường Trung cấp Việt Úc có khóa <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-khoa-hoc-nghiep-vu-bao-mau">Nghiệp vụ bảo mẫu</a> (học buổi tối hoặc cuối tuần, có thực hành tại cơ sở giáo dục mầm non, cấp chứng chỉ, nhận học viên tốt nghiệp THCS trở lên) và <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-lop-tieng-viet-thuc-hanh-cho-nguoi-nuoc-ngoai">lớp tiếng Việt thực hành cho người nước ngoài</a> từ sơ cấp đến cao cấp (A1–C2).</p>
+
+      <h2>Khi nào nên học trung cấp?</h2>
+      <ul>
+        <li>Bạn muốn có <strong>bằng tốt nghiệp trung cấp</strong> để xin việc hoặc học tiếp lên cao đẳng, đại học.</li>
+        <li>Bạn muốn học nghề bài bản, từ kiến thức nền đến kỹ năng thực hành.</li>
+        <li>Bạn mới tốt nghiệp THCS hoặc THPT và có thời gian học toàn khóa.</li>
+      </ul>
+      <p>Ví dụ: muốn làm spa thì có thể học trung cấp <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cham-soc-sac-dep">Chăm sóc sắc đẹp</a>; muốn làm bánh chuyên nghiệp thì học <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-lam-banh">Kỹ thuật làm bánh</a> với hơn 70% thời lượng là thực hành. Xem tất cả <a href="https://vietuchcm.edu.vn/nganh-dao-tao">các ngành trung cấp</a>.</p>
+
+      <h2>Học ngắn hạn trước, trung cấp sau được không?</h2>
+      <p>Được. Nhiều người học khóa ngắn hạn để đi làm trước, sau đó học trung cấp để có bằng và học lên. Ví dụ, người học khóa Nghiệp vụ bảo mẫu có thể học tiếp trung cấp Sư phạm mầm non; xem so sánh tại <a href="https://vietuchcm.edu.vn/cam-nang/su-pham-mam-non-hay-khoa-bao-mau">Sư phạm mầm non hay khóa bảo mẫu</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Chứng chỉ khóa ngắn hạn có giá trị như bằng trung cấp không?</h3>
+      <p>Không. Chứng chỉ xác nhận bạn đã hoàn thành khóa học; bằng tốt nghiệp trung cấp là văn bằng của hệ đào tạo trung cấp theo Luật Giáo dục nghề nghiệp và dùng được để học liên thông.</p>
+      <h3>Đang đi làm có học trung cấp được không?</h3>
+      <p>Được, với các ngành có lịch học linh hoạt hoặc hình thức vừa học vừa làm. Xem <a href="https://vietuchcm.edu.vn/cam-nang/hoc-trung-cap-vua-hoc-vua-lam">Học trung cấp vừa học vừa làm</a>.</p>
+      <h3>Học phí khóa ngắn hạn và trung cấp khác nhau thế nào?</h3>
+      <p>Học phí khác nhau theo từng ngành, từng khóa. Xem <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí mới nhất</a> hoặc gọi hotline 096 28 79680.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 4 ─────────────────────────── -->
+  <article class="post" id="bai-4">
+    <div class="post-no">Bài 4 · Từ khoá: ngành công nghệ kỹ thuật ô tô</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Ngành Công nghệ kỹ thuật ô tô ra làm gì? Học ở đâu TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>nganh-cong-nghe-ky-thuat-o-to-ra-lam-gi</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Ngành Công nghệ kỹ thuật ô tô học sửa chữa, bảo dưỡng ô tô; ra trường làm tại trung tâm bảo dưỡng, hãng xe hoặc mở gara. Học trung cấp tại Việt Úc.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Công nghệ kỹ thuật ô tô</td></tr>
+      <tr><th>Ảnh bìa</th><td><img src="anh/anh-bia-cong-nghe-ky-thuat-o-to.jpg" alt="" style="width:100%;max-width:420px;border-radius:10px;display:block;margin-bottom:6px">File <code>anh-bia-cong-nghe-ky-thuat-o-to.jpg</code> (1200×800). Alt: <span data-copy>Tuyển sinh trung cấp ngành Công nghệ kỹ thuật ô tô tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button><br><small>Trường chưa có ảnh xưởng ô tô trên web: ảnh bìa dùng hình minh hoạ xe + ảnh học sinh tốt nghiệp thật. Có ảnh học viên thực hành ở xưởng thì nên thay.</small></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Ngành Công nghệ kỹ thuật ô tô</strong> đào tạo kỹ năng sửa chữa, bảo trì và bảo dưỡng xe ô tô. Học xong trung cấp, bạn có thể làm việc tại các trung tâm bảo dưỡng, hãng xe hoặc mở gara sửa chữa riêng. Tại TPHCM, Trường Trung cấp Việt Úc tuyển sinh ngành này cho người tốt nghiệp THCS và THPT.</p>
+
+      <h2>Ngành Công nghệ kỹ thuật ô tô học những gì?</h2>
+      <p>Chương trình trung cấp tập trung vào kỹ năng nghề: sửa chữa, bảo trì, bảo dưỡng xe. Nghề sửa chữa ô tô nói chung làm việc với các hệ thống chính của xe như động cơ, hệ thống truyền lực, gầm xe và hệ thống điện. Tại Việt Úc, chương trình chú trọng thực hành; nội dung chi tiết từng học phần được tư vấn khi bạn đăng ký.</p>
+
+      <h2>Học xong ngành ô tô ra làm gì?</h2>
+      <ul>
+        <li><strong>Kỹ thuật viên tại trung tâm bảo dưỡng, sửa chữa ô tô.</strong></li>
+        <li><strong>Kỹ thuật viên tại các hãng xe lớn</strong> như Toyota, Ford, VinFast.</li>
+        <li><strong>Mở gara sửa chữa riêng</strong> sau khi đã có tay nghề và kinh nghiệm.</li>
+      </ul>
+      <p>Số lượng xe ô tô ở các thành phố lớn ngày càng nhiều, nên nhu cầu bảo dưỡng, sửa chữa xe luôn cần người có tay nghề.</p>
+
+      <h2>Học bao lâu, ai học được?</h2>
+      <ul>
+        <li><strong>Thời gian học:</strong> chương trình trung cấp công nghệ ô tô thường kéo dài 18 tháng – 2 năm.</li>
+        <li><strong>Đầu vào:</strong> nhận học viên tốt nghiệp THCS và THPT. Người tốt nghiệp THCS học thêm khối lượng văn hóa THPT theo Luật Giáo dục nghề nghiệp. Xem <a href="https://vietuchcm.edu.vn/cam-nang/tot-nghiep-lop-9-nen-hoc-gi">Tốt nghiệp lớp 9 nên học gì?</a></li>
+      </ul>
+
+      <h2>Ngành ô tô hợp với ai?</h2>
+      <ul>
+        <li>Thích máy móc, thích tháo lắp và tìm hiểu cách xe vận hành.</li>
+        <li>Cẩn thận, kiên nhẫn khi tìm lỗi và xử lý sự cố.</li>
+        <li>Muốn có nghề vững và đi làm sớm.</li>
+      </ul>
+      <p>Chưa chắc mình hợp nghề nào? Đọc <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-nghe-gi">Nên học nghề gì? Chọn ngành theo sở thích</a>.</p>
+
+      <h2>Tốt nghiệp nhận bằng gì?</h2>
+      <p>Học sinh tốt nghiệp được cấp bằng tốt nghiệp trung cấp theo Luật Giáo dục nghề nghiệp. Văn bằng do trường cấp tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>. Người có bằng trung cấp có thể học liên thông lên cao đẳng, đại học tại các cơ sở có đào tạo liên thông.</p>
+
+      <h2>Học ngành Công nghệ kỹ thuật ô tô ở đâu tại TPHCM?</h2>
+      <p>Trường Trung cấp Việt Úc ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh. Xem chương trình <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cong-nghe-ky-thuat-o-to">Trung cấp Ô tô tại TPHCM</a>, <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a>, hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn miễn phí</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Tốt nghiệp lớp 9 có học ngành ô tô được không?</h3>
+      <p>Được. Ngành Công nghệ kỹ thuật ô tô tại Việt Úc nhận học viên tốt nghiệp THCS và THPT; người tốt nghiệp THCS học thêm văn hóa THPT theo quy định.</p>
+      <h3>Học trung cấp ô tô mất bao lâu?</h3>
+      <p>Chương trình thường kéo dài 18 tháng – 2 năm, tập trung vào kỹ năng nghề.</p>
+      <h3>Học xong có tự mở gara được không?</h3>
+      <p>Có thể. Nhiều người đi làm tại trung tâm bảo dưỡng hoặc hãng xe để tích lũy tay nghề, kinh nghiệm rồi mới mở gara riêng.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 5 ─────────────────────────── -->
+  <article class="post" id="bai-5">
+    <div class="post-no">Bài 5 · Từ khoá: học bếp âu á</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Học bếp Âu Á ở TPHCM: học gì, ra làm gì, học ở đâu</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>hoc-bep-au-a-tphcm</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Học bếp Âu Á có bằng trung cấp tại TPHCM: ngành Kỹ thuật chế biến món ăn, học phần lớn bằng thực hành theo quy trình nhà hàng – khách sạn.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Kỹ thuật chế biến món ăn</td></tr>
+      <tr><th>Ảnh bìa</th><td><img src="anh/anh-bia-hoc-bep-au-a.jpg" alt="" style="width:100%;max-width:420px;border-radius:10px;display:block;margin-bottom:6px">File <code>anh-bia-hoc-bep-au-a.jpg</code> (1200×800, ảnh thật của trường). Alt: <span data-copy>Học viên thực hành bếp tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Học bếp Âu Á</strong> có bằng trung cấp tại TPHCM là học ngành Kỹ thuật chế biến món ăn. Tại Trường Trung cấp Việt Úc, phần lớn thời lượng là thực hành trên nguyên liệu thật, theo quy trình nhà hàng – khách sạn 4-5 sao, kèm kiến thức quản lý, dinh dưỡng, giám sát và trải nghiệm tại doanh nghiệp.</p>
+
+      <h2>Bếp Âu và bếp Á khác nhau thế nào?</h2>
+      <ul>
+        <li><strong>Bếp Âu:</strong> các món như súp, salad, món nướng, mì Ý, món dùng kèm nước sốt. Bếp Âu chú trọng kỹ thuật làm sốt, kiểm soát nhiệt độ và cách trình bày đĩa.</li>
+        <li><strong>Bếp Á:</strong> các món Việt và món của các nước châu Á. Bếp Á chú trọng cách nêm nếm gia vị, dùng lửa và các kỹ thuật xào, hấp, kho, nấu nước dùng.</li>
+      </ul>
+      <p>Nhà hàng, khách sạn lớn thường có cả hai bếp. Đầu bếp biết cả món Âu lẫn món Á dễ tìm việc và dễ thăng tiến hơn.</p>
+
+      <h2>Học bếp Âu Á tại Việt Úc học những gì?</h2>
+      <ul>
+        <li><strong>Thực hành là chính:</strong> phần lớn thời lượng học trên nguyên liệu thật.</li>
+        <li><strong>Quy trình chuyên nghiệp:</strong> làm việc theo quy trình của bếp nhà hàng – khách sạn 4-5 sao.</li>
+        <li><strong>Kiến thức bổ trợ:</strong> quản lý, dinh dưỡng, giám sát bếp.</li>
+        <li><strong>Trải nghiệm tại doanh nghiệp</strong> để làm quen môi trường bếp thật.</li>
+      </ul>
+      <p>Xem chi tiết chương trình <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-che-bien-mon-an">Học nấu ăn có bằng trung cấp tại TPHCM</a>.</p>
+
+      <h2>Học xong bếp Âu Á ra làm gì?</h2>
+      <ul>
+        <li>Làm bếp tại nhà hàng, khách sạn.</li>
+        <li>Với kiến thức quản lý, giám sát, có thể hướng tới vị trí giám sát, quản lý bếp khi đã có kinh nghiệm.</li>
+        <li>Tự mở quán ăn, bếp gia đình khi đã vững tay nghề.</li>
+      </ul>
+
+      <h2>Tốt nghiệp nhận bằng gì?</h2>
+      <p>Học sinh tốt nghiệp được cấp bằng tốt nghiệp trung cấp ngành Kỹ thuật chế biến món ăn theo Luật Giáo dục nghề nghiệp, tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>. Bằng trung cấp có thể dùng để học liên thông lên cao đẳng, đại học.</p>
+
+      <h2>Nên học nấu ăn hay làm bánh?</h2>
+      <p>Nếu bạn thích làm bánh Âu, bánh Á và trang trí hơn đứng bếp nấu món, hãy xem ngành <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-lam-banh">Kỹ thuật làm bánh</a>. So sánh chi tiết tại <a href="https://vietuchcm.edu.vn/cam-nang/hoc-nau-an-hay-lam-banh">Học nấu ăn hay làm bánh?</a></p>
+
+      <h2>Học bếp Âu Á ở đâu tại TPHCM?</h2>
+      <p>Trường Trung cấp Việt Úc ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh. Xem <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a> hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn miễn phí</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Chưa biết nấu ăn có học được không?</h3>
+      <p>Được. Chương trình học phần lớn bằng thực hành trên nguyên liệu thật, theo quy trình từ cơ bản của bếp nhà hàng – khách sạn.</p>
+      <h3>Học bếp Âu Á có được cấp bằng không?</h3>
+      <p>Có. Học ngành Kỹ thuật chế biến món ăn hệ trung cấp, hoàn thành chương trình được cấp bằng tốt nghiệp trung cấp.</p>
+      <h3>Học phí học bếp bao nhiêu?</h3>
+      <p>Học phí khác nhau theo từng ngành và có ưu đãi cho thí sinh nhập học sớm. Gọi hotline 096 28 79680 hoặc xem <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí mới nhất</a>.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 6 ─────────────────────────── -->
+  <article class="post" id="bai-6">
+    <div class="post-no">Bài 6 · Từ khoá: chăm sóc sắc đẹp hệ trung cấp</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Chăm sóc sắc đẹp hệ trung cấp: học gì, ra làm gì ở TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>cham-soc-sac-dep-he-trung-cap</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Chăm sóc sắc đẹp hệ trung cấp: học chăm sóc da, tóc, móng, toàn thân, trang điểm; ra làm tại spa, viện thẩm mỹ, công ty mỹ phẩm. Học tại Việt Úc.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Chăm sóc sắc đẹp</td></tr>
+      <tr><th>Ảnh bìa</th><td><img src="anh/anh-bia-cham-soc-sac-dep.jpg" alt="" style="width:100%;max-width:420px;border-radius:10px;display:block;margin-bottom:6px">File <code>anh-bia-cham-soc-sac-dep.jpg</code> (1200×800). Alt: <span data-copy>Tuyển sinh chăm sóc sắc đẹp hệ trung cấp tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button><br><small>Trường chưa có ảnh phòng thực hành spa trên web: ảnh bìa dùng hình minh hoạ + ảnh học sinh tốt nghiệp thật. Có ảnh học viên thực hành spa thì nên thay.</small></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Chăm sóc sắc đẹp hệ trung cấp</strong> là chương trình học nghề làm đẹp bài bản, hoàn thành được cấp bằng tốt nghiệp trung cấp. Học viên học chăm sóc da, tóc, móng, chăm sóc toàn thân và trang điểm; ra trường làm tại spa, viện thẩm mỹ và công ty mỹ phẩm. Tại TPHCM, Trường Trung cấp Việt Úc tuyển sinh ngành này ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ).</p>
+
+      <h2>Học chăm sóc sắc đẹp hệ trung cấp là học gì?</h2>
+      <p>Học viên được học nghiệp vụ và kỹ thuật phục vụ khách hàng trong lĩnh vực làm đẹp:</p>
+      <ul>
+        <li><strong>Chăm sóc da</strong></li>
+        <li><strong>Chăm sóc tóc</strong></li>
+        <li><strong>Chăm sóc móng</strong></li>
+        <li><strong>Chăm sóc toàn thân</strong></li>
+        <li><strong>Trang điểm</strong></li>
+        <li><strong>Sử dụng thiết bị, máy móc chuyên ngành</strong> làm đẹp.</li>
+        <li><strong>Chọn lựa và tư vấn mỹ phẩm</strong> phù hợp cho từng khách hàng.</li>
+      </ul>
+      <p>Chương trình tại Việt Úc chú trọng thực hành, để học viên tự tin làm việc với khách ngay sau khi tốt nghiệp.</p>
+
+      <h2>Học chăm sóc sắc đẹp ra làm gì?</h2>
+      <ul>
+        <li><strong>Kỹ thuật viên</strong> tại spa, viện thẩm mỹ.</li>
+        <li><strong>Nhân viên tư vấn, chăm sóc khách hàng</strong> tại spa, viện thẩm mỹ, công ty mỹ phẩm.</li>
+        <li><strong>Quản lý kỹ thuật spa</strong> khi đã có tay nghề và kinh nghiệm.</li>
+        <li>Làm tại <strong>công ty mỹ phẩm</strong> có dịch vụ tạo mẫu, chăm sóc sắc đẹp.</li>
+        <li><strong>Tự mở tiệm</strong> làm đẹp, spa nhỏ khi đã vững nghề.</li>
+      </ul>
+
+      <h2>Hệ trung cấp khác khóa spa ngắn hạn thế nào?</h2>
+      <ul>
+        <li><strong>Văn bằng:</strong> hệ trung cấp cấp bằng tốt nghiệp trung cấp; khóa ngắn hạn thường chỉ cấp chứng chỉ.</li>
+        <li><strong>Nội dung:</strong> hệ trung cấp học đủ các mảng da, tóc, móng, toàn thân, trang điểm và tư vấn mỹ phẩm; khóa ngắn hạn thường chỉ học một mảng.</li>
+        <li><strong>Học lên:</strong> bằng trung cấp có thể dùng để học liên thông lên cao đẳng, đại học.</li>
+      </ul>
+      <p>Phân vân giữa các bậc học? Đọc <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-trung-cap-hay-cao-dang">Nên học trung cấp hay cao đẳng?</a></p>
+
+      <h2>Ngành chăm sóc sắc đẹp hợp với ai?</h2>
+      <ul>
+        <li>Thích làm đẹp, thích chăm chút cho người khác.</li>
+        <li>Khéo tay, tỉ mỉ, kiên nhẫn.</li>
+        <li>Thích giao tiếp, tư vấn và chăm sóc khách hàng.</li>
+      </ul>
+      <p>Chưa chắc mình hợp nghề nào? Xem <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-nghe-gi">Nên học nghề gì? Chọn ngành theo sở thích</a>.</p>
+
+      <h2>Tốt nghiệp nhận bằng gì?</h2>
+      <p>Học sinh tốt nghiệp được cấp bằng tốt nghiệp trung cấp ngành Chăm sóc sắc đẹp theo Luật Giáo dục nghề nghiệp. Văn bằng do trường cấp tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>.</p>
+
+      <h2>Học chăm sóc sắc đẹp hệ trung cấp ở đâu tại TPHCM?</h2>
+      <p>Trường Trung cấp Việt Úc ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh, khu trung tâm thuận tiện đi lại. Xem chương trình <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cham-soc-sac-dep">Trung cấp Chăm sóc sắc đẹp tại TPHCM</a>, <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a>, hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn miễn phí</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Học chăm sóc sắc đẹp hệ trung cấp mất bao lâu?</h3>
+      <p>Theo Luật Giáo dục nghề nghiệp, người đã tốt nghiệp THPT học trung cấp từ 1 đến 2 năm tùy ngành. Thời gian học cụ thể của ngành được tư vấn khi đăng ký.</p>
+      <h3>Tốt nghiệp lớp 9 có học được không?</h3>
+      <p>Người tốt nghiệp THCS được học trung cấp và học thêm khối lượng văn hóa THPT theo Luật Giáo dục nghề nghiệp. Điều kiện đầu vào cụ thể của ngành được tư vấn khi đăng ký.</p>
+      <h3>Học xong có được cấp bằng không?</h3>
+      <p>Có. Hoàn thành chương trình được cấp bằng tốt nghiệp trung cấp ngành Chăm sóc sắc đẹp.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 7 ─────────────────────────── -->
+  <article class="post" id="bai-7">
+    <div class="post-no">Bài 7 · Từ khoá: học tiếng anh ra làm gì</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Học tiếng Anh ra làm gì? Trung cấp Ngôn ngữ Anh tại TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>hoc-tieng-anh-ra-lam-gi</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Học tiếng Anh ra làm gì? Lễ tân, chăm sóc khách hàng, văn phòng, du lịch. Trung cấp Ngôn ngữ Anh hệ chính quy, cấp bằng tại Việt Úc TPHCM.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Ngôn ngữ Anh</td></tr>
+      <tr><th>Ảnh bìa</th><td><img src="anh/anh-bia-tieng-anh.jpg" alt="" style="width:100%;max-width:420px;border-radius:10px;display:block;margin-bottom:6px">File <code>anh-bia-tieng-anh.jpg</code> (1200×800). Alt: <span data-copy>Tuyển sinh trung cấp tiếng Anh tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button><br><small>Ảnh học sinh tốt nghiệp thật + hình minh hoạ. Có ảnh lớp học tiếng Anh thì nên thay.</small></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Học tiếng Anh ra làm gì?</strong> Học xong trung cấp Ngôn ngữ Anh, bạn có thể ứng tuyển các vị trí cần giao tiếp, đọc, viết tiếng Anh trong công việc, như lễ tân, chăm sóc khách hàng, nhân viên văn phòng hay công việc trong ngành du lịch, khách sạn. Tại TPHCM, Trường Trung cấp Việt Úc đào tạo trung cấp tiếng Anh (ngành Ngôn ngữ Anh) hệ chính quy, hoàn thành được cấp bằng tốt nghiệp trung cấp.</p>
+
+      <h2>Trung cấp tiếng Anh học những gì?</h2>
+      <p>Chương trình tập trung vào <strong>tiếng Anh cho công việc</strong>:</p>
+      <ul>
+        <li><strong>Giao tiếp:</strong> nghe, nói trong các tình huống công việc hằng ngày.</li>
+        <li><strong>Đọc:</strong> đọc hiểu tài liệu, email, văn bản công việc.</li>
+        <li><strong>Viết:</strong> viết email, văn bản thông dụng trong công việc.</li>
+      </ul>
+      <p>Nội dung chi tiết từng học phần và trình độ bắt đầu được tư vấn khi bạn đăng ký.</p>
+
+      <h2>Học tiếng Anh ra làm gì?</h2>
+      <p>Tiếng Anh là kỹ năng được nhiều nơi tuyển dụng yêu cầu. Người giao tiếp, đọc, viết tiếng Anh tốt có thể ứng tuyển các vị trí thường cần tiếng Anh như:</p>
+      <ul>
+        <li><strong>Lễ tân, nhân viên phục vụ</strong> tại khách sạn, nhà hàng có khách nước ngoài.</li>
+        <li><strong>Nhân viên chăm sóc khách hàng</strong>, hỗ trợ khách qua điện thoại, email.</li>
+        <li><strong>Nhân viên văn phòng, trợ lý</strong> tại doanh nghiệp có đối tác nước ngoài.</li>
+        <li><strong>Nhân viên bán hàng, tư vấn</strong> tại cửa hàng, showroom có khách nước ngoài.</li>
+        <li><strong>Công việc trong ngành du lịch, lữ hành</strong>, nơi thường xuyên làm việc với khách quốc tế.</li>
+      </ul>
+
+      <h2>Tiếng Anh cộng một nghề: lợi thế khi xin việc</h2>
+      <p>Tiếng Anh càng có giá trị khi đi cùng một nghề. Nếu thích du lịch, khách sạn, bạn có thể tìm hiểu thêm <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-khach-san">Quản trị khách sạn</a>, <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-huong-dan-du-lich">Hướng dẫn du lịch</a> hoặc đọc <a href="https://vietuchcm.edu.vn/cam-nang/khach-san-lu-hanh-hay-huong-dan-du-lich">Khách sạn, lữ hành hay hướng dẫn du lịch?</a></p>
+
+      <h2>Ngành tiếng Anh hợp với ai?</h2>
+      <ul>
+        <li>Thích ngoại ngữ, thích giao tiếp với nhiều người.</li>
+        <li>Muốn làm việc trong môi trường có khách hàng, đối tác nước ngoài.</li>
+        <li>Muốn có bằng trung cấp để xin việc hoặc học tiếp lên.</li>
+      </ul>
+
+      <h2>Tốt nghiệp nhận bằng gì?</h2>
+      <p>Học sinh tốt nghiệp được cấp bằng tốt nghiệp trung cấp ngành Ngôn ngữ Anh theo Luật Giáo dục nghề nghiệp, tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>. Bằng trung cấp có thể dùng để học liên thông lên cao đẳng, đại học tại các cơ sở có đào tạo liên thông.</p>
+
+      <h2>Học trung cấp tiếng Anh ở đâu tại TPHCM?</h2>
+      <p>Trường Trung cấp Việt Úc ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh. Xem chương trình <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ngon-ngu-anh">Trung cấp Tiếng Anh (Ngôn ngữ Anh) tại TPHCM</a>, <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a>, hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn miễn phí</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Bằng trung cấp tiếng Anh có phải chứng chỉ IELTS, TOEIC không?</h3>
+      <p>Không. Bằng tốt nghiệp trung cấp là văn bằng của hệ đào tạo trung cấp theo Luật Giáo dục nghề nghiệp; IELTS, TOEIC là chứng chỉ do các tổ chức khảo thí cấp. Hai loại này khác nhau.</p>
+      <h3>Học trung cấp tiếng Anh mất bao lâu?</h3>
+      <p>Theo Luật Giáo dục nghề nghiệp, người đã tốt nghiệp THPT học trung cấp từ 1 đến 2 năm tùy ngành. Thời gian học cụ thể được tư vấn khi đăng ký.</p>
+      <h3>Tiếng Anh yếu có học được không?</h3>
+      <p>Trình độ bắt đầu và điều kiện đầu vào được nhà trường tư vấn khi bạn đăng ký. Gọi hotline 096 28 79680 để được hướng dẫn.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 8 ─────────────────────────── -->
+  <article class="post" id="bai-8">
+    <div class="post-no">Bài 8 · Từ khoá: học hướng dẫn viên du lịch</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Học hướng dẫn viên du lịch: học gì, cần thẻ HDV không?</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>hoc-huong-dan-vien-du-lich</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Học hướng dẫn viên du lịch hệ trung cấp tại TPHCM: kiến thức ngành du lịch, nghiệp vụ lữ hành, kỹ năng hướng dẫn khách và điều kiện cấp thẻ HDV.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Hướng dẫn du lịch, Quản trị lữ hành</td></tr>
+      <tr><th>Ảnh bìa</th><td><img src="anh/anh-bia-huong-dan-du-lich.jpg" alt="" style="width:100%;max-width:420px;border-radius:10px;display:block;margin-bottom:6px">File <code>anh-bia-huong-dan-du-lich.jpg</code> (1200×800). Alt: <span data-copy>Học hướng dẫn viên du lịch tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button><br><small>Ảnh học sinh tốt nghiệp thật + hình minh hoạ. Có ảnh học viên đi thực tế tour thì nên thay.</small></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Học hướng dẫn viên du lịch</strong> hệ trung cấp là học ngành Hướng dẫn du lịch: kiến thức ngành du lịch, nghiệp vụ lữ hành và kỹ năng hướng dẫn khách. Để hành nghề hướng dẫn viên, bạn cần có thẻ hướng dẫn viên theo Luật Du lịch 2017. Tại TPHCM, Trường Trung cấp Việt Úc tuyển sinh ngành này hệ trung cấp.</p>
+
+      <h2>Học hướng dẫn viên du lịch là học gì?</h2>
+      <ul>
+        <li><strong>Kiến thức ngành du lịch:</strong> nền tảng để hiểu cách ngành du lịch vận hành.</li>
+        <li><strong>Nghiệp vụ lữ hành:</strong> cách một chuyến đi được tổ chức, điều hành.</li>
+        <li><strong>Kỹ năng hướng dẫn khách:</strong> đón, dẫn đoàn và thuyết minh cho khách.</li>
+      </ul>
+
+      <h2>Học hướng dẫn viên du lịch ra làm gì?</h2>
+      <ul>
+        <li>Làm tại các bộ phận của <strong>công ty lữ hành</strong>: điều hành tour, thiết kế tour, hướng dẫn viên du lịch.</li>
+        <li>Làm tại các bộ phận kinh doanh của <strong>khách sạn, nhà hàng</strong>: lễ tân, buồng, bàn, bar, giải trí.</li>
+        <li>Làm tại <strong>cơ quan quản lý nhà nước về du lịch</strong>.</li>
+      </ul>
+
+      <h2>Làm hướng dẫn viên có cần thẻ HDV không?</h2>
+      <p>Có. Theo Luật Du lịch 2017, người hành nghề hướng dẫn du lịch phải có thẻ hướng dẫn viên. Có 3 loại thẻ:</p>
+      <ul>
+        <li><strong>Thẻ hướng dẫn viên du lịch nội địa:</strong> hướng dẫn khách du lịch nội địa. Về trình độ, cần tốt nghiệp trung cấp trở lên chuyên ngành hướng dẫn du lịch, hoặc tốt nghiệp trung cấp trở lên chuyên ngành khác và có chứng chỉ nghiệp vụ hướng dẫn du lịch nội địa.</li>
+        <li><strong>Thẻ hướng dẫn viên du lịch quốc tế:</strong> hướng dẫn cả khách quốc tế. Cần tốt nghiệp cao đẳng trở lên và sử dụng thành thạo ngoại ngữ.</li>
+        <li><strong>Thẻ hướng dẫn viên du lịch tại điểm:</strong> hướng dẫn trong phạm vi một khu, điểm du lịch.</li>
+      </ul>
+      <p>Ngoài trình độ, người xin thẻ còn phải đáp ứng các điều kiện chung khác theo luật. Hồ sơ và thủ tục cấp thẻ do cơ quan chuyên môn về du lịch cấp tỉnh hướng dẫn. Hãy hỏi nhà trường thêm khi đăng ký học.</p>
+
+      <h2>Kỹ năng cần có để làm hướng dẫn viên</h2>
+      <ul>
+        <li>Tự tin nói trước đám đông, giọng nói rõ ràng.</li>
+        <li>Thích đi nhiều nơi, có sức khỏe tốt.</li>
+        <li>Xử lý tình huống nhanh, kiên nhẫn với khách.</li>
+        <li>Có ngoại ngữ để hướng dẫn khách quốc tế. Xem thêm <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-ngon-ngu-anh">Trung cấp Tiếng Anh</a>.</li>
+      </ul>
+
+      <h2>Hướng dẫn viên, lữ hành hay khách sạn?</h2>
+      <p>Nếu bạn thích lên kế hoạch, điều hành tour hơn là trực tiếp dẫn đoàn, hãy xem <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-lu-hanh">Quản trị lữ hành</a>. So sánh 3 ngành tại <a href="https://vietuchcm.edu.vn/cam-nang/khach-san-lu-hanh-hay-huong-dan-du-lich">Khách sạn, lữ hành hay hướng dẫn du lịch?</a></p>
+
+      <h2>Tốt nghiệp nhận bằng gì?</h2>
+      <p>Học sinh tốt nghiệp được cấp bằng tốt nghiệp trung cấp ngành Hướng dẫn du lịch theo Luật Giáo dục nghề nghiệp, tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>. Muốn làm hướng dẫn viên quốc tế, bạn có thể học liên thông lên cao đẳng. Xem <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-trung-cap-hay-cao-dang">Nên học trung cấp hay cao đẳng?</a></p>
+
+      <h2>Học hướng dẫn viên du lịch ở đâu tại TPHCM?</h2>
+      <p>Trường Trung cấp Việt Úc ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh. Xem chương trình <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-huong-dan-du-lich">Trung cấp Hướng dẫn du lịch tại TPHCM</a>, <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a>, hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn miễn phí</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Học trung cấp hướng dẫn du lịch có đủ điều kiện xin thẻ HDV nội địa không?</h3>
+      <p>Theo Luật Du lịch 2017, tốt nghiệp trung cấp trở lên chuyên ngành hướng dẫn du lịch đáp ứng điều kiện về trình độ để được cấp thẻ hướng dẫn viên nội địa. Người xin thẻ còn cần đáp ứng các điều kiện chung khác theo luật.</p>
+      <h3>Muốn làm hướng dẫn viên quốc tế thì sao?</h3>
+      <p>Thẻ quốc tế yêu cầu tốt nghiệp cao đẳng trở lên và sử dụng thành thạo ngoại ngữ. Bạn có thể học trung cấp trước, rồi học liên thông lên cao đẳng và học thêm ngoại ngữ.</p>
+      <h3>Học hướng dẫn du lịch mất bao lâu?</h3>
+      <p>Theo Luật Giáo dục nghề nghiệp, người đã tốt nghiệp THPT học trung cấp từ 1 đến 2 năm tùy ngành. Thời gian học cụ thể được tư vấn khi đăng ký.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 9 ─────────────────────────── -->
+  <article class="post" id="bai-9">
+    <div class="post-no">Bài 9 · Từ khoá: học cntt ra làm gì</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Học CNTT ra làm gì? Học trung cấp CNTT linh hoạt tại TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>hoc-cntt-ra-lam-gi</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Học CNTT ra làm gì? Lập trình viên, kiểm thử phần mềm, quản trị mạng, thiết kế website. Trung cấp CNTT học linh hoạt, vừa học vừa làm tại Việt Úc.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Công nghệ thông tin</td></tr>
+      <tr><th>Ảnh bìa</th><td><img src="anh/anh-bia-cntt.jpg" alt="" style="width:100%;max-width:420px;border-radius:10px;display:block;margin-bottom:6px">File <code>anh-bia-cntt.jpg</code> (1200×800). Alt: <span data-copy>Học viên học công nghệ thông tin tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button><br><small>Ảnh học viên thật (từ banner trang chủ) + hình minh hoạ.</small></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Học CNTT ra làm gì?</strong> Sau khi học trung cấp công nghệ thông tin, bạn có thể làm lập trình viên phần mềm ứng dụng, kỹ thuật viên kiểm thử phần mềm, quản trị mạng, thiết kế và quản trị website. Tại TPHCM, Trường Trung cấp Việt Úc thường xuyên khai giảng các lớp CNTT, thời gian học linh hoạt cho người vừa đi làm vừa đi học.</p>
+
+      <h2>Học CNTT hệ trung cấp học những gì?</h2>
+      <ul>
+        <li><strong>Lập trình</strong></li>
+        <li><strong>Thiết kế và quản trị website</strong></li>
+        <li><strong>Quản trị mạng</strong></li>
+        <li><strong>Kiểm thử phần mềm</strong></li>
+      </ul>
+
+      <h2>Học CNTT ra làm gì?</h2>
+      <ul>
+        <li>Lập trình viên phần mềm ứng dụng.</li>
+        <li>Kỹ thuật viên kiểm thử phần mềm.</li>
+        <li>Kỹ thuật viên chuyển giao phần mềm.</li>
+        <li>Quản trị hệ thống phần mềm và cơ sở dữ liệu.</li>
+        <li>Bảo trì hệ thống máy tính.</li>
+        <li>Quản trị mạng.</li>
+        <li>Thiết kế và quản trị website.</li>
+        <li>Thiết kế đa phương tiện.</li>
+      </ul>
+      <p>Hầu hết doanh nghiệp đều dùng máy tính, phần mềm và website, nên kỹ năng CNTT dùng được ở nhiều ngành khác nhau.</p>
+
+      <h2>Học CNTT vừa học vừa làm được không?</h2>
+      <p>Được. Trường Trung cấp Việt Úc thường xuyên khai giảng các lớp, thời gian học linh hoạt cho người vừa đi làm vừa đi học. Mẹo để theo kịp chương trình: báo trước với nơi làm việc về lịch học, ưu tiên không bỏ buổi thực hành, và luyện tập thêm trên máy tính ở nhà. Xem thêm <a href="https://vietuchcm.edu.vn/cam-nang/hoc-trung-cap-vua-hoc-vua-lam">Học trung cấp vừa học vừa làm</a>.</p>
+
+      <h2>Ngành CNTT hợp với ai?</h2>
+      <ul>
+        <li>Thích máy tính, thích tìm hiểu cách phần mềm, website hoạt động.</li>
+        <li>Kiên nhẫn, thích giải quyết vấn đề, tư duy logic.</li>
+        <li>Đang đi làm và muốn chuyển sang nghề CNTT hoặc có bằng để thăng tiến.</li>
+      </ul>
+      <p>Chưa chắc mình hợp nghề nào? Đọc <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-nghe-gi">Nên học nghề gì? Chọn ngành theo sở thích</a>.</p>
+
+      <h2>Tốt nghiệp nhận bằng gì?</h2>
+      <p>Học sinh tốt nghiệp được cấp bằng tốt nghiệp trung cấp ngành Công nghệ thông tin theo Luật Giáo dục nghề nghiệp, tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>. Bằng trung cấp có thể dùng để học liên thông lên cao đẳng, đại học tại các cơ sở có đào tạo liên thông.</p>
+
+      <h2>Học CNTT ở đâu tại TPHCM?</h2>
+      <p>Trường Trung cấp Việt Úc ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh. Trường ở khu trung tâm, tiện đi học sau giờ làm. Xem chương trình <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-cong-nghe-thong-tin">Trung cấp Công nghệ thông tin tại TPHCM</a>, <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a>, hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn miễn phí</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Chưa biết gì về máy tính có học CNTT được không?</h3>
+      <p>Trình độ bắt đầu và điều kiện đầu vào được nhà trường tư vấn khi bạn đăng ký. Gọi hotline 096 28 79680 để được hướng dẫn.</p>
+      <h3>Học trung cấp CNTT mất bao lâu?</h3>
+      <p>Theo Luật Giáo dục nghề nghiệp, người đã tốt nghiệp THPT học trung cấp từ 1 đến 2 năm tùy ngành. Thời gian học cụ thể được tư vấn khi đăng ký.</p>
+      <h3>Đang đi làm giờ hành chính có học được không?</h3>
+      <p>Ngành CNTT có thời gian học linh hoạt cho người vừa đi làm vừa đi học. Hãy hỏi nhà trường lịch lớp phù hợp với giờ làm của bạn.</p>
+    </div>
+  </article>
+
+  <!-- ─────────────────────────── BÀI 10 ─────────────────────────── -->
+  <article class="post" id="bai-10">
+    <div class="post-no">Bài 10 · Từ khoá: học chăm sóc người cao tuổi</div>
+    <table class="fields">
+      <tr><th>Tiêu đề</th><td><span data-copy>Học chăm sóc người cao tuổi ra làm gì? Học ở đâu TPHCM</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Slug gợi ý</th><td><span data-copy>hoc-cham-soc-nguoi-cao-tuoi-ra-lam-gi</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Tóm tắt</th><td><span data-copy>Học chăm sóc người cao tuổi ra làm gì? Nội dung học, nơi làm việc, ai hợp với nghề và nơi học tại Trường Trung cấp Việt Úc TPHCM.</span> <button class="copy" type="button">Copy</button></td></tr>
+      <tr><th>Ngành liên quan</th><td>Chăm sóc sức khỏe người cao tuổi (nếu có trong admin), Điều dưỡng</td></tr>
+      <tr><th>Ảnh bìa</th><td><img src="anh/anh-bia-cham-soc-nguoi-cao-tuoi.jpg" alt="" style="width:100%;max-width:420px;border-radius:10px;display:block;margin-bottom:6px">File <code>anh-bia-cham-soc-nguoi-cao-tuoi.jpg</code> (1200×800). Alt: <span data-copy>Học chăm sóc sức khỏe người cao tuổi tại Trường Trung cấp Việt Úc TPHCM</span> <button class="copy" type="button">Copy</button><br><small>Có ảnh thật giờ thực hành chăm sóc người cao tuổi thì nên thay.</small></td></tr>
+    </table>
+    <div class="content-label">Nội dung <button class="copy" type="button" data-copy-content>Copy nội dung</button></div>
+    <div class="content">
+      <p><strong>Học chăm sóc người cao tuổi</strong> là học kỹ năng chăm sóc sinh hoạt hằng ngày, hỗ trợ sức khỏe và tinh thần cho người lớn tuổi. Học xong có thể làm tại viện dưỡng lão, trung tâm chăm sóc người cao tuổi hoặc chăm sóc tại gia đình. Tại TPHCM, Trường Trung cấp Việt Úc đào tạo chương trình Chăm sóc sức khỏe người cao tuổi, chú trọng thực hành.</p>
+
+      <h2>Vì sao nghề chăm sóc người cao tuổi ngày càng cần người?</h2>
+      <p>Việt Nam đang già hóa dân số nhanh. Nhiều gia đình bận rộn cần người có kỹ năng chăm sóc ông bà, cha mẹ; các viện dưỡng lão và trung tâm chăm sóc người cao tuổi cũng mở ra nhiều hơn. Người được đào tạo bài bản, tận tâm và biết cách chăm sóc an toàn luôn được ưu tiên.</p>
+
+      <h2>Học chăm sóc người cao tuổi là học gì?</h2>
+      <p>Nghề chăm sóc người cao tuổi thường gồm các nhóm kỹ năng:</p>
+      <ul>
+        <li><strong>Chăm sóc sinh hoạt hằng ngày:</strong> hỗ trợ ăn uống, vệ sinh cá nhân, thay quần áo, đi lại.</li>
+        <li><strong>Dinh dưỡng:</strong> chuẩn bị bữa ăn phù hợp với sức khỏe người lớn tuổi.</li>
+        <li><strong>Theo dõi sức khỏe cơ bản:</strong> đo huyết áp, nhiệt độ, nhận biết dấu hiệu bất thường để báo gia đình hoặc nhân viên y tế.</li>
+        <li><strong>Hỗ trợ vận động, phòng té ngã:</strong> giúp người cao tuổi đi lại, tập nhẹ nhàng an toàn.</li>
+        <li><strong>Giao tiếp và hỗ trợ tinh thần:</strong> trò chuyện, lắng nghe, giúp người cao tuổi vui vẻ, bớt cô đơn.</li>
+        <li><strong>Xử trí ban đầu</strong> một số tình huống thường gặp trước khi có nhân viên y tế.</li>
+      </ul>
+      <p>Nội dung và thời gian học cụ thể của chương trình tại Việt Úc được tư vấn khi bạn đăng ký.</p>
+
+      <h2>Học chăm sóc người cao tuổi ra làm gì?</h2>
+      <ul>
+        <li>Nhân viên chăm sóc tại <strong>viện dưỡng lão, trung tâm chăm sóc người cao tuổi</strong>.</li>
+        <li><strong>Chăm sóc người cao tuổi tại nhà</strong> theo thỏa thuận với gia đình.</li>
+        <li>Làm cho <strong>công ty cung cấp dịch vụ chăm sóc</strong> tại nhà.</li>
+        <li>Hỗ trợ chăm sóc người cao tuổi tại bệnh viện, phòng khám, dưới sự hướng dẫn của nhân viên y tế.</li>
+      </ul>
+      <p>Lưu ý: các việc chuyên môn y tế như tiêm, truyền, dùng thuốc theo chỉ định thuộc về nhân viên y tế có chứng chỉ hành nghề. Nếu muốn làm chuyên môn y tế, bạn có thể tìm hiểu thêm ngành <a href="https://vietuchcm.edu.vn/nganh-dao-tao/tuyen-sinh-nganh-dieu-duong">Điều dưỡng</a>.</p>
+
+      <h2>Ai hợp với nghề chăm sóc người cao tuổi?</h2>
+      <ul>
+        <li>Kiên nhẫn, nhẹ nhàng, thích chăm sóc người khác.</li>
+        <li>Biết lắng nghe, giao tiếp tốt với người lớn tuổi.</li>
+        <li>Sức khỏe tốt, cẩn thận, có trách nhiệm.</li>
+      </ul>
+      <p>Chưa chắc mình hợp nghề nào? Đọc <a href="https://vietuchcm.edu.vn/cam-nang/nen-hoc-nghe-gi">Nên học nghề gì? Chọn ngành theo sở thích</a>.</p>
+
+      <h2>Học xong nhận bằng gì?</h2>
+      <p>Hoàn thành chương trình, học viên được cấp văn bằng hoặc chứng chỉ tương ứng với chương trình đã học; loại văn bằng cụ thể được tư vấn khi đăng ký. Văn bằng, chứng chỉ do trường cấp tra cứu được tại trang <a href="https://vietuchcm.edu.vn/tra-cuu-van-bang">tra cứu văn bằng</a>.</p>
+
+      <h2>Học chăm sóc người cao tuổi ở đâu tại TPHCM?</h2>
+      <p>Trường Trung cấp Việt Úc ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ), TP. Hồ Chí Minh. Xem <a href="https://vietuchcm.edu.vn/nganh-dao-tao">các ngành đào tạo</a>, <a href="https://vietuchcm.edu.vn/cam-nang/hoc-phi-truong-trung-cap-viet-uc">cách nhận bảng học phí</a>, hoặc <a href="https://vietuchcm.edu.vn/#register">đăng ký tư vấn miễn phí</a>.</p>
+
+      <h2>Câu hỏi thường gặp</h2>
+      <h3>Chăm sóc người cao tuổi khác điều dưỡng thế nào?</h3>
+      <p>Điều dưỡng học kiến thức cơ sở y học và kỹ thuật chăm sóc người bệnh, là nghề y tế cần giấy phép hành nghề. Chăm sóc người cao tuổi tập trung vào chăm sóc sinh hoạt, hỗ trợ sức khỏe và tinh thần hằng ngày cho người lớn tuổi.</p>
+      <h3>Chưa có kinh nghiệm có học được không?</h3>
+      <p>Được. Chương trình dạy từ kỹ năng cơ bản, có thực hành. Điều kiện đầu vào cụ thể được tư vấn khi đăng ký.</p>
+      <h3>Học chăm sóc người cao tuổi mất bao lâu?</h3>
+      <p>Thời gian học cụ thể của chương trình được nhà trường tư vấn khi bạn đăng ký. Gọi hotline 096 28 79680 để được hướng dẫn.</p>
+    </div>
+  </article>
+</main>
+<script>
+  // Copy 1 ô chữ, hoặc copy nội dung có định dạng (HTML) để dán vào ô soạn thảo admin
+  function flash(button, label) {
+    const old = button.textContent;
+    button.textContent = label;
+    button.classList.add("done");
+    setTimeout(() => { button.textContent = old; button.classList.remove("done"); }, 1500);
+  }
+  document.querySelectorAll("button.copy").forEach((button) => {
+    button.addEventListener("click", async () => {
+      try {
+        if (button.hasAttribute("data-copy-content")) {
+          const box = button.closest("article").querySelector(".content");
+          const html = box.innerHTML.replace(/href="\/(?!\/)/g, 'href="https://vietuchcm.edu.vn/');
+          if (window.ClipboardItem) {
+            await navigator.clipboard.write([new ClipboardItem({
+              "text/html": new Blob([html], { type: "text/html" }),
+              "text/plain": new Blob([box.innerText], { type: "text/plain" }),
+            })]);
+          } else {
+            await navigator.clipboard.writeText(box.innerText);
+          }
+        } else {
+          await navigator.clipboard.writeText(button.parentElement.querySelector("[data-copy]").textContent.trim());
+        }
+        flash(button, "Đã copy");
+      } catch {
+        flash(button, "Hãy bôi đen rồi Ctrl+C");
+      }
+    });
+  });
+</script>
+</body>
+</html>

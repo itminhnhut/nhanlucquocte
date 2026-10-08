@@ -1,0 +1,643 @@
+// Bài cẩm nang tuyển sinh (/cam-nang/<slug>): nội dung tĩnh trong code, render sẵn vào HTML
+// cùng các trang tĩnh khác. Mỗi bài nhắm 1 cụm từ khoá chưa có trang nào trên site phủ
+// (docs/adr/2026-09-22-tech-seo-audit.md, mục 3).
+// CHỈ ghi thông tin có căn cứ như src/content/faqs.ts: nội dung ngành trên web, thông tin nhà
+// trường đã xác nhận, quy định chung của Luật Giáo dục nghề nghiệp 2014 / Luật Giáo dục 2019.
+// Không tự thêm học phí, số liệu, tỉ lệ việc làm. Link viết dạng [chữ](/duong-dan), chữ đậm **chữ**.
+import appConfig from "../configs/appConfig";
+import { withBrandFit } from "../configs/seo.config";
+
+export interface GuideTable {
+  head: readonly string[];
+  rows: readonly (readonly string[])[];
+}
+
+export interface GuideSection {
+  heading: string;
+  /** Câu dẫn đứng trước bảng/danh sách */
+  intro?: string;
+  paragraphs?: readonly string[];
+  list?: readonly string[];
+  table?: GuideTable;
+}
+
+export interface Guide {
+  slug: string;
+  /** Từ khoá chính (chữ thường): phải có trong title, H1, description (src/seo/keywords.ts) */
+  keyword: string;
+  /** H1 và headline của Article */
+  title: string;
+  /** Thẻ <title> (≤ 60 ký tự, có hậu tố thương hiệu nếu vừa) */
+  metaTitle: string;
+  /** Meta description ≤ 160 ký tự */
+  description: string;
+  /** Tóm tắt trên thẻ bài ở /cam-nang */
+  excerpt: string;
+  datePublished: string;
+  dateModified: string;
+  /** Đoạn mở đầu: nêu thẳng câu trả lời (dễ được Google/AI trích dẫn) */
+  lead: string;
+  sections: readonly GuideSection[];
+}
+
+export const GUIDES_PATH = "/cam-nang";
+
+const P = {
+  oto: "[Công nghệ kỹ thuật ô tô](/nganh-dao-tao/tuyen-sinh-nganh-cong-nghe-ky-thuat-o-to)",
+  baoMau: "[Nghiệp vụ bảo mẫu](/nganh-dao-tao/tuyen-sinh-khoa-hoc-nghiep-vu-bao-mau)",
+  cntt: "[Công nghệ thông tin](/nganh-dao-tao/tuyen-sinh-nganh-cong-nghe-thong-tin)",
+  xayDung: "[Kỹ thuật xây dựng](/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-xay-dung-he-trung-cap)",
+  sacDep: "[Chăm sóc sắc đẹp](/nganh-dao-tao/tuyen-sinh-nganh-cham-soc-sac-dep)",
+  keToan: "[Kế toán doanh nghiệp](/nganh-dao-tao/tuyen-sinh-nganh-ke-toan-doanh-nghiep)",
+  qtkd: "[Quản trị kinh doanh](/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-kinh-doanh)",
+  khachSan: "[Quản trị khách sạn](/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-khach-san)",
+  luHanh: "[Quản trị lữ hành](/nganh-dao-tao/tuyen-sinh-nganh-quan-tri-lu-hanh)",
+  huongDan: "[Hướng dẫn du lịch](/nganh-dao-tao/tuyen-sinh-nganh-huong-dan-du-lich)",
+  monAn: "[Kỹ thuật chế biến món ăn](/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-che-bien-mon-an)",
+  lamBanh: "[Kỹ thuật làm bánh](/nganh-dao-tao/tuyen-sinh-nganh-ky-thuat-lam-banh)",
+  mamNon: "[Sư phạm mầm non](/nganh-dao-tao/tuyen-sinh-nganh-su-pham-mam-non)",
+  dieuDuong: "[Điều dưỡng](/nganh-dao-tao/tuyen-sinh-nganh-dieu-duong)",
+  tiengAnh: "[Ngôn ngữ Anh](/nganh-dao-tao/tuyen-sinh-nganh-ngon-ngu-anh)",
+  tiengViet: "[Tiếng Việt cho người nước ngoài](/nganh-dao-tao/tuyen-sinh-lop-tieng-viet-thuc-hanh-cho-nguoi-nuoc-ngoai)",
+};
+
+const CONTACT_LINE = `Gọi hotline ${appConfig.phone}, nhắn Zalo hoặc [đăng ký tư vấn](/#register) để được tư vấn miễn phí theo hoàn cảnh của bạn.`;
+
+const PUBLISHED = "2026-09-24";
+const PUBLISHED_2 = "2026-09-25";
+
+export const GUIDES: readonly Guide[] = [
+  {
+    slug: "tot-nghiep-lop-9-nen-hoc-gi",
+    keyword: "tốt nghiệp lớp 9 nên học gì",
+    title: "Tốt nghiệp lớp 9 nên học gì? Học trung cấp sau THCS tại TPHCM",
+    metaTitle: "Tốt nghiệp lớp 9 nên học gì? Học trung cấp tại TPHCM",
+    description:
+      "Tốt nghiệp lớp 9 nên học gì? Học THPT, GDTX hay học trung cấp kèm văn hóa. So sánh các lựa chọn và ngành nhận học viên THCS tại Việt Úc TPHCM.",
+    excerpt:
+      "Sau lớp 9 không chỉ có con đường vào lớp 10. Học trung cấp kèm văn hóa THPT giúp có nghề sớm mà vẫn học tiếp được.",
+    datePublished: PUBLISHED,
+    dateModified: PUBLISHED,
+    lead:
+      "Tốt nghiệp lớp 9 nên học gì? Bạn có thể học tiếp THPT, học tại trung tâm giáo dục thường xuyên (GDTX), hoặc học trung cấp. Theo Luật Giáo dục nghề nghiệp, người tốt nghiệp THCS được học trung cấp và học thêm khối lượng văn hóa THPT theo quy định. Đây là lựa chọn phù hợp nếu bạn thích thực hành và muốn có nghề sớm.",
+    sections: [
+      {
+        heading: "Sau lớp 9 có những con đường nào?",
+        list: [
+          "**Học THPT (lớp 10–12):** phù hợp nếu bạn muốn thi đại học theo lộ trình phổ thông.",
+          "**Học tại trung tâm GDTX:** học chương trình văn hóa THPT với lịch học linh hoạt hơn.",
+          "**Học trung cấp kèm văn hóa THPT:** vừa học nghề vừa học văn hóa, ra trường có bằng tốt nghiệp trung cấp.",
+          "**Học khóa nghề ngắn hạn:** học nhanh một kỹ năng cụ thể, được cấp chứng chỉ.",
+        ],
+        paragraphs: [
+          "Không có con đường nào \"tốt nhất\" cho mọi người. Điều quan trọng là chọn đúng với sở thích, năng lực học tập và hoàn cảnh gia đình của bạn.",
+        ],
+      },
+      {
+        heading: "Học trung cấp sau lớp 9 là học như thế nào?",
+        paragraphs: [
+          "Chương trình trung cấp tập trung vào kỹ năng nghề, phần lớn thời lượng là thực hành. Học viên tốt nghiệp THCS học thêm khối lượng văn hóa THPT theo quy định của Luật Giáo dục nghề nghiệp.",
+          "Hoàn thành chương trình, học viên được cấp **bằng tốt nghiệp trung cấp**. Người có bằng trung cấp có thể học liên thông lên cao đẳng, đại học tại các cơ sở có đào tạo liên thông, theo quy định của từng cơ sở. Nếu muốn học lên, bạn nên hỏi rõ điều kiện về văn hóa THPT ngay từ khi nhập học.",
+        ],
+      },
+      {
+        heading: "Học trung cấp sau lớp 9 phù hợp với ai?",
+        list: [
+          "Thích làm việc bằng tay, thích máy móc, nấu ăn, chăm sóc người khác… hơn là học lý thuyết.",
+          "Muốn đi làm sớm để phụ giúp gia đình hoặc tự lập.",
+          "Đã biết mình thích nghề gì và muốn bắt đầu học nghề ngay.",
+        ],
+        paragraphs: [
+          "Nếu bạn chưa chắc mình thích gì, hãy đọc thêm [Nên học nghề gì? Chọn ngành theo sở thích](/cam-nang/nen-hoc-nghe-gi) trước khi quyết định.",
+        ],
+      },
+      {
+        heading: "Ngành nào tại Việt Úc nhận học viên tốt nghiệp THCS?",
+        list: [
+          `**Trung cấp ${P.oto}:** học sửa chữa, bảo dưỡng ô tô, chương trình thường kéo dài 18 tháng – 2 năm, nhận học viên tốt nghiệp THCS, THPT.`,
+          `**Khóa ${P.baoMau}:** học buổi tối hoặc cuối tuần, có thực hành tại cơ sở giáo dục mầm non, cấp chứng chỉ, nhận học viên tốt nghiệp THCS trở lên.`,
+        ],
+        paragraphs: [
+          "Điều kiện đầu vào của các ngành khác được tư vấn khi đăng ký. Xem toàn bộ [ngành đào tạo](/nganh-dao-tao) của trường.",
+        ],
+      },
+      {
+        heading: "Cần chuẩn bị gì trước khi đăng ký?",
+        list: [
+          "Cùng gia đình tìm hiểu ngành học: học những gì, ra trường làm công việc gì.",
+          "Đến trường xem cơ sở, phòng thực hành và hỏi trực tiếp về lịch học, học phí, lộ trình học văn hóa.",
+          "Hỏi rõ bằng cấp nhận được và điều kiện học liên thông nếu muốn học lên.",
+        ],
+        paragraphs: [
+          `Trường Trung cấp Việt Úc ở ${appConfig.address}, làm việc ${appConfig.openingHoursLabel}. ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "nen-hoc-nghe-gi",
+    keyword: "nên học nghề gì",
+    title: "Nên học nghề gì? Chọn ngành trung cấp theo sở thích",
+    metaTitle: "Nên học nghề gì? Chọn ngành trung cấp theo sở thích",
+    description:
+      "Chưa biết nên học nghề gì? Gợi ý chọn ngành trung cấp theo sở thích: làm đẹp, kế toán, CNTT, du lịch, nấu ăn, ô tô, mầm non và ngoại ngữ tại TPHCM.",
+    excerpt:
+      "Ba câu hỏi nên tự trả lời trước khi chọn nghề, và gợi ý ngành trung cấp phù hợp với từng sở thích.",
+    datePublished: PUBLISHED,
+    dateModified: PUBLISHED,
+    lead:
+      "Nên học nghề gì? Hãy chọn nghề mà bạn thích làm mỗi ngày, có chỗ làm phù hợp sau khi ra trường, và học được trong điều kiện thời gian, sức khỏe hiện tại. Bài viết gợi ý cách tự đánh giá và các ngành trung cấp phù hợp với từng nhóm sở thích.",
+    sections: [
+      {
+        heading: "3 câu hỏi trước khi chọn nghề",
+        list: [
+          "**Mình thích làm gì mỗi ngày?** Làm việc với con người, với máy móc, với con số hay với nguyên liệu?",
+          "**Ra trường mình sẽ làm ở đâu?** Spa, khách sạn, gara, doanh nghiệp, trường mầm non… Hãy tìm hiểu công việc thật của nghề đó.",
+          "**Mình học được trong điều kiện nào?** Học toàn thời gian hay vừa học vừa làm, học ban ngày hay buổi tối.",
+        ],
+      },
+      {
+        heading: "Thích làm đẹp, spa: ngành Chăm sóc sắc đẹp",
+        paragraphs: [
+          `Ngành ${P.sacDep} học chăm sóc da, tóc, móng, chăm sóc toàn thân và trang điểm, sử dụng thiết bị chuyên ngành. Sau tốt nghiệp có thể làm kỹ thuật viên, tư vấn viên tại spa, viện thẩm mỹ và công ty mỹ phẩm.`,
+        ],
+      },
+      {
+        heading: "Thích con số, kinh doanh: Kế toán, Quản trị kinh doanh",
+        paragraphs: [
+          `Ngành ${P.keToan} học nghiệp vụ kế toán, thuế, lập và phân tích báo cáo tài chính. Ngành ${P.qtkd} học quản lý, bán hàng và marketing. Có thể làm việc tại phòng kế toán, phòng kinh doanh của doanh nghiệp.`,
+        ],
+      },
+      {
+        heading: "Thích máy tính: Công nghệ thông tin",
+        paragraphs: [
+          `Ngành ${P.cntt} học lập trình, thiết kế và quản trị website, quản trị mạng, kiểm thử phần mềm. Lịch học linh hoạt cho người vừa đi làm vừa đi học.`,
+        ],
+      },
+      {
+        heading: "Thích giao tiếp, đi nhiều nơi: Du lịch, Khách sạn",
+        paragraphs: [
+          `Các ngành ${P.khachSan}, ${P.luHanh} và ${P.huongDan} học nghiệp vụ lễ tân, buồng, nhà hàng, điều hành và thiết kế tour, hướng dẫn khách. Có thể làm việc tại nhà hàng, khách sạn 3–5 sao và công ty lữ hành.`,
+        ],
+      },
+      {
+        heading: "Thích nấu ăn, làm bánh: Chế biến món ăn, Làm bánh",
+        paragraphs: [
+          `Ngành ${P.monAn} và ${P.lamBanh} học chủ yếu bằng thực hành trên nguyên liệu thật theo quy trình nhà hàng – khách sạn; ngành làm bánh có hơn 70% thời lượng thực hành. Phù hợp với công việc tại nhà hàng, khách sạn và tiệm bánh chuyên nghiệp.`,
+        ],
+      },
+      {
+        heading: "Thích máy móc, công trình: Ô tô, Xây dựng",
+        paragraphs: [
+          `Ngành ${P.oto} học sửa chữa, bảo dưỡng ô tô và nhận học viên tốt nghiệp THCS, THPT. Ngành ${P.xayDung} học đọc bản vẽ, trắc địa, giám sát thi công, có hình thức vừa học vừa làm.`,
+        ],
+      },
+      {
+        heading: "Thích chăm sóc trẻ em, người bệnh: Mầm non, Bảo mẫu, Điều dưỡng",
+        paragraphs: [
+          `Ngành ${P.mamNon} học chăm sóc, nuôi dưỡng và tổ chức hoạt động giáo dục cho trẻ 0–6 tuổi; khóa ngắn hạn ${P.baoMau} học buổi tối hoặc cuối tuần. Ngành ${P.dieuDuong} học kiến thức cơ sở y học và kỹ thuật chăm sóc người bệnh.`,
+          "Một số nghề trong nhóm này có quy định riêng về văn bằng khi hành nghề. Xem phần lưu ý trong bài [Nên học trung cấp hay cao đẳng?](/cam-nang/nen-hoc-trung-cap-hay-cao-dang).",
+        ],
+      },
+      {
+        heading: "Thích ngoại ngữ: Tiếng Anh, Tiếng Việt cho người nước ngoài",
+        paragraphs: [
+          `Ngành ${P.tiengAnh} học tiếng Anh cho công việc: giao tiếp, đọc, viết. Lớp ${P.tiengViet} đào tạo từ sơ cấp đến cao cấp (A1–C2).`,
+        ],
+      },
+      {
+        heading: "Vẫn chưa chắc chắn?",
+        paragraphs: [
+          `Xem các ngành theo lĩnh vực tại trang [Ngành đào tạo](/nganh-dao-tao), đọc giải đáp tại [Câu hỏi thường gặp](/cau-hoi-thuong-gap), hoặc đến trường để xem phòng thực hành. ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "nen-hoc-trung-cap-hay-cao-dang",
+    keyword: "nên học trung cấp hay cao đẳng",
+    title: "Nên học trung cấp hay cao đẳng? So sánh để chọn đúng",
+    metaTitle: withBrandFit("Nên học trung cấp hay cao đẳng? So sánh"),
+    description:
+      "Nên học trung cấp hay cao đẳng? So sánh thời gian học, đầu vào, văn bằng, liên thông; khi nào nên học trung cấp trước, nghề nào cần bằng cao đẳng.",
+    excerpt:
+      "Trung cấp học nhanh hơn và nhận cả học viên tốt nghiệp THCS; cao đẳng học lâu hơn. Bảng so sánh và lộ trình liên thông.",
+    datePublished: PUBLISHED,
+    dateModified: PUBLISHED,
+    lead:
+      "Nên học trung cấp hay cao đẳng? Trung cấp phù hợp nếu bạn muốn học nhanh, đi làm sớm hoặc mới tốt nghiệp THCS; cao đẳng phù hợp nếu bạn đã tốt nghiệp THPT và nghề bạn chọn yêu cầu bằng cao đẳng khi hành nghề. Học trung cấp trước rồi liên thông lên cao đẳng, đại học cũng là một lộ trình phổ biến.",
+    sections: [
+      {
+        heading: "So sánh nhanh trung cấp và cao đẳng",
+        table: {
+          head: ["Tiêu chí", "Trung cấp", "Cao đẳng"],
+          rows: [
+            ["Thời gian học (theo Luật Giáo dục nghề nghiệp)", "1–2 năm với người tốt nghiệp THPT", "2–3 năm"],
+            ["Đầu vào", "Tốt nghiệp THCS hoặc THPT (THCS học thêm văn hóa THPT)", "Tốt nghiệp THPT"],
+            ["Văn bằng", "Bằng tốt nghiệp trung cấp", "Bằng tốt nghiệp cao đẳng"],
+            ["Trọng tâm", "Kỹ năng nghề, phần lớn là thực hành", "Kỹ năng nghề và kiến thức chuyên môn sâu hơn"],
+            ["Học lên", "Liên thông lên cao đẳng, đại học", "Liên thông lên đại học"],
+          ],
+        },
+      },
+      {
+        heading: "Khi nào nên chọn trung cấp?",
+        list: [
+          "Bạn mới tốt nghiệp THCS và muốn học nghề ngay. Xem thêm [Tốt nghiệp lớp 9 nên học gì?](/cam-nang/tot-nghiep-lop-9-nen-hoc-gi).",
+          "Bạn muốn đi làm sớm, rút ngắn thời gian đi học.",
+          "Bạn đang đi làm và cần một chương trình vừa học vừa làm. Xem [Học trung cấp vừa học vừa làm](/cam-nang/hoc-trung-cap-vua-hoc-vua-lam).",
+          "Bạn muốn học nghề trước, đi làm để có kinh nghiệm và thu nhập, rồi mới học liên thông.",
+        ],
+      },
+      {
+        heading: "Khi nào nên chọn cao đẳng?",
+        list: [
+          "Bạn đã tốt nghiệp THPT và có đủ thời gian học 2–3 năm.",
+          "Nghề bạn chọn có quy định văn bằng tối thiểu từ cao đẳng khi hành nghề (xem lưu ý bên dưới).",
+        ],
+      },
+      {
+        heading: "Lưu ý: nghề có quy định văn bằng khi hành nghề",
+        paragraphs: [
+          "Một số nghề có quy định riêng về văn bằng tối thiểu. Ví dụ, theo Luật Giáo dục 2019, giáo viên mầm non cần có bằng cao đẳng sư phạm mầm non trở lên. Hành nghề điều dưỡng cũng có yêu cầu riêng về văn bằng và giấy phép theo pháp luật về khám bệnh, chữa bệnh.",
+          `Nếu bạn quan tâm các ngành ${P.mamNon}, ${P.baoMau} hay ${P.dieuDuong}, hãy hỏi rõ nhà trường về vị trí việc làm phù hợp với bằng trung cấp và lộ trình liên thông trước khi đăng ký.`,
+        ],
+      },
+      {
+        heading: "Học liên thông từ trung cấp lên cao đẳng, đại học",
+        paragraphs: [
+          "Theo Luật Giáo dục nghề nghiệp, người có bằng tốt nghiệp trung cấp có thể học liên thông lên cao đẳng, đại học tại các cơ sở có đào tạo liên thông. Điều kiện dự tuyển, số môn được miễn và thời gian học do từng cơ sở quy định.",
+          "Người học trung cấp từ đầu vào THCS nên hoàn thành khối lượng văn hóa THPT theo quy định, vì đây thường là điều kiện để học lên các bậc cao hơn.",
+        ],
+      },
+      {
+        heading: "Tóm lại",
+        paragraphs: [
+          `Trung cấp và cao đẳng không có bậc nào \"tốt hơn\" cho mọi người. Hãy chọn theo đầu vào hiện tại, thời gian bạn có và yêu cầu của nghề bạn muốn làm. ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "hoc-trung-cap-vua-hoc-vua-lam",
+    keyword: "trung cấp vừa học vừa làm",
+    title: "Học trung cấp vừa học vừa làm tại TPHCM: ngành nào, học ra sao?",
+    metaTitle: withBrandFit("Học trung cấp vừa học vừa làm tại TPHCM"),
+    description:
+      "Học trung cấp vừa học vừa làm tại TPHCM: các ngành có lịch học linh hoạt, buổi tối, cuối tuần tại Trường Trung cấp Việt Úc và cách sắp xếp việc học.",
+    excerpt:
+      "Đi làm vẫn có thể lấy bằng trung cấp hoặc chứng chỉ nghề. Các ngành có lịch học linh hoạt và mẹo để theo kịp chương trình.",
+    datePublished: PUBLISHED,
+    dateModified: PUBLISHED,
+    lead:
+      "Người đang đi làm vẫn có thể học trung cấp vừa học vừa làm tại TPHCM. Tại Trường Trung cấp Việt Úc, ngành Công nghệ thông tin có lịch học linh hoạt cho người vừa đi làm vừa đi học, ngành Kỹ thuật xây dựng có hình thức vừa học vừa làm, và khóa Nghiệp vụ bảo mẫu học buổi tối hoặc cuối tuần.",
+    sections: [
+      {
+        heading: "Vì sao nhiều người chọn vừa học vừa làm?",
+        list: [
+          "Giữ được thu nhập trong thời gian đi học.",
+          "Áp dụng ngay kiến thức vào công việc đang làm.",
+          "Có bằng cấp, chứng chỉ để chuyển nghề hoặc lên vị trí cao hơn.",
+        ],
+      },
+      {
+        heading: "Các ngành có lịch học phù hợp người đi làm tại Việt Úc",
+        list: [
+          `**Trung cấp ${P.cntt}:** trường thường xuyên khai giảng các lớp, thời gian học linh hoạt cho người vừa đi làm vừa đi học. Học lập trình, thiết kế và quản trị website, quản trị mạng, kiểm thử phần mềm.`,
+          `**Trung cấp ${P.xayDung}:** có hình thức vừa học vừa làm. Học đọc bản vẽ, trắc địa, giám sát thi công.`,
+          `**Khóa ${P.baoMau}:** học buổi tối hoặc cuối tuần, có thực hành tại cơ sở giáo dục mầm non, được cấp chứng chỉ.`,
+        ],
+        paragraphs: [
+          "Lịch học cụ thể của từng lớp được thông báo khi khai giảng. Với các ngành khác, hãy hỏi nhà trường về lớp phù hợp với giờ làm của bạn.",
+        ],
+      },
+      {
+        heading: "Làm sao để vừa đi làm vừa theo kịp chương trình?",
+        list: [
+          "Chọn ngành gần với công việc hiện tại hoặc công việc bạn muốn chuyển sang, để việc học có ích ngay.",
+          "Báo trước với nơi làm việc về lịch học, nhất là các buổi thực hành và thi.",
+          "Ưu tiên không bỏ buổi thực hành: đây là phần khó tự học ở nhà nhất.",
+          "Giữ liên lạc với giáo viên chủ nhiệm, giáo vụ để cập nhật lịch học, lịch thi.",
+        ],
+      },
+      {
+        heading: "Học xong được cấp bằng gì?",
+        paragraphs: [
+          "Học viên hoàn thành chương trình trung cấp được cấp bằng tốt nghiệp trung cấp theo Luật Giáo dục nghề nghiệp. Khóa ngắn hạn như Nghiệp vụ bảo mẫu được cấp chứng chỉ. Văn bằng, chứng chỉ do trường cấp có thể tra cứu tại trang [Tra cứu văn bằng](/tra-cuu-van-bang).",
+        ],
+      },
+      {
+        heading: "Đăng ký học như thế nào?",
+        paragraphs: [
+          `Trường ở ${appConfig.address}, tiện đi lại sau giờ làm. ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "truong-trung-cap-quan-3-tphcm",
+    keyword: "trường trung cấp quận 3",
+    title: "Trường trung cấp Quận 3, trung tâm TPHCM: Trường Trung cấp Việt Úc",
+    metaTitle: withBrandFit("Trường trung cấp Quận 3, trung tâm TPHCM"),
+    description:
+      "Trường trung cấp Quận 3, trung tâm TPHCM: Trường Trung cấp Việt Úc, 402 Nguyễn Thị Minh Khai, P. Bàn Cờ (Q3 cũ). Ngành học, giờ làm việc, liên hệ.",
+    excerpt:
+      "Thông tin về trường trung cấp ở 402 Nguyễn Thị Minh Khai, Phường Bàn Cờ (Quận 3 cũ): ngành học, giờ làm việc, cách liên hệ.",
+    datePublished: PUBLISHED,
+    dateModified: PUBLISHED,
+    lead: `Nếu bạn tìm trường trung cấp Quận 3, khu trung tâm TPHCM: Trường Trung cấp Việt Úc ở ${appConfig.address}. Trường thành lập năm ${appConfig.foundingYear} theo ${appConfig.foundingDecision}, đào tạo trung cấp chính quy và các khóa ngắn hạn, chú trọng thực hành.`,
+    sections: [
+      {
+        heading: "Địa chỉ và cách nhận biết đúng trường",
+        list: [
+          `**Tên trường:** ${appConfig.legalName} (Vietnam Australia Vocational College).`,
+          `**Địa chỉ:** ${appConfig.address}. Từ 01/07/2025, Phường 5, Quận 3 thuộc Phường Bàn Cờ theo đơn vị hành chính mới.`,
+          `**Thành lập:** năm ${appConfig.foundingYear}, theo ${appConfig.foundingDecision}.`,
+          `**Website chính thức:** vietuchcm.edu.vn.`,
+        ],
+        paragraphs: [
+          "Nhiều đơn vị giáo dục khác cũng có chữ \"Việt Úc\" trong tên hoặc có địa chỉ trên đường Nguyễn Thị Minh Khai. Khi tìm trường, hãy kiểm tra đúng số nhà **402** và website vietuchcm.edu.vn.",
+        ],
+      },
+      {
+        heading: "Trường đào tạo những ngành nào?",
+        paragraphs: [
+          `Trường tuyển sinh trung cấp chính quy các ngành ${P.sacDep}, ${P.keToan}, ${P.cntt}, ${P.qtkd}, ${P.khachSan}, ${P.luHanh}, ${P.huongDan}, ${P.monAn}, ${P.lamBanh}, ${P.mamNon}, ${P.oto}, ${P.xayDung}, ${P.tiengAnh}, ${P.dieuDuong}. Ngoài ra có khóa ngắn hạn ${P.baoMau} và lớp ${P.tiengViet}.`,
+          "Xem các ngành theo lĩnh vực tại trang [Ngành đào tạo](/nganh-dao-tao).",
+        ],
+      },
+      {
+        heading: "Vì sao chọn học ở khu vực trung tâm?",
+        list: [
+          "Dễ đi lại từ nhiều quận bằng xe máy, xe buýt.",
+          "Thuận tiện cho người vừa đi làm vừa đi học: có thể đến lớp sau giờ làm. Xem [Học trung cấp vừa học vừa làm](/cam-nang/hoc-trung-cap-vua-hoc-vua-lam).",
+          "Gần nhiều nhà hàng, khách sạn, spa, doanh nghiệp, thuận lợi khi đi kiến tập, thực tập.",
+        ],
+      },
+      {
+        heading: "Giờ làm việc và liên hệ",
+        list: [
+          `**Giờ làm việc:** ${appConfig.openingHoursLabel}.`,
+          `**Hotline tư vấn tuyển sinh:** ${appConfig.phone}.`,
+          `**Email:** ${appConfig.email}.`,
+          "**Bản đồ:** xem tại trang [Liên hệ](/lien-he).",
+        ],
+        paragraphs: [
+          "Bạn nên gọi trước khi đến để được hẹn gặp tư vấn viên và tham quan phòng thực hành.",
+        ],
+      },
+      {
+        heading: "Tìm hiểu thêm",
+        paragraphs: [
+          `Đọc [giới thiệu về trường](/gioi-thieu), [câu hỏi thường gặp](/cau-hoi-thuong-gap) hoặc [tra cứu văn bằng](/tra-cuu-van-bang). ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "hoc-phi-truong-trung-cap-viet-uc",
+    keyword: "học phí trường trung cấp việt úc",
+    title: "Học phí Trường Trung cấp Việt Úc: cách nhận bảng học phí mới nhất",
+    metaTitle: "Học phí Trường Trung cấp Việt Úc – bảng học phí mới nhất",
+    description:
+      "Học phí Trường Trung cấp Việt Úc khác nhau theo ngành, có ưu đãi nhập học sớm. Cách nhận bảng học phí mới nhất và những câu nên hỏi trước khi đóng.",
+    excerpt:
+      "Học phí khác nhau theo ngành và có ưu đãi nhập học sớm. Cách nhận bảng học phí mới nhất và những câu nên hỏi trước khi đóng tiền.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead: `Học phí Trường Trung cấp Việt Úc khác nhau theo từng ngành và có ưu đãi cho thí sinh nhập học sớm. Nhà trường gửi bảng học phí mới nhất khi bạn liên hệ qua hotline ${appConfig.phone}, Zalo hoặc form đăng ký tư vấn. Bài viết hướng dẫn cách hỏi để có đủ thông tin trước khi đóng tiền.`,
+    sections: [
+      {
+        heading: "Vì sao học phí khác nhau giữa các ngành?",
+        paragraphs: [
+          `Mỗi ngành có chương trình, thời gian học và vật tư thực hành khác nhau. Ví dụ, ngành ${P.monAn} và ${P.lamBanh} học phần lớn thời lượng trên nguyên liệu thật; ngành ${P.sacDep} sử dụng thiết bị, máy móc chuyên ngành. Khóa ngắn hạn như ${P.baoMau} cũng khác chương trình trung cấp chính quy.`,
+          "Vì vậy, hãy hỏi học phí theo đúng ngành và đúng hình thức học (chính quy, vừa học vừa làm, ngắn hạn) mà bạn định đăng ký.",
+        ],
+      },
+      {
+        heading: "Cách nhận bảng học phí mới nhất",
+        list: [
+          `**Gọi hotline:** ${appConfig.phone} (${appConfig.openingHoursLabel}).`,
+          `**Nhắn Zalo:** [nhắn Zalo tư vấn tuyển sinh](${appConfig.zalo}), gửi tên ngành bạn quan tâm.`,
+          "**Điền form:** [đăng ký tư vấn](/#register) trên trang chủ, nhà trường sẽ liên hệ lại.",
+          `**Email:** ${appConfig.email}.`,
+          `**Đến trường:** ${appConfig.address}.`,
+        ],
+      },
+      {
+        heading: "Nên hỏi gì khi nhận bảng học phí?",
+        list: [
+          "Học phí tính theo học kỳ hay theo cả khóa? Đóng một lần hay chia nhiều đợt?",
+          "Học phí đã gồm vật tư, nguyên liệu thực hành, giáo trình chưa? Có khoản nào thu thêm không?",
+          "Ưu đãi nhập học sớm áp dụng đến ngày nào, điều kiện ra sao?",
+          "Nếu học từ đầu vào THCS, phần học văn hóa THPT tính phí thế nào?",
+          "Nếu tạm nghỉ hoặc chuyển ngành thì học phí đã đóng được xử lý ra sao?",
+        ],
+        paragraphs: ["Hãy đề nghị nhà trường gửi thông tin học phí bằng văn bản hoặc tin nhắn để tiện đối chiếu sau này."],
+      },
+      {
+        heading: "Ưu đãi nhập học sớm",
+        paragraphs: [
+          "Trường có ưu đãi cho thí sinh nhập học sớm. Mức ưu đãi và thời hạn áp dụng thay đổi theo từng đợt tuyển sinh, nên bạn hãy hỏi cùng lúc khi nhận bảng học phí.",
+        ],
+      },
+      {
+        heading: "Chính sách miễn, giảm học phí của Nhà nước",
+        paragraphs: [
+          "Nhà nước có chính sách miễn, giảm học phí cho một số đối tượng người học. Nếu bạn thuộc diện chính sách, hãy chuẩn bị giấy tờ chứng minh và hỏi nhà trường cách áp dụng khi đăng ký.",
+        ],
+      },
+      {
+        heading: "Tìm hiểu thêm trước khi đăng ký",
+        paragraphs: [
+          "Chưa chọn được ngành? Đọc [Nên học nghề gì?](/cam-nang/nen-hoc-nghe-gi) và [Nên học trung cấp hay cao đẳng?](/cam-nang/nen-hoc-trung-cap-hay-cao-dang), hoặc xem [câu hỏi thường gặp](/cau-hoi-thuong-gap).",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "hoc-nau-an-hay-lam-banh",
+    keyword: "học nấu ăn hay làm bánh",
+    title: "Học nấu ăn hay làm bánh? So sánh 2 ngành trung cấp ẩm thực",
+    metaTitle: withBrandFit("Học nấu ăn hay làm bánh? So sánh 2 ngành"),
+    description:
+      "Học nấu ăn hay làm bánh? So sánh ngành Kỹ thuật chế biến món ăn và ngành Kỹ thuật làm bánh: học gì, thực hành, nơi làm việc, hợp với ai.",
+    excerpt:
+      "Cùng là ngành ẩm thực, học nhiều thực hành, nhưng nội dung và nơi làm việc khác nhau. Bảng so sánh để chọn đúng.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead:
+      "Học nấu ăn hay làm bánh? Chọn ngành Kỹ thuật chế biến món ăn nếu bạn muốn làm bếp nhà hàng, khách sạn; chọn Kỹ thuật làm bánh nếu bạn thích làm bánh Âu, bánh Á, trang trí và muốn làm tại tiệm bánh, khách sạn. Cả hai ngành tại Trường Trung cấp Việt Úc đều học phần lớn thời lượng bằng thực hành trên nguyên liệu thật.",
+    sections: [
+      {
+        heading: "So sánh nhanh 2 ngành",
+        table: {
+          head: ["Tiêu chí", "Chế biến món ăn", "Làm bánh"],
+          rows: [
+            ["Học gì", "Chế biến món ăn theo quy trình nhà hàng – khách sạn 4-5 sao, quản lý, dinh dưỡng, giám sát", "Bánh Âu, bánh Á, khuôn nhựa dẻo, chocolate và đường nghệ thuật, bánh Âu nâng cao"],
+            ["Thực hành", "Phần lớn thời lượng, trên nguyên liệu thật", "Hơn 70% thời lượng, trên nguyên liệu thật"],
+            ["Trải nghiệm thực tế", "Trải nghiệm tại doanh nghiệp", "Kiến tập tại khách sạn, resort"],
+            ["Nơi làm việc", "Nhà hàng, khách sạn", "Nhà hàng, khách sạn, tiệm bánh chuyên nghiệp"],
+          ],
+        },
+      },
+      {
+        heading: "Ngành Kỹ thuật chế biến món ăn",
+        paragraphs: [
+          `Chương trình ${P.monAn} có phần lớn thời lượng là thực hành trên nguyên liệu thật, theo quy trình nhà hàng – khách sạn 4-5 sao, kèm kiến thức quản lý, dinh dưỡng, giám sát và trải nghiệm tại doanh nghiệp.`,
+          "Ngành hợp với bạn nếu thích nấu nhiều loại món, chịu được nhịp làm việc nhanh của bếp nhà hàng và muốn sau này quản lý, giám sát bếp.",
+        ],
+      },
+      {
+        heading: "Ngành Kỹ thuật làm bánh",
+        paragraphs: [
+          `Chương trình ${P.lamBanh} gồm kỹ thuật làm bánh Âu, bánh Á, làm khuôn nhựa dẻo, tạo hình chocolate và đường nghệ thuật, bánh Âu nâng cao. Hơn 70% thời lượng là thực hành trên nguyên liệu thật, có kiến tập tại khách sạn, resort.`,
+          "Ngành hợp với bạn nếu thích sự tỉ mỉ, thích trang trí và tạo hình, hoặc muốn làm tại tiệm bánh, bộ phận bánh của khách sạn.",
+        ],
+      },
+      {
+        heading: "Vẫn phân vân?",
+        list: [
+          "Nghĩ về công việc hằng ngày bạn muốn làm: đứng bếp nấu món hay làm và trang trí bánh.",
+          "Đến trường xem phòng thực hành của cả hai ngành trước khi chọn.",
+          "Hỏi rõ lịch học, học phí từng ngành. Xem [cách nhận bảng học phí](/cam-nang/hoc-phi-truong-trung-cap-viet-uc).",
+        ],
+        paragraphs: [CONTACT_LINE],
+      },
+    ],
+  },
+  {
+    slug: "khach-san-lu-hanh-hay-huong-dan-du-lich",
+    keyword: "lữ hành hay hướng dẫn du lịch",
+    title: "Quản trị khách sạn, lữ hành hay hướng dẫn du lịch: chọn ngành nào?",
+    metaTitle: withBrandFit("Khách sạn, lữ hành hay hướng dẫn du lịch?"),
+    description:
+      "Nên học quản trị khách sạn, lữ hành hay hướng dẫn du lịch? So sánh 3 ngành trung cấp du lịch: học gì, làm ở đâu, hợp với ai. Tư vấn tại Việt Úc.",
+    excerpt:
+      "Ba ngành cùng nhóm du lịch nhưng khác nơi làm việc: khách sạn, công ty lữ hành hay đi cùng đoàn khách.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead:
+      "Nên học quản trị khách sạn, lữ hành hay hướng dẫn du lịch? Chọn Quản trị khách sạn nếu bạn muốn làm và giám sát các bộ phận trong khách sạn; chọn Quản trị lữ hành nếu bạn thích thiết kế, điều hành tour; chọn Hướng dẫn du lịch nếu bạn muốn trực tiếp dẫn đoàn khách. Cả ba ngành đều được đào tạo trình độ trung cấp tại Trường Trung cấp Việt Úc TPHCM.",
+    sections: [
+      {
+        heading: "So sánh nhanh 3 ngành",
+        table: {
+          head: ["Ngành", "Thiên về", "Nơi làm việc"],
+          rows: [
+            ["Quản trị khách sạn", "Vận hành, giám sát các bộ phận dịch vụ trong khách sạn", "Nhà hàng, khách sạn 3–5 sao, kể cả do người nước ngoài đầu tư"],
+            ["Quản trị lữ hành", "Thiết kế, điều hành tour", "Công ty lữ hành, bộ phận kinh doanh của khách sạn, nhà hàng"],
+            ["Hướng dẫn du lịch", "Trực tiếp đón, dẫn đoàn khách", "Công ty lữ hành, bộ phận kinh doanh của khách sạn, nhà hàng"],
+          ],
+        },
+      },
+      {
+        heading: "Quản trị khách sạn",
+        paragraphs: [
+          `Sau khi học ${P.khachSan}, bạn có thể giám sát, điều hành các bộ phận cung ứng dịch vụ hoặc làm chuyên viên bộ phận chức năng trong khách sạn; làm việc tại các nhà hàng, khách sạn 3–5 sao, kể cả do người nước ngoài đầu tư; hoặc làm hướng dẫn viên du lịch.`,
+          "Ngành hợp với bạn nếu thích môi trường làm việc ổn định tại một nơi, thích chăm sóc khách và làm việc theo quy trình.",
+        ],
+      },
+      {
+        heading: "Quản trị lữ hành",
+        paragraphs: [
+          `Ngành ${P.luHanh} thiên về thiết kế và điều hành tour. Sau tốt nghiệp có thể làm tại các bộ phận của công ty lữ hành (điều hành tour, thiết kế tour, hướng dẫn viên), các bộ phận kinh doanh của khách sạn, nhà hàng hoặc cơ quan quản lý nhà nước về du lịch.`,
+          "Ngành hợp với bạn nếu thích lên kế hoạch, tính toán chi phí, làm việc với đối tác và khách hàng.",
+        ],
+      },
+      {
+        heading: "Hướng dẫn du lịch",
+        paragraphs: [
+          `Ngành ${P.huongDan} thiên về trực tiếp đón, dẫn đoàn và thuyết minh cho khách. Nơi làm việc tương tự ngành lữ hành: công ty lữ hành, bộ phận kinh doanh của khách sạn, nhà hàng, cơ quan quản lý nhà nước về du lịch.`,
+          "Để hành nghề hướng dẫn viên du lịch cần có thẻ hướng dẫn viên theo Luật Du lịch 2017. Hãy hỏi nhà trường về điều kiện cấp thẻ khi đăng ký.",
+          "Ngành hợp với bạn nếu thích đi nhiều nơi, tự tin nói trước đám đông và có sức khỏe tốt.",
+        ],
+      },
+      {
+        heading: "Ngoại ngữ là lợi thế cho cả ba ngành",
+        paragraphs: [
+          `Khách sạn và công ty lữ hành phục vụ nhiều khách nước ngoài, nên ngoại ngữ là lợi thế lớn. Bạn có thể tìm hiểu thêm ngành ${P.tiengAnh}. ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "su-pham-mam-non-hay-khoa-bao-mau",
+    keyword: "sư phạm mầm non hay khóa bảo mẫu",
+    title: "Sư phạm mầm non hay khóa bảo mẫu: khác nhau thế nào?",
+    metaTitle: withBrandFit("Sư phạm mầm non hay khóa bảo mẫu: khác gì?"),
+    description:
+      "Sư phạm mầm non hay khóa bảo mẫu? So sánh thời gian học, văn bằng, lịch học, nơi làm việc và lộ trình học lên để làm giáo viên mầm non.",
+    excerpt:
+      "Một bên là chương trình trung cấp cấp bằng, một bên là khóa ngắn hạn học tối, cuối tuần cấp chứng chỉ. Chọn theo mục tiêu của bạn.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead:
+      "Sư phạm mầm non hay khóa bảo mẫu? Khóa Nghiệp vụ bảo mẫu là khóa ngắn hạn, học buổi tối hoặc cuối tuần, cấp chứng chỉ, phù hợp nếu bạn cần đi làm sớm. Trung cấp Sư phạm mầm non là chương trình chính quy, cấp bằng trung cấp, học sâu hơn về chăm sóc và giáo dục trẻ 0–6 tuổi. Nếu mục tiêu là làm giáo viên mầm non, bạn cần học tiếp lên cao đẳng sư phạm mầm non trở lên.",
+    sections: [
+      {
+        heading: "So sánh nhanh",
+        table: {
+          head: ["Tiêu chí", "Nghiệp vụ bảo mẫu", "Sư phạm mầm non"],
+          rows: [
+            ["Loại chương trình", "Khóa ngắn hạn", "Trung cấp chính quy"],
+            ["Văn bằng", "Chứng chỉ", "Bằng tốt nghiệp trung cấp"],
+            ["Lịch học", "Buổi tối hoặc cuối tuần", "Theo lịch của chương trình trung cấp"],
+            ["Đầu vào", "Tốt nghiệp THCS trở lên", "Tư vấn khi đăng ký"],
+            ["Nội dung", "Chăm sóc trẻ, thực hành tại cơ sở giáo dục mầm non", "Chăm sóc, nuôi dưỡng và tổ chức hoạt động giáo dục cho trẻ 0–6 tuổi"],
+          ],
+        },
+      },
+      {
+        heading: "Khóa Nghiệp vụ bảo mẫu",
+        paragraphs: [
+          `Khóa ${P.baoMau} học buổi tối hoặc cuối tuần, có thực hành tại cơ sở giáo dục mầm non, nhận học viên tốt nghiệp THCS trở lên. Hoàn thành khóa học, học viên được cấp chứng chỉ và có thể xin việc tại các trường mầm non công lập, tư thục, nhóm trẻ gia đình.`,
+        ],
+      },
+      {
+        heading: "Trung cấp Sư phạm mầm non",
+        paragraphs: [
+          `Chương trình ${P.mamNon} học chăm sóc, nuôi dưỡng, đảm bảo an toàn cho trẻ 0–6 tuổi (nhà trẻ, mẫu giáo) và tổ chức hoạt động giáo dục phát triển trí tuệ, ngôn ngữ, nghệ thuật, thể chất, kỹ năng sống.`,
+        ],
+      },
+      {
+        heading: "Muốn làm giáo viên mầm non thì học thế nào?",
+        paragraphs: [
+          "Theo Luật Giáo dục 2019, giáo viên mầm non cần có bằng cao đẳng sư phạm mầm non trở lên. Bằng trung cấp có thể là bước đầu: bạn đi làm tại cơ sở mầm non ở vị trí phù hợp, rồi học liên thông lên cao đẳng, đại học.",
+          "Xem thêm [Nên học trung cấp hay cao đẳng?](/cam-nang/nen-hoc-trung-cap-hay-cao-dang) và hỏi nhà trường về vị trí việc làm phù hợp với từng văn bằng.",
+        ],
+      },
+      {
+        heading: "Chọn thế nào?",
+        list: [
+          "**Cần đi làm nhanh, đang bận ban ngày:** khóa Nghiệp vụ bảo mẫu.",
+          "**Muốn học bài bản, có bằng trung cấp và học tiếp lên:** trung cấp Sư phạm mầm non.",
+        ],
+        paragraphs: [CONTACT_LINE],
+      },
+    ],
+  },
+];
+
+export function guideBySlug(slug: string | undefined): Guide | null {
+  return GUIDES.find((guide) => guide.slug === slug) ?? null;
+}
+
+export const guidePath = (slug: string) => `${GUIDES_PATH}/${slug}`;
+
+const GUIDE_LINK_PATTERN = new RegExp(`\\]\\(${GUIDES_PATH}/([a-z0-9-]+)\\)`, "g");
+
+function linkedGuideSlugs(guide: Guide): string[] {
+  const text = [guide.lead, ...guide.sections.flatMap((s) => [...(s.paragraphs ?? []), ...(s.list ?? [])])].join("\n");
+  return [...text.matchAll(GUIDE_LINK_PATTERN)].map((match) => match[1]);
+}
+
+/** Bài để gợi ý đọc tiếp: bài được nhắc trong nội dung trước, sau đó các bài còn lại */
+export function otherGuides(slug: string, limit = 3): Guide[] {
+  const current = guideBySlug(slug);
+  const linked = current ? linkedGuideSlugs(current) : [];
+  const ordered = [...linked.map(guideBySlug).filter((g): g is Guide => g !== null), ...GUIDES];
+  return [...new Map(ordered.map((guide) => [guide.slug, guide])).values()]
+    .filter((guide) => guide.slug !== slug)
+    .slice(0, limit);
+}
