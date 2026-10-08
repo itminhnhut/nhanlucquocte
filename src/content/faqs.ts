@@ -5,13 +5,16 @@
 import appConfig from "../configs/appConfig";
 
 export interface SiteFaq {
-  /** Khoá ổn định để trang khác chọn câu hỏi mà không phụ thuộc vào câu chữ */
-  id: string;
   question: string;
   answer: string;
 }
 
-export const SITE_FAQS: readonly SiteFaq[] = [
+/** Câu hỏi có khoá ổn định, để trang khác chọn được mà không phụ thuộc vào câu chữ */
+export interface KeyedFaq extends SiteFaq {
+  id: string;
+}
+
+export const SITE_FAQS: readonly KeyedFaq[] = [
   {
     id: "dia-chi",
     question: "Trường Trung cấp nghề Nhân Lực Quốc Tế ở đâu?",

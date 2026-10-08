@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse, AxiosAdapter } from "axios";
+import axios, { AxiosHeaders, AxiosInstance, AxiosResponse, AxiosAdapter } from "axios";
 import { API_URL, USE_MOCK } from "@/configs/env";
 import { mockRequest } from "./mockApi";
 import { trackRequestEnd, trackRequestStart } from "./requestTracker";
@@ -8,11 +8,9 @@ import { trackRequestEnd, trackRequestStart } from "./requestTracker";
 const mockAdapter: AxiosAdapter = async (config) => {
   const url = config.url ?? "";
   const data = await mockRequest(url, (config.params ?? {}) as Record<string, unknown>);
-  if (data === null) {
-    const { default: http } = await import("axios");
-    return http.defaults.adapter!(config) as never;
-  }
-  return { data, status: 200, statusText: "OK", headers: {}, config } as never;
+  // getAdapter chuẩn hoá adapter mặc định (tên "xhr"/"http"/"fetch" tuỳ môi trường) về một hàm gọi được
+  if (data === null) return axios.getAdapter(axios.defaults.adapter)(config);
+  return { data, status: 200, statusText: "OK", headers: new AxiosHeaders(), config };
 };
 
 // API_URL đọc từ window.__ENV__ (runtime Docker/EasyPanel) hoặc import.meta.env (local dev)
