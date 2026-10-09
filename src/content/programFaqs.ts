@@ -62,7 +62,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
       {
         question: "Trường có những khóa làm đẹp nào?",
         answer:
-          "Trường đào tạo Chăm sóc sắc đẹp hệ trung cấp (cấp bằng trung cấp) và các khóa ngắn hạn cấp chứng chỉ: Beauty Therapy – liệu pháp làm đẹp, Chăm sóc da chuyên nghiệp, Chăm sóc nails chuyên nghiệp.",
+          "Trường đào tạo Chăm sóc sắc đẹp hệ trung cấp (cấp bằng trung cấp) và khóa Chăm sóc nails chuyên nghiệp hệ ngắn hạn (cấp chứng chỉ). Ngoài ra còn Beauty Therapy – liệu pháp làm đẹp (nhà trường thông báo thời gian đào tạo 02 năm) và Chăm sóc da chuyên nghiệp (2 – 3 tháng); hai nghề này nhà trường chưa công bố hệ đào tạo và văn bằng, hãy gọi hotline để được xác nhận.",
       },
     ],
   },
@@ -109,7 +109,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
       {
         question: "Tốt nghiệp THCS học được các ngành kỹ thuật không?",
         answer:
-          "Được. Người tốt nghiệp THCS được học trình độ trung cấp và học thêm khối lượng kiến thức văn hóa THPT theo quy định của Bộ Giáo dục và Đào tạo. Trường xét tuyển, không thi tuyển.",
+          "Được. Người tốt nghiệp THCS được học trình độ trung cấp và học thêm khối lượng kiến thức văn hóa THPT theo quy định của Bộ Giáo dục và Đào tạo. Điều kiện đầu vào của từng ngành được nhà trường tư vấn khi đăng ký.",
       },
     ],
   },
@@ -136,7 +136,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
       {
         question: "Trường có những khóa ngắn hạn nào?",
         answer:
-          "Nghiệp vụ bảo mẫu, Chăm sóc người cao tuổi, Trợ lý nha khoa, Ngôn ngữ Hàn Quốc và Nghiệp vụ nghề nông nghiệp hệ sơ cấp. Học xong được cấp chứng chỉ.",
+          "Nghiệp vụ bảo mẫu, Chăm sóc người cao tuổi, Ngôn ngữ Hàn Quốc và Nghiệp vụ nghề nông nghiệp hệ sơ cấp — học xong được cấp chứng chỉ. Trường còn có khóa Nghiệp vụ Trợ lý nha khoa, nhưng chưa công bố hệ đào tạo và văn bằng của khóa này.",
       },
       {
         question: "Khóa ngắn hạn học bao lâu?",

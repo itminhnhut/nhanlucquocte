@@ -6,7 +6,7 @@ function FeesPage() {
     <StaticArticlePage
       path={FEES_PATH}
       crumb="Học phí"
-      heading="Học phí trung cấp nghề và chính sách miễn giảm"
+      heading="Học phí trung cấp nghề Nhân Lực Quốc Tế"
       lead={FEES_LEAD}
       sections={FEES_SECTIONS}
     />

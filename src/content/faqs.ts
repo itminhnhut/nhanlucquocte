@@ -1,7 +1,7 @@
 // Nội dung trang /cau-hoi-thuong-gap. CHỈ ghi thông tin có căn cứ: nội dung trên website của trường,
 // thông tin nhà trường đã xác nhận, hoặc quy định chung của Luật Giáo dục nghề nghiệp số 124/2025/QH15 (hiệu lực 01/01/2026, thay thế Luật 2014).
 // Không tự thêm học phí, số liệu, tỉ lệ việc làm. Link viết dạng [chữ](/duong-dan).
-// TODO nhà trường bổ sung: mức học phí từng ngành, chính sách miễn giảm, lịch khai giảng từng đợt.
+// TODO nhà trường bổ sung: mức học phí từng ngành, lịch khai giảng từng đợt.
 import appConfig from "../configs/appConfig";
 
 export interface SiteFaq {
@@ -42,7 +42,7 @@ export const SITE_FAQS: readonly KeyedFaq[] = [
     id: "tot-nghiep-thcs",
     question: "Tốt nghiệp THCS có học trung cấp được không?",
     answer:
-      "Được. Người tốt nghiệp THCS được học trình độ trung cấp và học thêm khối lượng kiến thức văn hóa THPT theo quy định của Bộ Giáo dục và Đào tạo. Trường xét tuyển, không thi tuyển. So sánh các hướng đi sau lớp 9 có ở bài [tốt nghiệp lớp 9 nên học gì](/cam-nang/tot-nghiep-lop-9-nen-hoc-gi).",
+      "Được. Người tốt nghiệp THCS được học trình độ trung cấp và học thêm khối lượng kiến thức văn hóa THPT theo quy định của Bộ Giáo dục và Đào tạo. Điều kiện đầu vào của từng ngành được nhà trường tư vấn khi đăng ký. So sánh các hướng đi sau lớp 9 có ở bài [tốt nghiệp lớp 9 nên học gì](/cam-nang/tot-nghiep-lop-9-nen-hoc-gi).",
   },
   {
     id: "van-bang",
@@ -58,14 +58,14 @@ export const SITE_FAQS: readonly KeyedFaq[] = [
   },
   {
     id: "hoc-phi",
-    question: "Học phí bao nhiêu và có chính sách miễn giảm không?",
-    answer: `Học phí khác nhau theo từng ngành và từng hệ đào tạo. Nhà nước có chính sách miễn, giảm học phí cho một số đối tượng học trung cấp, trong đó có người tốt nghiệp THCS học tiếp trình độ trung cấp. Các khoản phải đóng trong một khóa học và diện được miễn, giảm theo quy định của Nhà nước nêu ở trang [học phí trung cấp nghề](/hoc-phi). Gọi hotline ${appConfig.phone} hoặc [đăng ký tư vấn](/#register) để nhận thông tin học phí và chính sách áp dụng cho trường hợp của bạn.`,
+    question: "Học phí bao nhiêu?",
+    answer: `Học phí khác nhau theo từng ngành và từng hệ đào tạo. Nhà trường công bố học phí theo từng thông báo khai giảng, chưa đăng bảng học phí chung cho tất cả các ngành — mức đã công bố và cách liên hệ xem ở trang [học phí](/hoc-phi). Gọi hotline ${appConfig.phone} hoặc [đăng ký tư vấn](/#register) để nhận học phí ngành bạn quan tâm.`,
   },
   {
     id: "khai-giang",
     question: "Khi nào khai giảng và hồ sơ nhập học gồm những gì?",
     answer:
-      "Trường khai giảng nhiều đợt trong năm và nhận hồ sơ quanh năm. Thông tin về đợt khai giảng gần nhất, hồ sơ và cách đăng ký xem tại trang [Tuyển sinh](/tuyen-sinh).",
+      "Trường khai giảng nhiều đợt trong năm. Thông tin về đợt khai giảng gần nhất, hồ sơ và cách đăng ký xem tại trang [Tuyển sinh](/tuyen-sinh).",
   },
   {
     id: "ho-so",

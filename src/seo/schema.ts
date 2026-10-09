@@ -97,12 +97,6 @@ export function organizationSchema(): JsonLdNode {
     address: { "@type": "PostalAddress", ...appConfig.postalAddress },
     hasMap: appConfig.mapLink,
     ...(latitude && longitude ? { geo: { "@type": "GeoCoordinates", latitude, longitude } } : {}),
-    openingHoursSpecification: {
-      "@type": "OpeningHoursSpecification",
-      dayOfWeek: appConfig.openingHours.days,
-      opens: appConfig.openingHours.opens,
-      closes: appConfig.openingHours.closes,
-    },
     sameAs: [appConfig.zalo, ...Object.values(appConfig.officialProfiles)].filter(Boolean),
     contactPoint: {
       "@type": "ContactPoint",

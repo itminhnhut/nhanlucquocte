@@ -5,7 +5,10 @@ import { HERO_IMAGE, HERO_IMAGE_MOBILE } from "@/configs/heroImage";
 // Banner: ảnh nền KHÔNG có chữ, toàn bộ chữ là HTML đè lên.
 // Lý do: chữ nằm trong ảnh thì mờ và nhỏ trên điện thoại, đồng thời LCP là ảnh nặng;
 // để chữ dạng HTML thì LCP là text (hiện gần như tức thì) và đọc được ở mọi kích thước màn hình.
-const BENEFITS = ["Xét tuyển không thi", "Nhận hồ sơ quanh năm", "Học đi đôi với thực hành"];
+// Chỉ nêu điều trường đã công bố: đối tượng tuyển sinh và việc khai giảng nhiều đợt.
+// KHÔNG viết "không thi tuyển" hay "nhận hồ sơ quanh năm" — site của trường không nói vậy, và
+// trang liên thông của trường còn ghi rõ "Hoặc thi tuyển: Một số trường yêu cầu thi môn cơ sở ngành".
+const BENEFITS = ["Nhận từ tốt nghiệp THCS", "Khai giảng nhiều đợt trong năm", "Học đi đôi với thực hành"];
 
 function HeroSection() {
   return (
@@ -100,7 +103,7 @@ function HeroSection() {
               <div>
                 <div className="inline-flex items-center gap-2 rounded-full bg-blue-100/80 px-3 py-1 text-[11px] font-semibold text-primary-dark">
                   <span>🎓 Tuyển sinh trung cấp &amp; sơ cấp</span>
-                  <span className="hidden text-[10px] text-blue-700 md:inline">Nhận hồ sơ quanh năm</span>
+                  <span className="hidden text-[10px] text-blue-700 md:inline">Khai giảng nhiều đợt</span>
                 </div>
 
                 <p className="mt-2 text-[22px] md:text-[28px] font-extrabold uppercase leading-snug text-primary-dark">

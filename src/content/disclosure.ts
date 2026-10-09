@@ -7,6 +7,10 @@ export const DISCLOSURE_PATH = "/cong-khai";
 
 export const SCHOOL_IDENTITY = [
   { label: "Tên trường", value: appConfig.legalName },
+  // Tên viết tắt và tên hiệu trưởng lấy từ bài của trường: "Trường Trung Cấp Nghề Nhân Lực Quốc
+  // Tế (SIM)" và "Thầy Võ Xuân Trung – Hiệu trưởng" (bài bàn giao xe VinFast, 14/04/2026).
+  { label: "Tên viết tắt", value: "SIM" },
+  { label: "Hiệu trưởng", value: "Thầy Võ Xuân Trung" },
   { label: "Quyết định thành lập", value: `Ngày 13/12/2007, theo ${appConfig.foundingDecision}` },
   { label: "Loại hình", value: "Trường trung cấp nghề, đào tạo trình độ trung cấp và sơ cấp" },
   { label: "Địa chỉ", value: appConfig.address },

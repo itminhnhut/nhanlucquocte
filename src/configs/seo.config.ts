@@ -41,17 +41,17 @@ export const SEO_CONFIG: Record<string, SeoEntry> = {
   "/du-hoc": {
     title: withBrandFit("Du học, làm việc ở nước ngoài"),
     description:
-      "Du học và đi làm việc ở nước ngoài: trường đào tạo nghề, tiếng Hàn và kỹ năng mềm trước khi xuất cảnh, tư vấn hồ sơ miễn phí tại Tân Bình, TPHCM.",
+      "Du học và đi làm việc ở nước ngoài: trường đào tạo nghề, lớp tiếng Hàn và khóa kỹ năng mềm trước khi xuất cảnh tại Tân Bình, TPHCM.",
   },
   "/tuyen-sinh": {
     title: "Tuyển sinh trung cấp nghề TPHCM – Xét tuyển từ THCS",
     description:
-      "Tuyển sinh trung cấp nghề TPHCM: xét tuyển từ THCS, không thi tuyển, nhận hồ sơ quanh năm tại Tân Bình. Ngành đào tạo, điều kiện, hồ sơ và cách đăng ký.",
+      "Tuyển sinh trung cấp nghề TPHCM: nhận người tốt nghiệp THCS, THPT, khai giảng nhiều đợt trong năm tại Tân Bình. Ngành đào tạo, điều kiện, hồ sơ và cách đăng ký.",
   },
   "/hoc-phi": {
-    title: "Học phí trung cấp nghề và chính sách miễn giảm",
+    title: "Học phí trung cấp nghề Nhân Lực Quốc Tế",
     description:
-      "Học phí trung cấp nghề gồm khoản nào, ai được miễn theo Nghị định 81/2021/NĐ-CP, giấy tờ cần chuẩn bị và cách nhận bảng học phí từng ngành tại TPHCM.",
+      "Mức học phí Trường Trung cấp nghề Nhân Lực Quốc Tế đã công bố và cách liên hệ nhận học phí từng ngành, từng hệ đào tạo tại Tân Bình, TPHCM.",
   },
   "/hop-tac-doanh-nghiep": {
     title: "Hợp tác doanh nghiệp, thực tập và tuyển dụng học viên",

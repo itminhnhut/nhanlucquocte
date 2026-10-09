@@ -2,13 +2,16 @@
 // CHỈ nêu những gì trường đã công bố: lịch sử đưa lao động sang Nhật Bản, Hàn Quốc, Đài Loan;
 // đào tạo ngoại ngữ và kỹ năng mềm trước khi xuất cảnh; chương trình du học đang giới thiệu.
 // KHÔNG ghi học phí, chi phí, tỉ lệ đậu visa, tên đối tác — chờ nhà trường cung cấp.
+// Rà site trường 09/10/2026: trang /du-hoc của trường chỉ có ĐÚNG MỘT bài ("Du Học Canada"), không
+// nêu dịch vụ tư vấn hồ sơ, không nêu nước nào khác, không có giấy phép tư vấn du học. Vì vậy trang
+// này KHÔNG được viết trường "tư vấn hồ sơ du học" hay nhận là đơn vị dịch vụ du học.
 // Bài du học cụ thể sẽ hiển thị theo dữ liệu import từ database.
 import appConfig from "../configs/appConfig";
 import type { GuideSection } from "./guides";
 
 export const STUDY_ABROAD_PATH = "/du-hoc";
 
-export const STUDY_ABROAD_LEAD = `Trường Trung cấp nghề Nhân Lực Quốc Tế được thành lập để nâng cao chất lượng nguồn nhân lực đi làm việc ở nước ngoài, nên bên cạnh đào tạo nghề trong nước, trường tư vấn và chuẩn bị cho người học các chương trình du học, học nghề và làm việc tại nước ngoài. Mọi thông tin tư vấn đều miễn phí: gọi ${appConfig.phone} hoặc nhắn Zalo.`;
+export const STUDY_ABROAD_LEAD = `Trường Trung cấp nghề Nhân Lực Quốc Tế được thành lập để nâng cao chất lượng nguồn nhân lực đi làm việc ở nước ngoài. Trang này tổng hợp những gì nhà trường đã công bố liên quan tới hướng đi nước ngoài: đào tạo nghề, lớp tiếng Hàn, khóa kỹ năng mềm trước khi xuất cảnh và các bài giới thiệu du học. Chương trình đang mở và điều kiện cụ thể, gọi ${appConfig.phone} hoặc nhắn Zalo để hỏi.`;
 
 export const STUDY_ABROAD_SECTIONS: readonly GuideSection[] = [
   {
@@ -17,7 +20,6 @@ export const STUDY_ABROAD_SECTIONS: readonly GuideSection[] = [
       "**Đào tạo nghề trước khi đi:** người học có tay nghề và chứng chỉ, chứng minh được năng lực với cơ sở tiếp nhận.",
       "**Ngoại ngữ:** khóa tiếng Hàn và các lớp ngoại ngữ phục vụ công việc.",
       "**Kỹ năng mềm và văn hóa nước đến:** tác phong làm việc, nếp sinh hoạt, quy định cần biết trước khi xuất cảnh.",
-      "**Tư vấn hồ sơ:** hướng dẫn giấy tờ, lộ trình và các bước chuẩn bị.",
     ],
     paragraphs: [
       "Từ năm 2008 đến 2012, trường đã đào tạo hơn 20.000 lao động cho hàng chục công ty, cung ứng cho thị trường trong nước và các thị trường Nhật Bản, Hàn Quốc, Đài Loan. Các hợp tác với doanh nghiệp, khách sạn và trường đại học xem ở trang [hợp tác doanh nghiệp](/hop-tac-doanh-nghiep).",
