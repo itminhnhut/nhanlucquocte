@@ -60,3 +60,16 @@ export const MISSION =
 
 export const FACULTY =
   "Đội ngũ giáo viên, chuyên gia người Việt và người nước ngoài, trình độ từ cử nhân, thạc sĩ đến tiến sĩ, giảng dạy các lĩnh vực: công nghệ thông tin, quản trị kinh doanh, chăm sóc sức khỏe, xây dựng, trồng trọt, sửa chữa ô tô, nghiệp vụ nhà hàng – khách sạn và ngoại ngữ (Anh, Hoa, Nhật, Hàn).";
+
+/**
+ * Đơn vị và cơ sở thực hành nhà trường đã nêu tên trong bài của mình. CHỈ thêm vào đây khi có bài
+ * của trường nhắc đúng tên đơn vị — không suy ra từ danh mục ngành.
+ * Nguồn (đối chiếu 09/10/2026):
+ *  - "Khoa Cơ khí – Ô tô", "Xưởng Ô tô của Nhà trường": bài lễ bàn giao xe điện VinFast VF8 (14/04/2026).
+ *  - "Phòng Đào tạo – Hệ Liên thông Đại học, Cao đẳng": thông báo tuyển sinh liên thông (06/07/2025)
+ *    và thông báo ký sổ gốc, nhận bằng tốt nghiệp (03/07/2025).
+ */
+export const SCHOOL_UNITS: readonly string[] = [
+  "Khoa Cơ khí – Ô tô, có Xưởng Ô tô riêng để học viên thực hành trên xe thật, trong đó có xe điện VinFast VF8 do VinFast tài trợ phục vụ đào tạo.",
+  "Phòng Đào tạo hệ Liên thông Đại học, Cao đẳng — đầu mối tuyển sinh liên thông và cấp phát bằng tốt nghiệp hệ liên thông, đặt tại Tầng 2, số 02 Hồng Hà, phường 2, quận Tân Bình.",
+];

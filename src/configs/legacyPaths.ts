@@ -5,8 +5,9 @@
 //
 // Bài ngành: tạm trỏ về trang danh sách /nganh-dao-tao. Sau khi import bài ngành vào database và
 // biết slug thật, đổi đích sang đúng trang ngành (PROGRAM_PAGES_READY trong content/programFields.ts).
-// Bài tin tức cũ: slug giữ nguyên khi import → quy tắc chung ở nginx chuyển /<slug>.html sang
-// /tin-tuc/<slug>; chỉ các URL liệt kê dưới đây là ngoại lệ.
+// Bài tin tức cũ: slug phần lớn giữ nguyên khi import → quy tắc chung ở nginx chuyển /<slug>.html
+// sang /tin-tuc/<slug>. Bài nào slug đã bị chuẩn hoá khác đi thì phải liệt kê ở
+// LEGACY_NEWS_PATHS, nếu không URL cũ sẽ 301 vào đúng một trang 404.
 
 /** Trang chính: URL cũ (không có dấu /) → URL mới */
 export const LEGACY_PATHS: Readonly<Record<string, string>> = {
@@ -56,3 +57,42 @@ export const LEGACY_PROGRAM_PATHS: Readonly<Record<string, string>> = {
   "tuyen-sinh-he-lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc-.html":
     "tuyen-sinh-he-lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc",
 };
+
+/**
+ * Bài tin cũ có slug KHÁC slug sau khi import (site trường để dấu gạch ở đầu/cuối slug, hoặc đổi
+ * tiêu đề). Đối chiếu sitemap.xml của trường ngày 09/10/2026 — 7 URL này nếu không liệt kê ở đây
+ * sẽ bị quy tắc chung đẩy sang /tin-tuc/<slug cũ> và rơi vào 404.
+ * Đã khớp từng bài theo tiêu đề + ngày đăng với public/mock/posts.json.
+ */
+export const LEGACY_NEWS_PATHS: Readonly<Record<string, string>> = {
+  "-khep-lai-thanh-cong-le-trao-bang-tot-nghiep-trao-hoc-bong-ngay-05-05-2026.html":
+    "khep-lai-thanh-cong-le-trao-bang-tot-nghiep-2026-va-trao-hoc-bong",
+  "hoat-dong-hien-mau-.html": "hien-mau-hom-nay-trao-hy-vong-ngay-mai",
+  "le-ban-giao-xe-vinfast-8-cho-nganh-ky-thuat-sua-chua-o-to-.html":
+    "le-ban-giao-xe-vinfast-8-cho-nganh-ky-thuat-sua-chua-o-to",
+  "tuyen-dung-nhan-vien-phuc-vu-nha-hang-.html": "tuyen-dung-nhan-vien-phuc-vu-nha-hang",
+  "co-hoi-thuc-tap-tai-sheraton-.html": "co-hoi-thuc-tap-tai-sheraton",
+  "tuyen-dung-nganh-f-b-.html": "tuyen-dung-nganh-f-b",
+  "thong-bao-nhan-bang-tot-nghiep-.html": "thong-bao-nhan-bang-tot-nghiep",
+};
+
+/**
+ * Trang RÁC của mẫu website cũ (bên thiết kế dùng lại template bán hồ tiêu, quế): trang sản phẩm,
+ * giỏ hàng, ảnh nông sản. Tất cả đang nằm trong sitemap.xml của trường nên Google đã index.
+ * Không có trang tương ứng trên web mới → đưa về trang chủ, tuyệt đối không để quy tắc chung đẩy
+ * sang /tin-tuc/<slug> rồi 404 (301 trỏ vào 404 là tín hiệu xấu với Google).
+ */
+export const LEGACY_REMOVED_PATHS: readonly string[] = [
+  "gio-hang.html",
+  "san-pham.html",
+  "video-home.html",
+  "star-anise-684.html",
+  "ground-black-pepper-575.html",
+  "white-pepper-119.html",
+  "tube-cinnamon.html",
+  "black-papper.html",
+  "broken-cinnamon.html",
+  "pepper-harvest.html",
+  "cinnamon-harvest.html",
+  "cinnamon-sticks.html",
+];

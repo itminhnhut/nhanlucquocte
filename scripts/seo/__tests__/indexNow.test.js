@@ -64,6 +64,8 @@ test("should ship a verification file matching the configured IndexNow key", () 
 });
 
 test("should submit changed URLs to IndexNow with the configured key", async () => {
+  // Chỉ gửi khi được bật rõ ràng (máy chủ đặt INDEXNOW_ENABLED=1 trong docker/env.sh)
+  process.env.INDEXNOW_ENABLED = "1";
   const { calls, fetchImpl } = fakeFetch();
 
   const result = await notifyIndexNow(["/", "/tin-tuc/hoc-spa"], KEY, fetchImpl);
@@ -76,6 +78,16 @@ test("should submit changed URLs to IndexNow with the configured key", async () 
     keyLocation: `https://trungcapnhanlucquocte.vn/${KEY}.txt`,
     urlList: ["https://trungcapnhanlucquocte.vn/", "https://trungcapnhanlucquocte.vn/tin-tuc/hoc-spa"],
   });
+  delete process.env.INDEXNOW_ENABLED;
+});
+
+test("should stay silent when IndexNow has not been switched on", async () => {
+  // Mặc định tắt: chạy bộ tạo trang ở máy không được báo gì cho công cụ tìm kiếm
+  delete process.env.INDEXNOW_ENABLED;
+  const { calls, fetchImpl } = fakeFetch();
+  const result = await notifyIndexNow(["/", "/tin-tuc/hoc-spa"], KEY, fetchImpl);
+  assert.equal(result.submitted, 0);
+  assert.equal(calls.length, 0);
 });
 
 test("should skip IndexNow with an invalid key or no changes, and never throw on API errors", async () => {

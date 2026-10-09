@@ -1,5 +1,7 @@
 // Trang /hoat-dong-hoc-vien — bằng chứng trường đang hoạt động thật (tín hiệu uy tín cho cả người
-// đọc lẫn Google). CHỈ ghi sự kiện đã đăng trên trungcapnhanlucquocte.vn, kèm ngày nhà trường công bố.
+// đọc lẫn Google). CHỈ ghi sự kiện đã đăng trên trungcapnhanlucquocte.vn.
+// `date` = ngày DIỄN RA sự kiện khi bài của trường nói rõ (ví dụ "Sáng ngày 14/04/2026…"); bài nào
+// không nói thì lấy ngày đăng bài. Đã đối chiếu từng bài ngày 09/10/2026.
 // KHÔNG thêm số lượng người tham dự, giá trị học bổng hay thành tích chưa công bố.
 // TODO nhà trường bổ sung: ảnh sự kiện được phép dùng, số liệu học bổng nếu muốn công khai.
 import type { GuideSection } from "./guides";
@@ -47,9 +49,10 @@ export const SCHOOL_EVENTS: readonly SchoolEvent[] = [
     text: "Khai giảng khóa 106 ngành Kỹ thuật làm bánh hệ trung cấp — một trong các khóa được mở nhiều đợt trong năm.",
   },
   {
-    date: "18/11/2025",
+    // Bài đăng 18/11/2025 nhưng lễ khai mạc diễn ra chiều 03/11/2025, hội giảng tới 11/11/2025
+    date: "03/11/2025",
     title: "Hội giảng nhà giáo giáo dục nghề nghiệp cấp thành phố",
-    text: "Nhà trường tham dự Lễ khai mạc Hội giảng nhà giáo giáo dục nghề nghiệp cấp thành phố năm 2025 — hoạt động chuyên môn của đội ngũ giáo viên.",
+    text: "Nhà trường tham dự Lễ khai mạc Hội giảng nhà giáo giáo dục nghề nghiệp cấp thành phố năm 2025, tổ chức tại Trường Cao đẳng Giao thông Vận tải — hoạt động chuyên môn của đội ngũ giáo viên.",
   },
   {
     date: "23/09/2026",

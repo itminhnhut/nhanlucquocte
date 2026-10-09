@@ -27,7 +27,10 @@ function ProgramCatalog() {
               <li key={program.slug} className="py-2 first:pt-0 last:pb-0">
                 <span className="font-semibold text-slate-800">{program.name}</span>
                 {program.levelConfirmed && (
-                  <span className="mt-0.5 block text-[12px] text-slate-600">{LEVEL_LABEL[program.level]}</span>
+                  <span className="mt-0.5 block text-[12px] text-slate-600">
+                    {LEVEL_LABEL[program.level]}
+                    {program.levelNote ? ` — ${program.levelNote}` : ""}
+                  </span>
                 )}
               </li>
             ))}

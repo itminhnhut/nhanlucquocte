@@ -251,3 +251,29 @@ section[id],
   mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
   -webkit-mask-image: linear-gradient(to right, transparent, #000 6%, #000 94%, transparent);
 }
+
+/* Thẻ đồng ý cookie: trượt lên nhẹ khi hiện, tôn trọng cài đặt "giảm chuyển động" của máy */
+@keyframes cookie-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .cookie-card {
+    animation: cookie-card-in 260ms ease-out both;
+  }
+}
+
+/* Màn hình nhỏ: thẻ cookie trải gần hết chiều ngang nên che nút Zalo/gọi ở góc phải.
+   Ẩn nhóm nút đó trong lúc người dùng còn đang chọn, hiện lại ngay sau khi chọn xong. */
+@media (max-width: 639px) {
+  body.has-cookie-banner .floating-contact {
+    display: none;
+  }
+}

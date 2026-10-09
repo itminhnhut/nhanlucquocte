@@ -8,7 +8,7 @@ import { PRIVACY_POLICY_PATH, consentNote } from "../content/privacy";
 import appConfig from "../configs/appConfig";
 
 const REGISTER_POINTS = [
-  "Xét tuyển, không thi tuyển — nhận hồ sơ quanh năm",
+  "Nhận người tốt nghiệp THCS, THPT — khai giảng nhiều đợt trong năm",
   "Hệ trung cấp và các khóa sơ cấp, ngắn hạn cấp chứng chỉ",
   "Nhận cả học viên tốt nghiệp THCS, học thêm văn hóa THPT",
   "Tư vấn miễn phí về ngành học, lịch khai giảng và học phí",
@@ -89,7 +89,7 @@ function RegisterSection() {
             <div className="text-white">
               <p className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 text-[12px] font-semibold text-white">
                 <span className="h-1.5 w-1.5 rounded-full bg-yellow-300" />
-                Tuyển sinh quanh năm
+                Khai giảng nhiều đợt
               </p>
               <h3 className="mt-3 text-[22px] sm:text-[26px] font-extrabold leading-snug">
                 Để lại số điện thoại, nhà trường gọi tư vấn miễn phí

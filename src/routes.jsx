@@ -1,7 +1,12 @@
 // Cây route dùng chung: trình duyệt (router.jsx) và server tạo HTML sẵn (src/ssr/renderPage.jsx).
 import RootLayout from "./layouts/RootLayout";
 import LegacyRedirect from "./components/LegacyRedirect";
-import { LEGACY_PATHS, LEGACY_PROGRAM_PATHS } from "./configs/legacyPaths";
+import {
+  LEGACY_NEWS_PATHS,
+  LEGACY_PATHS,
+  LEGACY_PROGRAM_PATHS,
+  LEGACY_REMOVED_PATHS,
+} from "./configs/legacyPaths";
 import App from "./App";
 import AboutPage from "./pages/AboutPage";
 import ProgramsPage from "./pages/ProgramsPage";
@@ -50,7 +55,12 @@ export const routes = [
       { path: "chinh-sach-bao-mat", element: <PrivacyPage /> },
       { path: "cong-khai", element: <DisclosurePage /> },
       // URL cũ tiếng Anh → URL tiếng Việt (src/configs/legacyPaths.ts)
-      ...[...Object.keys(LEGACY_PATHS), ...Object.keys(LEGACY_PROGRAM_PATHS)].flatMap((path) => [
+      ...[
+        ...Object.keys(LEGACY_PATHS),
+        ...Object.keys(LEGACY_PROGRAM_PATHS),
+        ...Object.keys(LEGACY_NEWS_PATHS),
+        ...LEGACY_REMOVED_PATHS,
+      ].flatMap((path) => [
         { path, element: <LegacyRedirect /> },
         { path: `${path}/*`, element: <LegacyRedirect /> },
       ]),

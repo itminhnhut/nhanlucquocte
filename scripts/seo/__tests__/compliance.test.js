@@ -56,5 +56,15 @@ test("should publish privacy policy and disclosure pages as indexable pages", ()
   assert.doesNotMatch(visibleText, /triệu|đồng\/|VNĐ|\d\s?%/);
   const privacy = strip(renderAppHtml("/chinh-sach-bao-mat", {}));
   assert.match(privacy, /Google Analytics/);
+  // Phải khai báo ĐỦ bên nhận dữ liệu: thiếu Microsoft Clarity là thiếu một bên chuyển dữ liệu
+  // ra nước ngoài (công cụ này quay lại phiên, không chỉ đếm lượt truy cập).
+  assert.match(privacy, /Microsoft Clarity/);
+  assert.match(privacy, /Microsoft Corporation/);
+  assert.match(privacy, /ngoài Việt Nam/);
+  // Mô tả đúng cơ chế đang chạy: có banner đồng ý, chưa đồng ý thì không tải gì
+  assert.match(privacy, /chỉ khi bạn bấm Đồng ý/i);
   assert.match(privacy, /Cài đặt cookie/);
+  assert.match(privacy, /không chạy ở trang tra cứu văn bằng/);
+  // Ô đồng ý ở form tư vấn thì vẫn là đồng ý thật, phải giữ
+  assert.match(privacy, /tự tích ô đồng ý/);
 });

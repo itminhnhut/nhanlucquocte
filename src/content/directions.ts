@@ -68,7 +68,6 @@ export const TRANSPORT_NOTES: readonly string[] = [
 ];
 
 export const VISIT_NOTES: readonly string[] = [
-  `Giờ tiếp đón: ${appConfig.openingHoursLabel} (trừ ngày lễ, Tết theo quy định của Nhà nước).`,
   "Mang theo giấy tờ tùy thân và bằng/giấy chứng nhận tốt nghiệp khi đến nộp hồ sơ.",
   "Phụ huynh, học sinh đi theo đoàn hoặc trường THPT muốn tham quan nên đặt lịch trước để nhà trường bố trí người hướng dẫn.",
 ];

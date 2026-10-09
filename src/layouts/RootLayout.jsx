@@ -5,6 +5,7 @@ import FloatingContact from "@/components/FloatingContact";
 import MobileMenuOverlay from "@/components/MobileMenuOverlay";
 import ScrollToTop from "@/components/ScrollToTop";
 import TopProgressBar from "@/components/TopProgressBar";
+import CookieConsent from "@/components/CookieConsent";
 import { Outlet, useLocation } from "react-router-dom";
 import { useEffect, useRef, useState } from "react";
 import { listenContactClicks, trackPageView } from "@/utils/analytics";
@@ -50,6 +51,7 @@ function RootLayout() {
         <Footer />
         {!mobileOpen && <FloatingContact />}
       </div>
+      <CookieConsent />
     </>
   );
 }

@@ -2,12 +2,13 @@ import { Link } from "react-router-dom";
 import appConfigs from "../configs/appConfig";
 import { PRIVACY_POLICY_PATH } from "../content/privacy";
 import { DISCLOSURE_PATH } from "../content/disclosure";
+import { OPEN_SETTINGS_EVENT } from "./CookieConsent";
 
 // Footer liệt kê cả trang không nằm ở menu trên (Cẩm nang) — xem src/configs/navigation.ts
 const QUICK_LINKS = [
   { to: "/gioi-thieu", label: "Giới thiệu" },
   { to: "/tuyen-sinh", label: "Tuyển sinh" },
-  { to: "/hoc-phi", label: "Học phí và miễn giảm" },
+  { to: "/hoc-phi", label: "Học phí" },
   { to: "/hop-tac-doanh-nghiep", label: "Hợp tác doanh nghiệp" },
   { to: "/hoat-dong-hoc-vien", label: "Hoạt động học viên" },
   { to: "/hinh-anh", label: "Hình ảnh" },
@@ -50,8 +51,6 @@ function Footer() {
               >
                 {appConfigs.email}
               </a>
-              <br />
-              Giờ làm việc: {appConfigs.openingHoursLabel}
             </p>
           </div>
           <div>
@@ -96,6 +95,13 @@ function Footer() {
             <Link to={PRIVACY_POLICY_PATH} className="underline hover:text-blue-200">
               Chính sách bảo vệ dữ liệu cá nhân
             </Link>
+            <button
+              type="button"
+              onClick={() => window.dispatchEvent(new Event(OPEN_SETTINGS_EVENT))}
+              className="text-left underline hover:text-blue-200"
+            >
+              Cài đặt cookie
+            </button>
           </div>
         </div>
       </div>

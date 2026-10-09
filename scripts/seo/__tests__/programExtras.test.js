@@ -23,9 +23,13 @@ test("should only state entry levels the school has confirmed", () => {
   assert.equal(programExtras("ke-toan-doanh-nghiep").schedule, undefined);
   assert.match(programExtras("nghiep-vu-nghe-nong-nghiep-he-so-cap").credential, /chứng chỉ/);
   assert.match(programExtras("ke-toan-doanh-nghiep").credential, /bằng tốt nghiệp trung cấp/);
+  // Trường đã công bố rõ trên trang của mình (xem căn cứ ở đầu src/content/programFields.ts)
+  assert.match(programExtras("cham-soc-nguoi-cao-tuoi").credential, /chứng chỉ/);
+  assert.match(programExtras("nghiep-vu-pha-che").credential, /chứng chỉ/);
+  assert.match(programExtras("thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17").credential, /bằng tốt nghiệp trung cấp/);
   // Ngành trường chưa công bố rõ hệ đào tạo → không nêu văn bằng
-  assert.equal(programExtras("cham-soc-nguoi-cao-tuoi").credential, null);
-  assert.equal(programExtras("nghiep-vu-bao-mau").credential, null);
+  assert.equal(programExtras("tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026").credential, null);
+  assert.equal(programExtras("cham-soc-da-chuyen-nghiep").credential, null);
 });
 
 test("should link related programs in the same field", () => {

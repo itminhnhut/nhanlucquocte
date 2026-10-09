@@ -15,7 +15,7 @@ export const PARTNERSHIP_SECTIONS: readonly GuideSection[] = [
     heading: "Khách sạn – nhà hàng: thực tập và tuyển dụng",
     list: [
       "**Sheraton Saigon Grand Opera Hotel** — nhà trường thông báo cơ hội thực tập cho học viên khối nhà hàng – khách sạn.",
-      "**Park Hyatt Saigon** — nằm trong nhóm đối tác khách sạn của trường.",
+      "**Park Hyatt Saigon** — có trong dải đối tác trên website nhà trường.",
       "**Four Seasons Megève (Pháp)** — thông báo tuyển dụng lao động mùa vụ dành cho người học có nghề và ngoại ngữ.",
       "Các vị trí phục vụ nhà hàng, F&B được đăng theo đợt ở mục [Tin tức](/tin-tuc).",
     ],
@@ -32,17 +32,25 @@ export const PARTNERSHIP_SECTIONS: readonly GuideSection[] = [
   {
     heading: "Y tế và chăm sóc sức khỏe",
     paragraphs: [
-      "**JW Korea Hospital** nằm trong nhóm đối tác của trường, liên quan tới khối ngành chăm sóc sức khỏe và chăm sóc sắc đẹp. Người học các ngành Điều dưỡng, Chăm sóc người cao tuổi, Trợ lý nha khoa, Chăm sóc sắc đẹp có thể hỏi bộ phận tuyển sinh về cơ hội thực tập theo từng đợt. Công việc hằng ngày của điều dưỡng viên mô tả ở bài [học điều dưỡng ra làm gì](/cam-nang/hoc-dieu-duong-ra-lam-gi), nội dung nghề làm đẹp ở bài [học chăm sóc sắc đẹp học gì](/cam-nang/hoc-cham-soc-sac-dep-hoc-gi).",
+      "**JW Korea Hospital** có trong dải đối tác trên website nhà trường. Người học các ngành Điều dưỡng, Chăm sóc người cao tuổi, Trợ lý nha khoa, Chăm sóc sắc đẹp có thể hỏi bộ phận tuyển sinh về cơ hội thực tập theo từng đợt. Công việc hằng ngày của điều dưỡng viên mô tả ở bài [học điều dưỡng ra làm gì](/cam-nang/hoc-dieu-duong-ra-lam-gi), nội dung nghề làm đẹp ở bài [học chăm sóc sắc đẹp học gì](/cam-nang/hoc-cham-soc-sac-dep-hoc-gi).",
     ],
   },
   {
     heading: "Liên kết đào tạo với trường đại học",
     list: [
       "**Trường Đại học Công nghệ và Quản lý Hữu Nghị** (University of Technology & Management – mã trường DCQ) — tổ chức tuyển sinh và cấp bằng cho chương trình liên thông lên đại học; trường là đơn vị liên kết.",
-      "**Sun Moon University (Hàn Quốc)** — đối tác phía Hàn Quốc, gắn với định hướng học tiếng Hàn và làm việc ở nước ngoài.",
+      "**Sun Moon University (Hàn Quốc)** — có trong dải đối tác trên website nhà trường. Nội dung hợp tác cụ thể nhà trường chưa công bố, hãy hỏi bộ phận tuyển sinh.",
     ],
     paragraphs: [
       "Người đã tốt nghiệp trung cấp **và** có bằng THPT (hoặc giấy chứng nhận hoàn thành chương trình THPT) có thể đăng ký liên thông ngành Quản trị dịch vụ ăn uống và ẩm thực, Quản trị dịch vụ du lịch và lữ hành. Đọc thêm [liên thông đại học sau trung cấp](/cam-nang/lien-thong-dai-hoc-sau-trung-cap).",
+    ],
+  },
+  {
+    // Nguồn: bài "Trung Tâm Hỗ Trợ Việc Làm Và Kết Nối Doanh Nghiệp" trên trungcapnhanlucquocte.vn
+    // (đăng 27/6/2024), hiện là bài nổi bật đầu tiên ở mọi trang của trường.
+    heading: "Trung tâm Hỗ trợ việc làm và Kết nối doanh nghiệp",
+    paragraphs: [
+      "Nhà trường có **Trung tâm Hỗ trợ việc làm và Kết nối doanh nghiệp**. Theo thông báo của trường, trung tâm cung cấp dịch vụ tư vấn nghề nghiệp, tổ chức hội chợ việc làm và các buổi hội thảo kỹ năng cho người học. Thông báo thực tập, tuyển dụng theo đợt được đăng ở mục [Tin tức](/tin-tuc).",
     ],
   },
   {

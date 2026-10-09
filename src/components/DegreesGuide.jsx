@@ -76,8 +76,8 @@ function DegreesGuide() {
             hoặc email{" "}
             <a href={`mailto:${appConfig.email}`} className="font-semibold text-primary-dark underline break-all">
               {appConfig.email}
-            </a>{" "}
-            ({appConfig.openingHoursLabel}).
+            </a>
+            .
           </p>
         </section>
       </div>

@@ -315,7 +315,7 @@ function ConsultCard() {
         Tư vấn tuyển sinh miễn phí
       </h2>
       <p className="mt-1 text-[13px] text-blue-100">
-        Hỏi về ngành học, lịch khai giảng, học phí. {appConfig.openingHoursLabel}.
+        Hỏi về ngành học, lịch khai giảng, học phí.
       </p>
       <div className="mt-4 grid gap-2">
         <Link

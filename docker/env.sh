@@ -54,7 +54,8 @@ echo "[env-inject] Inlined window.__ENV__ into index.html"
 # Lỗi ở đây không được chặn Nginx khởi động. Log ghi vào stdout của PID 1 (docker logs).
 SEO_SERVER="/opt/sitemap/sitemap-server.cjs"
 node "$SEO_SERVER" --static-only || echo "[env-inject] ⚠️  Không ghi được trang tĩnh SEO"
-VITE_API_URL="$VITE_API_URL" nohup node "$SEO_SERVER" > /proc/1/fd/1 2>&1 &
+# INDEXNOW_ENABLED=1: chỉ báo Bing khi chạy thật trên máy chủ, không báo khi chạy ở máy dev
+INDEXNOW_ENABLED=1 VITE_API_URL="$VITE_API_URL" nohup node "$SEO_SERVER" > /proc/1/fd/1 2>&1 &
 echo "[env-inject] Started SEO server"
 
 echo "[env-inject] Done."

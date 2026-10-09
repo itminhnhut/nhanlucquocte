@@ -4,7 +4,16 @@ import https from "../utils/https";
 import { initialDataKeys, useInitialData } from "../data/initialData";
 import { useIsHydrated } from "../hooks/useIsHydrated";
 import { Seo } from "../components/Seo";
-import { demoteH1, fillMissingImageAlt, lazyLoadImages } from "../utils/html";
+import {
+  addImageDimensions,
+  demoteH1,
+  dropEmptyHeadings,
+  dropEmptyWrappers,
+  dropForeignImages,
+  fillMissingImageAlt,
+  normalizeHeadingLevels,
+  lazyLoadImages,
+} from "../utils/html";
 import { extractFaqSection, renderFaqAccordion } from "../seo/faq";
 import FaqAccordion from "../components/FaqAccordion";
 import ContactCard from "../components/ContactCard";
@@ -142,10 +151,15 @@ function ProgramDetailPage() {
 
   const hasProgram = !!program;
   // Nội dung CMS: hạ h1 → h2, mục "Câu hỏi thường gặp" → dạng bấm-để-mở
-  const contentHtml = useMemo(
-    () => fillMissingImageAlt(lazyLoadImages(renderFaqAccordion(demoteH1(stripContactBlock(program?.content)))), program?.title),
-    [program?.content, program?.title]
-  );
+  const contentHtml = useMemo(() => {
+    // Gỡ khối liên hệ của bài gốc → hạ h1 → bỏ ảnh mượn của site khác → bỏ heading rỗng →
+    // mục "Câu hỏi thường gặp" thành dạng bấm-để-mở → ảnh tải trễ, có alt và có kích thước
+    const base = normalizeHeadingLevels(
+      dropEmptyWrappers(dropEmptyHeadings(dropForeignImages(demoteH1(stripContactBlock(program?.content)))))
+    );
+    const withAlt = fillMissingImageAlt(lazyLoadImages(renderFaqAccordion(base)), program?.title);
+    return addImageDimensions(withAlt);
+  }, [program?.content, program?.title]);
   // Chưa có mục FAQ trong nội dung CMS → hiện câu hỏi soạn sẵn cho ngành (src/content/programFaqs.ts)
   const presetFaqGroup = useMemo(
     () => (extractFaqSection(demoteH1(stripContactBlock(program?.content))) ? null : programFaqGroupBySlug(slug)),
@@ -183,7 +197,9 @@ function ProgramDetailPage() {
       field && { label: "Lĩnh vực", value: field.name },
       level && { label: "Hệ đào tạo", value: LEVEL_LABEL[level] },
       openingDate && { label: "Khai giảng", value: openingDate },
-      { label: "Hình thức tuyển sinh", value: "Xét tuyển, không thi tuyển" },
+      // Trường không công bố hình thức tuyển sinh cho hệ trung cấp, sơ cấp (và trang liên thông
+      // của trường còn nêu khả năng phải thi môn cơ sở ngành) → chỉ nêu đối tượng đã công bố
+      { label: "Đối tượng", value: "Tốt nghiệp THCS, THPT trở lên" },
       { label: "Địa điểm học", value: appConfig.address },
       { label: "Hotline", value: appConfig.phone },
     ].filter(Boolean);

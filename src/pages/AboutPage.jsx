@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { Seo } from "../components/Seo";
 import ContactCard from "../components/ContactCard";
 import appConfig from "../configs/appConfig";
-import { CORE_VALUES, FACULTY, HISTORY, MISSION, VISION } from "../content/schoolProfile";
+import { CORE_VALUES, FACULTY, HISTORY, MISSION, SCHOOL_UNITS, VISION } from "../content/schoolProfile";
 import { PROGRAM_FIELDS } from "../content/programFields";
 import { staticPageMeta } from "../seo/pageMeta";
 
@@ -125,9 +125,15 @@ function AboutPage() {
 
         <section aria-labelledby="about-faculty" className="reveal">
           <h2 id="about-faculty" className={SECTION_TITLE}>
-            Đội ngũ giảng viên
+            Đội ngũ giảng viên và cơ sở thực hành
           </h2>
           <p>{FACULTY}</p>
+          {/* Chỉ các đơn vị nhà trường đã nêu tên trong bài của mình — xem SCHOOL_UNITS */}
+          <ul className="mt-3 list-disc space-y-1.5 pl-5">
+            {SCHOOL_UNITS.map((unit) => (
+              <li key={unit}>{unit}</li>
+            ))}
+          </ul>
           <p className="mt-3">
             Xem thêm{" "}
             <Link to="/tuyen-sinh" className="font-medium text-primary underline underline-offset-2">

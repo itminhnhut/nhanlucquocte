@@ -267,7 +267,7 @@ export const GUIDES: readonly Guide[] = [
           ],
         },
         paragraphs: [
-          "Trường đào tạo Chăm sóc sắc đẹp hệ trung cấp và các khóa ngắn hạn: Beauty Therapy, Chăm sóc da, Chăm sóc nails.",
+          "Trường đào tạo Chăm sóc sắc đẹp hệ trung cấp và khóa ngắn hạn Chăm sóc nails. Hai nghề Beauty Therapy và Chăm sóc da nhà trường chưa công bố hệ đào tạo, nên chưa xếp được vào cột nào ở bảng trên — hãy gọi hotline để hỏi.",
         ],
       },
       {
@@ -294,7 +294,7 @@ export const GUIDES: readonly Guide[] = [
     datePublished: PUBLISHED,
     dateModified: PUBLISHED,
     lead:
-      "Hồ sơ nhập học trung cấp về cơ bản gồm giấy tờ chứng minh trình độ đã tốt nghiệp (THCS hoặc THPT), giấy tờ tùy thân và các giấy tờ ưu tiên nếu thuộc diện chính sách. Trường xét tuyển, không thi tuyển, nên hồ sơ đầy đủ là bước quyết định.",
+      "Hồ sơ nhập học trung cấp về cơ bản gồm giấy tờ chứng minh trình độ đã tốt nghiệp (THCS hoặc THPT), giấy tờ tùy thân và các giấy tờ ưu tiên nếu thuộc diện chính sách. Chuẩn bị hồ sơ đầy đủ ngay từ đầu giúp bạn nhập học đúng đợt khai giảng mong muốn.",
     sections: [
       {
         heading: "Giấy tờ cơ bản",
@@ -302,7 +302,7 @@ export const GUIDES: readonly Guide[] = [
           "Bằng hoặc giấy chứng nhận tốt nghiệp THCS/THPT (bản sao có chứng thực); học liên thông thì thêm bằng trung cấp.",
           "Căn cước công dân — số CCCD này cũng dùng để [tra cứu văn bằng](/tra-cuu-van-bang) sau khi tốt nghiệp.",
           "Ảnh thẻ theo yêu cầu của từng đợt nhập học.",
-          "Giấy tờ chứng minh thuộc diện được miễn, giảm học phí (nếu có) — các khoản phải đóng và diện được miễn, giảm nêu ở trang [học phí trung cấp nghề](/hoc-phi).",
+          "Giấy tờ ưu tiên hoặc giấy tờ theo diện chính sách, nếu nhà trường yêu cầu khi nhận hồ sơ — hãy hỏi trước khi nộp.",
         ],
       },
       {

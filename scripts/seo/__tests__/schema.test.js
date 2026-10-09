@@ -21,8 +21,8 @@ test("should describe the school as EducationalOrganization with logo and new ad
   assert.equal(org.address.addressLocality, "Phường Tân Sơn Hòa");
   assert.equal(org.telephone, "+84707917119");
   assert.match(org.hasMap, /^https:\/\/www\.google\.com\/maps/);
-  assert.deepEqual(org.openingHoursSpecification.dayOfWeek, ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"]);
-  assert.equal(org.openingHoursSpecification.opens, "08:00");
+  // Không khai giờ làm việc: trường chưa công bố giờ ở đâu (xem đầu src/configs/appConfig.ts)
+  assert.equal(org.openingHoursSpecification, undefined);
 });
 
 test("should never claim university programs or the old address in any static page schema", () => {
@@ -50,7 +50,8 @@ test("should add breadcrumb and course with readable name on program pages", () 
 });
 
 test("should not claim a credential for programs whose level the school has not stated", () => {
-  const meta = programPageMeta({ title: "TUYỂN SINH CHĂM SÓC NGƯỜI CAO TUỔI" }, "cham-soc-nguoi-cao-tuoi");
+  // Chăm sóc da: trang của trường chỉ nêu thời lượng 2 – 3 tháng, không nêu trình độ/văn bằng
+  const meta = programPageMeta({ title: "CHĂM SÓC DA CHUYÊN NGHIỆP" }, "cham-soc-da-chuyen-nghiep");
   const course = nodeOf(meta, "Course");
 
   assert.equal(course.programType, undefined);

@@ -36,9 +36,12 @@ async function submitBatch(urlList, key, fetchImpl) {
  * @returns {Promise<{ submitted: number }>} số URL đã gửi thành công
  */
 export async function notifyIndexNow(changedPaths, key = appConfig.indexNowKey, fetchImpl = fetch) {
-  // Chạy ở máy dev (INDEXNOW_DISABLED=1) → không gọi API thật
-  if (process.env.INDEXNOW_DISABLED === "1") {
-    console.log("ℹ️  INDEXNOW_DISABLED=1 → bỏ qua IndexNow");
+  // Phải BẬT rõ ràng mới gọi API thật (docker/env.sh đặt INDEXNOW_ENABLED=1 khi chạy trên máy chủ).
+  // Trước đây mặc định là bật, nên chỉ cần chạy bộ tạo trang ở máy là đã báo Bing hàng chục URL của
+  // tên miền thật — trong khi trang đó chưa lên. Mặc định tắt an toàn hơn: lỡ quên bật thì chỉ chậm
+  // được Bing biết tin, còn lỡ quên tắt thì báo sai cho công cụ tìm kiếm.
+  if (process.env.INDEXNOW_ENABLED !== "1" || process.env.INDEXNOW_DISABLED === "1") {
+    console.log("ℹ️  IndexNow tắt (cần INDEXNOW_ENABLED=1) → bỏ qua");
     return { submitted: 0 };
   }
   if (!isValidIndexNowKey(key)) {

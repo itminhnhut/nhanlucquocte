@@ -3,17 +3,26 @@ import { Seo } from "../components/Seo";
 import ContactCard from "../components/ContactCard";
 import { staticPageMeta } from "../seo/pageMeta";
 import { DISCLOSURE_PATH, SCHOOL_IDENTITY } from "../content/disclosure";
-import { LEVEL_LABEL, PROGRAM_FIELDS, programsByLevel } from "../content/programFields";
+import {
+  LEVEL_LABEL,
+  PROGRAM_FIELDS,
+  programsWithUnknownLevel,
+  publishedProgramsByLevel,
+} from "../content/programFields";
 import { PRIVACY_POLICY_PATH } from "../content/privacy";
 import { ADMISSIONS_PATH } from "../content/admissions";
+import { FEES_PATH } from "../content/fees";
 import appConfig from "../configs/appConfig";
 
 const SECTION_TITLE = "text-[19px] md:text-[21px] font-bold text-primary-dark mb-3";
 const LINK = "text-primary font-medium underline underline-offset-2";
 // Bài ngành chưa import vào database → liệt kê tên ngành kèm trình độ, chưa link sang trang ngành
 // Chỉ ghi hệ đào tạo khi trường đã công bố rõ; ngành chưa rõ thì để trống, không tự suy ra
-const programLabel = (program) =>
-  program.levelConfirmed ? `${program.name} (${LEVEL_LABEL[program.level].toLowerCase()})` : program.name;
+const programLabel = (program) => {
+  if (!program.levelConfirmed) return program.name;
+  const level = LEVEL_LABEL[program.level].toLowerCase();
+  return program.levelNote ? `${program.name} (${program.levelNote.toLowerCase()})` : `${program.name} (${level})`;
+};
 
 function DisclosurePage() {
   return (
@@ -71,10 +80,18 @@ function DisclosurePage() {
               </div>
             ))}
           </div>
+          {/* Chỉ đếm ngành trường đã công bố hệ đào tạo: câu này nêu văn bằng nên không được
+              gộp ngành mình tự xếp nhóm (xem publishedProgramsByLevel). */}
           <p className="mt-3">
-            Tổng cộng {programsByLevel("trung-cap").length} ngành hệ trung cấp (cấp bằng trung cấp),{" "}
-            {programsByLevel("so-cap").length} khóa sơ cấp, ngắn hạn (cấp chứng chỉ) và{" "}
-            {programsByLevel("lien-thong").length} chương trình liên thông đại học.
+            Tổng cộng {publishedProgramsByLevel("trung-cap").length} ngành hệ trung cấp (cấp bằng trung
+            cấp), {publishedProgramsByLevel("so-cap").length} khóa sơ cấp, ngắn hạn (cấp chứng chỉ) và{" "}
+            {publishedProgramsByLevel("lien-thong").length} chương trình liên thông đại học. Riêng{" "}
+            {programsWithUnknownLevel().length} nghề —{" "}
+            {programsWithUnknownLevel()
+              .map((program) => program.name)
+              .join(", ")}{" "}
+            — nhà trường chưa công bố hệ đào tạo, nên trang này chưa nêu văn bằng; gọi hotline{" "}
+            {appConfig.phone} để được xác nhận.
           </p>
         </section>
 
@@ -105,11 +122,24 @@ function DisclosurePage() {
             .
           </p>
           <ul className="list-disc pl-5 space-y-1.5">
-            <li>Đối tượng: người tốt nghiệp THCS, THPT; người đã có bằng trung cấp (chương trình liên thông). Trường xét tuyển, không thi tuyển.</li>
-            <li>Trường khai giảng nhiều đợt trong năm, nhận hồ sơ quanh năm; lịch khai giảng đợt gần nhất được thông báo khi tư vấn.</li>
             <li>
-              Học phí khác nhau theo từng ngành và hệ đào tạo; bảng học phí được nhà trường gửi khi
-              người học liên hệ tư vấn.
+              Đối tượng: người tốt nghiệp THCS, THPT; người đã có bằng trung cấp (chương trình liên
+              thông). Điều kiện đầu vào của từng ngành được nhà trường tư vấn khi đăng ký; hệ liên
+              thông xét tuyển bằng bảng điểm trung cấp và bằng THPT, một số trường hợp phải thi môn
+              cơ sở ngành.
+            </li>
+            <li>
+              Trường khai giảng nhiều đợt trong năm; lịch khai giảng đợt gần nhất được thông báo khi tư
+              vấn.
+            </li>
+            <li>
+              Học phí khác nhau theo từng ngành và hệ đào tạo. Nhà trường công bố học phí theo từng
+              thông báo khai giảng, chưa đăng bảng học phí chung cho tất cả các ngành — mức đã công bố
+              xem ở trang{" "}
+              <Link to={FEES_PATH} className={LINK}>
+                học phí
+              </Link>
+              .
             </li>
             <li>
               Hồ sơ và cách đăng ký: xem{" "}
@@ -134,7 +164,7 @@ function DisclosurePage() {
             <a href={`mailto:${appConfig.email}`} className={LINK}>
               {appConfig.email}
             </a>{" "}
-            hoặc hotline {appConfig.phone} ({appConfig.openingHoursLabel}). Xem{" "}
+            hoặc hotline {appConfig.phone}. Xem{" "}
             <Link to={PRIVACY_POLICY_PATH} className={LINK}>
               Chính sách bảo vệ dữ liệu cá nhân
             </Link>

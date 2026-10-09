@@ -69,7 +69,7 @@ export const REASONS = [
   },
   {
     icon: "📝",
-    title: "Xét tuyển, nhận hồ sơ quanh năm",
-    text: "Không thi tuyển, nhận cả học viên tốt nghiệp THCS (học thêm văn hóa THPT theo quy định), khai giảng nhiều đợt trong năm.",
+    title: "Khai giảng nhiều đợt trong năm",
+    text: "Nhận người tốt nghiệp THCS (học thêm văn hóa THPT theo quy định) và người đã tốt nghiệp THPT; nhiều khóa không giới hạn độ tuổi.",
   },
 ] as const;

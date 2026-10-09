@@ -131,11 +131,8 @@ function ContactPage() {
               </div>
 
               <p className="mt-5 text-[12px] text-slate-500 italic">
-                Thời gian làm việc:{" "}
-                <span className="font-semibold">{appConfigs.openingHoursLabel}</span> (trừ ngày
-                lễ, Tết theo quy định của Nhà nước). Đối với tư vấn tuyển sinh,
-                nhà trường có thể hỗ trợ ngoài giờ hành chính theo lịch hẹn
-                trước.
+                Nên gọi hotline hoặc nhắn Zalo trước khi đến để nhà trường bố trí
+                người tư vấn và hướng dẫn lối vào.
               </p>
             </section>
 

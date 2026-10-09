@@ -30,7 +30,7 @@ function ContactCard({ programName }) {
       </h2>
       <p className="mt-1 text-[13px] text-slate-600">
         {programName ? `Cần tư vấn về ${programName}? ` : ""}
-        Liên hệ {appConfig.legalName} — {appConfig.openingHoursLabel}.
+        Liên hệ {appConfig.legalName} để được tư vấn ngành học, lịch khai giảng và học phí.
       </p>
 
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">

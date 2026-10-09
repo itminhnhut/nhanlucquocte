@@ -1,5 +1,6 @@
 // Đo chuyển đổi bằng GA4: đăng ký tư vấn, bấm gọi, bấm Zalo, bấm email.
-// gtag.js tải ngay khi mở trang (index.html), không chờ đồng ý cookie.
+// gtag.js và Clarity CHỈ được tải sau khi người dùng bấm Đồng ý (src/components/CookieConsent.jsx).
+// Chưa đồng ý thì window.gtag/window.clarity không phải hàm → mọi hàm dưới đây tự im lặng.
 // Trong GA4: Quản trị → Sự kiện → đánh dấu generate_lead, click_call, click_zalo là "sự kiện chính".
 /** Gắn nhãn cho phiên trong Microsoft Clarity để lọc bản ghi (vd xem lại phiên đã đăng ký) */
 function tagClarity(name, value) {

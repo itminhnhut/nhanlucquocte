@@ -20,7 +20,7 @@ function FloatingContact() {
   }, []);
 
   return (
-    <div className="fixed right-5 bottom-20 flex flex-col gap-3 z-40 max-[480px]:right-3 max-[480px]:bottom-16">
+    <div className="floating-contact fixed right-5 bottom-20 flex flex-col gap-3 z-40 max-[480px]:right-3 max-[480px]:bottom-16">
       <a
         href={appConfig.zalo}
         target="_blank"

@@ -2,6 +2,24 @@
 // trungcapnhanlucquocte.vn/chuong-trinh-dao-tao.html (08/10/2026). Mô tả chỉ nêu nội dung nghề,
 // không tự thêm học phí, thời lượng hay số liệu việc làm.
 //
+// TRÌNH ĐỘ (levelConfirmed) — đối chiếu lại từng trang của trường ngày 09/10/2026. Căn cứ:
+//   Chăm sóc người cao tuổi → "Thời gian đào tạo: Ngắn hạn 12 tháng" + "CHỨNG CHỈ – BẰNG CẤP:
+//     Ngắn hạn: Cấp Chứng chỉ hoàn thành khóa học".
+//   Nghiệp vụ lễ tân        → "Bằng cấp: Chứng chỉ có giá trị toàn quốc." (web mình chỉ ghi
+//     "chứng chỉ", không nhắc lại câu "có giá trị toàn quốc" vì chưa có căn cứ kiểm chứng).
+//   Nghiệp vụ pha chế       → "Cấp chứng chỉ nghiệp vụ pha chế", khóa 1,5 – 3 tháng.
+//   Ngôn ngữ Hàn Quốc       → "CHƯƠNG TRÌNH NGÔN NGỮ HÀN NGẮN HẠN", 3 – 6 tháng.
+//   Thiết kế nội thất       → "Trình độ đào tạo: Trung Cấp", thời gian đào tạo 2 năm.
+//   Nghiệp vụ bảo mẫu       → "Ngắn hạn: 1 – 3 tháng" VÀ "Trung cấp chính quy: 1 – 2 năm" → dùng
+//     levelNote để nêu cả hai hệ.
+//
+// CÒN CHỜ NHÀ TRƯỜNG (levelConfirmed để trống, trang không gắn nhãn hệ, không nêu văn bằng):
+//   Trợ lý nha khoa  — trang của trường gọi là "Khóa 32 Nghiệp vụ Trợ lý Nha khoa", không có mục
+//     trình độ hay văn bằng.
+//   Chăm sóc da      — trang chỉ nêu "Thời lượng học: 2 – 3 tháng", không nêu văn bằng.
+//   Beauty Therapy   — trang chỉ nêu "Thời gian đào tạo: 02 năm", không nêu trình độ. Thời lượng
+//     2 năm trùng với hệ trung cấp nhưng suy ra là đoán, nên vẫn để trống.
+//
 // Dữ liệu bài ngành sẽ được import vào database; slug lúc đó có thể khác slug ở đây, nên
 // groupProgramsByField khớp theo slug TRƯỚC, không khớp thì dò từ khoá trong slug/tiêu đề.
 // Sau khi import xong: đối chiếu slug thật rồi cập nhật mảng `slugs` của từng lĩnh vực.
@@ -28,9 +46,12 @@ export interface CatalogProgram {
   name: string;
   /** Hệ đào tạo dùng để xếp nhóm. Chỉ CÔNG BỐ ra trang khi levelConfirmed = true */
   level: ProgramLevel;
-  /** true = tiêu đề bài gốc của trường ghi rõ hệ (trung cấp / sơ cấp / liên thông đại học).
+  /** true = nhà trường đã công bố rõ hệ đào tạo (tiêu đề bài, mục "Trình độ đào tạo" hoặc mục
+   *  "Chứng chỉ – Bằng cấp" trên trungcapnhanlucquocte.vn).
    *  false/không có = mình suy ra để xếp nhóm, KHÔNG hiển thị ra trang; chờ trường xác nhận. */
   levelConfirmed?: boolean;
+  /** Ngành trường công bố nhiều hệ cùng lúc — ghi thêm một dòng bên cạnh nhãn hệ chính */
+  levelNote?: string;
 }
 
 export interface ProgramField {
@@ -47,11 +68,18 @@ export interface ProgramField {
   keywords: readonly string[];
 }
 
-const p = (slug: string, name: string, level: ProgramLevel, levelConfirmed = false): CatalogProgram => ({
+const p = (
+  slug: string,
+  name: string,
+  level: ProgramLevel,
+  levelConfirmed = false,
+  levelNote?: string
+): CatalogProgram => ({
   slug,
   name,
   level,
   levelConfirmed,
+  ...(levelNote ? { levelNote } : {}),
 });
 
 const field = (value: Omit<ProgramField, "anchor" | "slugs">): ProgramField => ({
@@ -70,7 +98,7 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     programs: [
       p("chuyen-nganh-dieu-duong-he-trung-cap", "Điều dưỡng", "trung-cap", true),
       p("tuyen-sinh-nganh-duoc-si-he-trung-cap-khai-giang-ngay-16-03-2026", "Dược sĩ", "trung-cap", true),
-      p("cham-soc-nguoi-cao-tuoi", "Chăm sóc người cao tuổi", "so-cap"),
+      p("cham-soc-nguoi-cao-tuoi", "Chăm sóc người cao tuổi", "so-cap", true),
       p("tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026", "Trợ lý nha khoa", "so-cap"),
     ],
     keywords: ["chuyen-nganh-dieu-duong-he-trung-cap", "duoc", "cao-tuoi", "nha-khoa"],
@@ -101,8 +129,8 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
       p("ky-thuat-che-bien-mon-an", "Kỹ thuật chế biến món ăn", "trung-cap", true),
       p("khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap", "Kỹ thuật làm bánh", "trung-cap", true),
       p("quan-tri-khach-san", "Quản trị khách sạn", "trung-cap", true),
-      p("khai-giang-nghiep-vu-le-tan", "Nghiệp vụ lễ tân", "so-cap"),
-      p("nghiep-vu-pha-che", "Nghiệp vụ pha chế", "so-cap"),
+      p("khai-giang-nghiep-vu-le-tan", "Nghiệp vụ lễ tân", "so-cap", true),
+      p("nghiep-vu-pha-che", "Nghiệp vụ pha chế", "so-cap", true),
     ],
     keywords: ["che-bien-mon-an", "lam-banh", "khach-san", "le-tan", "pha-che"],
   }),
@@ -116,7 +144,7 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     programs: [
       p("trung-cap-ky-thuat-xay-dung", "Kỹ thuật xây dựng", "trung-cap", true),
       p("tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026", "Kỹ thuật sửa chữa ô tô", "trung-cap", true),
-      p("thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17", "Thiết kế nội thất", "trung-cap"),
+      p("thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17", "Thiết kế nội thất", "trung-cap", true),
       p("tuyen-sinh-ky-thuat-moc-xay-dung-va-trang-tri-noi-that", "Mộc xây dựng và trang trí nội thất", "trung-cap", true),
       p("tuyen-sinh-thang-09-nghe-moc-noi-that-va-trang-tri", "Nghề mộc và trang trí nội thất", "so-cap", true),
     ],
@@ -144,8 +172,8 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     interest: "Cần học nhanh, có chứng chỉ",
     icon: "🌏",
     programs: [
-      p("ngon-ngu-han-quoc", "Ngôn ngữ Hàn Quốc", "so-cap"),
-      p("nghiep-vu-bao-mau", "Nghiệp vụ bảo mẫu", "so-cap"),
+      p("ngon-ngu-han-quoc", "Ngôn ngữ Hàn Quốc", "so-cap", true),
+      p("nghiep-vu-bao-mau", "Nghiệp vụ bảo mẫu", "so-cap", true, "Trường công bố cả hệ ngắn hạn và hệ trung cấp chính quy"),
       p("nghiep-vu-nghe-nong-nghiep-he-so-cap", "Nghiệp vụ nghề nông nghiệp", "so-cap", true),
     ],
     keywords: ["han-quoc", "bao-mau", "nong-nghiep"],
@@ -180,6 +208,21 @@ export const ALL_PROGRAMS: readonly CatalogProgram[] = PROGRAM_FIELDS.flatMap((i
 
 export function programsByLevel(level: ProgramLevel): readonly CatalogProgram[] {
   return ALL_PROGRAMS.filter((program) => program.level === level);
+}
+
+/**
+ * Ngành ĐƯỢC PHÉP liệt kê kèm văn bằng ("cấp bằng trung cấp", "cấp chứng chỉ").
+ * programsByLevel gộp cả ngành mình tự xếp nhóm, dùng nó để in kèm văn bằng là đang khẳng định
+ * thay nhà trường — ví dụ Beauty Therapy bị xếp "sơ cấp" trong khi trang của trường ghi
+ * "Thời gian đào tạo: 02 năm". Chỗ nào nêu văn bằng thì phải dùng hàm này.
+ */
+export function publishedProgramsByLevel(level: ProgramLevel): readonly CatalogProgram[] {
+  return programsByLevel(level).filter((program) => program.levelConfirmed);
+}
+
+/** Ngành trường chưa công bố hệ đào tạo — liệt kê riêng, không gắn văn bằng */
+export function programsWithUnknownLevel(): readonly CatalogProgram[] {
+  return ALL_PROGRAMS.filter((program) => !program.levelConfirmed);
 }
 
 /** Tên ngành chuẩn theo slug */
