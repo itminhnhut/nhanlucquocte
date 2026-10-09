@@ -1,7 +1,16 @@
 // Chuẩn bị HTML bài viết từ CMS: hạ h1 → h2, bỏ mục lục cũ của Quill, gắn id duy nhất cho
 // h1–h3 để làm mục lục. Xử lý bằng chuỗi (không DOMParser) → chạy được cả trên server
 // tạo HTML sẵn lẫn trình duyệt, cho ra cùng kết quả khi hydrate.
-import { demoteH1, fillMissingImageAlt, lazyLoadImages } from "./html";
+import {
+  addImageDimensions,
+  demoteH1,
+  dropEmptyHeadings,
+  dropEmptyWrappers,
+  dropForeignImages,
+  fillMissingImageAlt,
+  normalizeHeadingLevels,
+  lazyLoadImages,
+} from "./html";
 import { renderFaqAccordion } from "../seo/faq";
 
 export interface ArticleHeading {
@@ -76,7 +85,10 @@ export function prepareArticleContent(
   const usedIds = new Set<string>();
   const headings: ArticleHeading[] = [];
   // Mục "Câu hỏi thường gặp" → accordion như trang ngành (trước bước gắn id để mục lục vẫn trỏ đúng)
-  const withIds = renderFaqAccordion(removeQuillToc(demoteH1(html))).replace(HEADING_PATTERN, (_match, level: string, attrs = "", inner: string) => {
+  const cleaned = normalizeHeadingLevels(
+    dropEmptyWrappers(dropEmptyHeadings(dropForeignImages(demoteH1(html))))
+  );
+  const withIds = renderFaqAccordion(removeQuillToc(cleaned)).replace(HEADING_PATTERN, (_match, level: string, attrs = "", inner: string) => {
       const text = decodeText(inner) || "Tiêu đề chưa có nội dung";
       const existingId = attrs.match(ID_ATTR_PATTERN)?.[1] ?? "";
       const id = uniqueId(slugifyHeading(existingId || text) || "heading", usedIds);
@@ -85,5 +97,5 @@ export function prepareArticleContent(
       return `<h${level} id="${id}"${otherAttrs}>${inner}</h${level}>`;
     });
 
-  return { html: fillMissingImageAlt(lazyLoadImages(withIds), title), headings };
+  return { html: addImageDimensions(fillMissingImageAlt(lazyLoadImages(withIds), title)), headings };
 }

@@ -50,11 +50,19 @@ export const APP_URL = getEnv("VITE_APP_URL", "https://trungcapnhanlucquocte.vn"
  */
 export const USE_MOCK = getEnv("VITE_USE_MOCK", "") === "1" || !API_URL;
 
+/**
+ * Các host được phép giữ ảnh trong bài (phân tách bằng dấu phẩy), dành cho trường hợp ảnh upload
+ * nằm trên CDN hoặc tên miền lưu trữ riêng, khác cả web lẫn API.
+ * Ví dụ: VITE_IMAGE_HOSTS="cdn.truong.vn,storage.googleapis.com"
+ */
+export const EXTRA_IMAGE_HOSTS = getEnv("VITE_IMAGE_HOSTS", "");
+
 /** Helper xuất toàn bộ config (debug) */
 export const runtimeEnv = {
   API_URL,
   APP_URL,
   USE_MOCK,
+  EXTRA_IMAGE_HOSTS,
 } as const;
 
 export default runtimeEnv;

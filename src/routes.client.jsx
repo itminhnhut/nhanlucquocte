@@ -3,7 +3,12 @@
 // (import tĩnh) để render đồng bộ. Test routes.test.js giữ 2 cây cùng danh sách path.
 import RootLayout from "./layouts/RootLayout";
 import LegacyRedirect from "./components/LegacyRedirect";
-import { LEGACY_PATHS, LEGACY_PROGRAM_PATHS } from "./configs/legacyPaths";
+import {
+  LEGACY_NEWS_PATHS,
+  LEGACY_PATHS,
+  LEGACY_PROGRAM_PATHS,
+  LEGACY_REMOVED_PATHS,
+} from "./configs/legacyPaths";
 
 const page = (load) => async () => ({ Component: (await load()).default });
 
@@ -33,7 +38,12 @@ export const clientRoutes = [
       { path: "chinh-sach-bao-mat", lazy: page(() => import("./pages/PrivacyPage")) },
       { path: "cong-khai", lazy: page(() => import("./pages/DisclosurePage")) },
       // URL cũ tiếng Anh → URL tiếng Việt (src/configs/legacyPaths.ts)
-      ...[...Object.keys(LEGACY_PATHS), ...Object.keys(LEGACY_PROGRAM_PATHS)].flatMap((path) => [
+      ...[
+        ...Object.keys(LEGACY_PATHS),
+        ...Object.keys(LEGACY_PROGRAM_PATHS),
+        ...Object.keys(LEGACY_NEWS_PATHS),
+        ...LEGACY_REMOVED_PATHS,
+      ].flatMap((path) => [
         { path, element: <LegacyRedirect /> },
         { path: `${path}/*`, element: <LegacyRedirect /> },
       ]),
