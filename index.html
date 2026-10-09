@@ -39,21 +39,11 @@
 
     <!-- Đo lường: GA4 (số liệu, phễu) + Microsoft Clarity (bản đồ nhiệt, xem lại phiên) -->
     <script>
-      // Cả hai đều nạp SAU khi trang vẽ xong (hoặc khi người dùng chạm/cuộn lần đầu) để không
-      // tranh băng thông với phần hiển thị đầu tiên. Phiên nào cũng vẫn được ghi nhận.
-      window.dataLayer = window.dataLayer || [];
-      function gtag() {
-        dataLayer.push(arguments);
-      }
-      gtag("js", new Date());
-      gtag("config", "G-1J20C6MJPZ", { anonymize_ip: true });
-      // Clarity: hàng đợi lệnh sẵn sàng trước khi script về, không mất dữ liệu phiên
-      window.clarity =
-        window.clarity ||
-        function () {
-          (window.clarity.q = window.clarity.q || []).push(arguments);
-        };
-
+      // KHÔNG tải script nào, và KHÔNG tạo sẵn window.gtag / window.clarity ở đây.
+      // Luật 91/2025: im lặng không phải là đồng ý. Nếu tạo sẵn hàng đợi lệnh thì mọi thao tác
+      // TRƯỚC khi đồng ý vẫn bị dồn vào dataLayer, rồi gửi hết đi ngay lúc người dùng bấm "Đồng ý"
+      // — tức là đo cả quãng chưa được phép. Vì vậy hàng đợi chỉ được dựng bên trong hàm nạp.
+      // Trước khi đồng ý: window.gtag và window.clarity đều undefined, src/utils/analytics.js tự im.
       (function () {
         var loaded = false;
         function addScript(src) {
@@ -62,17 +52,28 @@
           s.src = src;
           document.head.appendChild(s);
         }
-        function loadAnalytics() {
+        // Chỉ được gọi từ src/components/CookieConsent.jsx sau khi người dùng bấm "Đồng ý".
+        // options.sessionRecording = false → chỉ bật GA4, không bật Clarity
+        // (xem NO_SESSION_RECORDING_PATHS trong src/utils/consent.js)
+        window.__nlqtLoadAnalytics = function (options) {
           if (loaded) return;
           loaded = true;
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () {
+            window.dataLayer.push(arguments);
+          };
+          window.gtag("js", new Date());
+          window.gtag("config", "G-1J20C6MJPZ", { anonymize_ip: true });
           addScript("https://www.googletagmanager.com/gtag/js?id=G-1J20C6MJPZ");
-          addScript("https://www.clarity.ms/tag/yuly13i8pk");
-        }
-        ["pointerdown", "keydown", "scroll"].forEach(function (evt) {
-          window.addEventListener(evt, loadAnalytics, { once: true, passive: true });
-        });
-        if (document.readyState === "complete") setTimeout(loadAnalytics, 1200);
-        else window.addEventListener("load", function () { setTimeout(loadAnalytics, 1200); });
+          if (options && options.sessionRecording) {
+            window.clarity =
+              window.clarity ||
+              function () {
+                (window.clarity.q = window.clarity.q || []).push(arguments);
+              };
+            addScript("https://www.clarity.ms/tag/yuly13i8pk");
+          }
+        };
       })();
     </script>
   </body>

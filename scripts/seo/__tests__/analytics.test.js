@@ -2,8 +2,10 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import fs from "fs";
 import { contactEventName, trackEvent } from "../../../src/utils/analytics";
+import { isSessionRecordingAllowed, readConsent } from "../../../src/utils/consent";
 
-// GA4 chạy ngay khi mở trang (không có lớp đồng ý cookie) → chỉ cần có window.gtag là gửi được
+// GA4 chỉ chạy sau khi người dùng bấm Đồng ý (src/components/CookieConsent.jsx). Khi chưa đồng ý
+// thì không có window.gtag và trackEvent phải im lặng, không được lỗi.
 function withBrowser(run) {
   const calls = [];
   globalThis.window = { gtag: (...args) => calls.push(args), location: { pathname: "/tuyen-sinh" } };
@@ -32,10 +34,28 @@ test("should send GA4 events with the current page path", () => {
   assert.doesNotThrow(() => trackEvent("click_call"));
 });
 
-test("should load gtag.js right away, without a consent gate", () => {
+test("should not load any tracker before the visitor agrees", () => {
   const indexHtml = fs.readFileSync("index.html", "utf8");
-  assert.match(indexHtml, /googletagmanager\.com\/gtag\/js\?id=G-/);
-  assert.match(indexHtml, /gtag\("config", "G-[A-Z0-9]+"/);
+  // Script đo lường chỉ được nhắc BÊN TRONG hàm __nlqtLoadAnalytics, không chạy lúc nạp trang
+  const loader = indexHtml.slice(indexHtml.indexOf("__nlqtLoadAnalytics"));
+  assert.match(loader, /googletagmanager\.com\/gtag\/js\?id=G-/);
+  assert.match(loader, /clarity\.ms\/tag\//);
+  // Không có địa chỉ công cụ nào nằm ngoài hàm nạp
+  const beforeLoader = indexHtml.slice(0, indexHtml.indexOf("__nlqtLoadAnalytics"));
+  assert.doesNotMatch(beforeLoader, /googletagmanager\.com|clarity\.ms|google-analytics\.com/);
+  // Không đoạn nào tự gọi hàm nạp: chỉ CookieConsent gọi, qua startAnalytics()
+  assert.doesNotMatch(indexHtml, /__nlqtLoadAnalytics\s*\(/);
+  // Và KHÔNG tạo sẵn window.gtag / window.clarity trước khi đồng ý — nếu tạo sẵn thì mọi thao tác
+  // trước lúc đồng ý vẫn bị dồn vào hàng đợi rồi gửi hết đi ngay khi người dùng bấm Đồng ý
+  assert.doesNotMatch(beforeLoader, /window\.gtag\s*=|function gtag|window\.clarity\s*=/);
+});
+
+test("should keep tracking off until consent, and never record sessions on the degree lookup", () => {
+  assert.equal(readConsent(), null, "server/chưa chọn → không đo");
+  assert.equal(isSessionRecordingAllowed("/tra-cuu-van-bang"), false);
+  assert.equal(isSessionRecordingAllowed("/tra-cuu-van-bang/abc"), false);
+  assert.equal(isSessionRecordingAllowed("/"), true);
+  assert.equal(isSessionRecordingAllowed("/tuyen-sinh"), true);
 });
 
 test("should track a lead after the consultation form is sent, without personal data", () => {

@@ -10,7 +10,8 @@
     "audit:seo": "node scripts/build-server.mjs && node dist-server/seo-audit.cjs",
     "test:seo": "node scripts/build-server.mjs --tests && TZ=UTC node --test dist-server/tests/*.test.cjs",
     "preview": "vite preview",
-    "start:pm2": "pm2 start ecosystem.frontend.config.cjs --env production"
+    "start:pm2": "pm2 start ecosystem.frontend.config.cjs --env production",
+    "check:cookie": "node scripts/kiem-tra-cookie.mjs"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.51.0",
