@@ -53,7 +53,14 @@ const appConfig = {
   mapLink: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}`,
   mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&output=embed`,
 
+  // logo: ảnh cho schema.org (Google đọc URL, KHÔNG tải về) → giữ PNG 512 cho đúng chuẩn.
+  // logoImage: ảnh THẬT SỰ hiện trên trang. Hai logo PNG cũ nặng 235 KB và nằm trên đường tới
+  // hạn (ảnh banner + CSS + JS tranh băng thông), nên đổi sang webp đúng cỡ hiển thị.
   logo: "/images/logo-512.png",
+  /** Logo trong banner trang chủ — hiện ở 48–64px, webp 256px đủ cho màn hình 2x */
+  logoImage: "/images/logo-256.webp",
+  /** Logo ở thanh điều hướng và menu điện thoại — hiện ở 56–64px */
+  headerLogo: "/images/logo-sim.webp",
   // Ảnh chia sẻ mặc định (Facebook/Zalo): JPG 1200×630
   defaultOgImage: "/images/og-default.jpg",
   defaultOgImageWidth: 1200,

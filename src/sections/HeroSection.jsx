@@ -39,7 +39,7 @@ function HeroSection() {
             <div className="flex items-center gap-3">
               <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white p-1.5 sm:h-16 sm:w-16">
                 <img
-                  src={appConfig.logo}
+                  src={appConfig.logoImage}
                   alt=""
                   width="64"
                   height="64"

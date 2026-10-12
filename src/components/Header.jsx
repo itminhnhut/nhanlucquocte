@@ -58,7 +58,7 @@ function Header({ onOpenMobile }) {
         <div className="flex items-center gap-3 flex-shrink-0 cursor-pointer">
           <NavLink to="/" end className="px-2 py-1 rounded-full flex gap-3">
             <img
-              src="/images/logo-sim.png"
+              src="/images/logo-sim.webp"
               alt="Logo Trường Trung cấp nghề Nhân Lực Quốc Tế"
               width="64"
               height="64"

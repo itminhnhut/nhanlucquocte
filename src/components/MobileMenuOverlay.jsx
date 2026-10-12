@@ -35,7 +35,7 @@ function MobileMenuOverlay({ open, onClose }) {
         <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50/70">
           <div className="flex items-center gap-2">
             <img
-              src="/images/logo-sim.png"
+              src="/images/logo-sim.webp"
               alt="Logo Trường Trung cấp nghề Nhân Lực Quốc Tế"
               width="40"
               height="40"

@@ -53,6 +53,10 @@
 }
 
 /* Images */
+/* Ảnh trong bài tải trễ (loading="lazy") nên trên mạng chậm sẽ có một khoảng trống chờ.
+   Khoảng trống đó đã đúng kích thước nhờ width/height, giờ tô thêm nền xám nhấp nháy để người
+   đọc thấy "đang tải" thay vì nhìn ô trắng.
+   Làm bằng nền của chính thẻ <img>: ảnh tải xong là phủ kín, không cần JS, không thêm thẻ. */
 .rich-text img {
   max-width: 100%;
   height: auto;
@@ -60,6 +64,30 @@
   display: block;
   margin: 1.25rem auto;
   object-fit: contain;
+}
+
+/* Chỉ ảnh CHƯA tải xong mới có nền chờ. useImagePlaceholder gắn data-loaded khi ảnh về, nếu để
+   nền chạy mãi thì ảnh nền trong suốt sẽ lộ vệt nhấp nháy và máy phải vẽ lại liên tục, tốn pin. */
+.rich-text img:not([data-loaded]) {
+  background-color: #f1f5f9;
+  background-image: linear-gradient(100deg, #f1f5f9 30%, #e2e8f0 50%, #f1f5f9 70%);
+  background-size: 220% 100%;
+  animation: rich-text-img-cho 1.3s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rich-text img:not([data-loaded]) {
+    animation: none;
+  }
+}
+
+@keyframes rich-text-img-cho {
+  from {
+    background-position: 140% 0;
+  }
+  to {
+    background-position: -40% 0;
+  }
 }
 
 /* Lexical xuất kích thước và canh ảnh bằng inline style. */

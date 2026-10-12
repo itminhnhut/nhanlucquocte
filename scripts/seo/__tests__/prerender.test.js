@@ -112,7 +112,8 @@ test("should lazy-load home page images below the hero so the hero loads first",
     news: [{ ...POST, image: "https://cdn.example/spa.png" }],
   }));
   const images = html.match(/<img[^>]*>/g);
-  const isAboveFold = (img) => /banner-nen|logo-sim|logo-512/.test(img);
+  // Ảnh trong màn hình đầu: banner và hai logo (nay là webp, xem appConfig.logoImage/headerLogo)
+  const isAboveFold = (img) => /banner-nen|logo-sim|logo-256|logo-512/.test(img);
   const belowFold = images.filter((img) => !isAboveFold(img));
 
   images.filter(isAboveFold).forEach((img) => assert.doesNotMatch(img, /loading="lazy"/, img));
