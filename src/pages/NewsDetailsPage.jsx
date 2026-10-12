@@ -5,6 +5,7 @@ import { Seo } from "../components/Seo";
 import ContactCard from "../components/ContactCard";
 import OtherPosts from "../components/OtherPosts";
 import { prepareArticleContent } from "../utils/articleContent";
+import { useImagePlaceholder } from "../hooks/useImagePlaceholder";
 import { formatDateVi } from "../utils/formatDate";
 import { isReservedSlug } from "../configs/navigation";
 import { ALL_PROGRAMS, programHref } from "../content/programFields";
@@ -96,6 +97,9 @@ function NewsDetailsPage() {
     () => prepareArticleContent(post?.content, post?.title),
     [post?.content, post?.title]
   );
+  // Ảnh trong bài tải trễ → gỡ nền chờ khi từng ảnh về (rich-text.css)
+  const contentRef = useRef(null);
+  useImagePlaceholder(contentRef, articleContent.html);
   const publishedDate = formatDateVi(post?.createdAt);
 
   // Meta SEO dùng chung với HTML tạo sẵn (src/seo/pageMeta.ts)
@@ -246,7 +250,7 @@ function NewsDetailsPage() {
                       </nav>
                     )}
 
-                    <div className="rich-text">
+                    <div className="rich-text" ref={contentRef}>
                       <div
                         dangerouslySetInnerHTML={{
                           __html: articleContent.html,

@@ -21,6 +21,7 @@ import appConfig from "../configs/appConfig";
 import { trackEvent } from "../utils/analytics";
 import ProgramExtras from "../components/ProgramExtras";
 import { stripContactBlock } from "../utils/contactBlock";
+import { useImagePlaceholder } from "../hooks/useImagePlaceholder";
 import { programFaqGroupBySlug } from "../content/programFaqs";
 import { LEVEL_LABEL, PROGRAM_FIELDS, PROGRAM_NAMES, publishedLevel } from "../content/programFields";
 import { alternateProgramSlug } from "../configs/programSlugAliases";
@@ -160,6 +161,10 @@ function ProgramDetailPage() {
     const withAlt = fillMissingImageAlt(lazyLoadImages(renderFaqAccordion(base)), program?.title);
     return addImageDimensions(withAlt);
   }, [program?.content, program?.title]);
+  // Ảnh trong bài tải trễ → gỡ nền chờ khi từng ảnh về (rich-text.css)
+  const contentRef = useRef(null);
+  useImagePlaceholder(contentRef, contentHtml);
+
   // Chưa có mục FAQ trong nội dung CMS → hiện câu hỏi soạn sẵn cho ngành (src/content/programFaqs.ts)
   const presetFaqGroup = useMemo(
     () => (extractFaqSection(demoteH1(stripContactBlock(program?.content))) ? null : programFaqGroupBySlug(slug)),
@@ -329,7 +334,7 @@ function ProgramDetailPage() {
 
                 {/* Body content – nếu BE trả content dạng HTML */}
                 {program.content ? (
-                  <div className="rich-text">
+                  <div className="rich-text" ref={contentRef}>
                     <div
                       dangerouslySetInnerHTML={{ __html: contentHtml }}
                     />

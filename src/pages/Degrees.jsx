@@ -167,6 +167,22 @@ function DegreesSection() {
               {/* Thanh kẻ giống file mô tả */}
               <div className="h-[3px] bg-primary/70 mb-4 rounded-full" />
 
+              {/* Đang tra: hiện khung chờ đúng hình dạng kết quả, để người dùng thấy hệ thống
+                  đang chạy và không bị giật bố cục khi dữ liệu về */}
+              {loading && (
+                <div aria-hidden="true" className="mb-4 animate-pulse space-y-2.5">
+                  {[0, 1, 2, 3].map((row) => (
+                    <div key={row} className="flex items-center gap-3">
+                      <div className="h-3 w-24 rounded bg-slate-200" />
+                      <div className="h-3 flex-1 rounded bg-slate-100" />
+                    </div>
+                  ))}
+                </div>
+              )}
+              <span className="sr-only" role="status" aria-live="polite">
+                {loading ? "Đang tra cứu văn bằng" : ""}
+              </span>
+
               {/* Summary for primary degree */}
               <div className="space-y-1.5 mb-4">
                 <RowLine
