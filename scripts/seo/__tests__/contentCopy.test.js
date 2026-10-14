@@ -132,3 +132,30 @@ test("should ask for the three fields the admin shows but never receives", () =>
   // API khai programId là số, ô select trả chuỗi
   assert.match(source, /payload\.programId = Number\(values\.programId\)/);
 });
+
+test("should keep the register form inside the screen on a phone", () => {
+  // Thẻ <select> lấy chiều rộng tối thiểu theo option DÀI NHẤT (tên ngành dài nhất), mà phần
+  // tử flex không co nhỏ hơn min-content nếu thiếu min-w-0 → cả form tràn ngang trên điện
+  // thoại, phải kéo ngang mới đọc được.
+  const source = fs.readFileSync(path.join(process.cwd(), "src/sections/RegisterSection.jsx"), "utf8");
+  const selects = source.match(/<select[\s\S]*?>/g) ?? [];
+  assert.equal(selects.length, 2, "số ô chọn đã đổi, xem lại phép kiểm này");
+  selects.forEach((tag) => {
+    assert.match(tag, /w-full/, "ô chọn thiếu w-full");
+    assert.match(tag, /min-w-0/, "ô chọn thiếu min-w-0 — tên ngành dài sẽ làm tràn ngang");
+  });
+});
+
+test("should fetch the program list once even when two blocks need it", () => {
+  // Trang chủ có hai chỗ cần danh sách: khối "Chương trình đào tạo" và ô chọn ngành trong form
+  // đăng ký. Mỗi chỗ tự gọi là tải client/programs hai lần — 254 KB nhân đôi.
+  const hook = fs.readFileSync(path.join(process.cwd(), "src/hooks/usePrograms.js"), "utf8");
+  assert.match(hook, /function fetchProgramsOnce/);
+  assert.match(hook, /if \(!inFlight\)/, "request đang bay phải được dùng chung");
+  assert.equal((hook.match(/\.get\("client\/programs"\)/g) ?? []).length, 1, "còn nhiều chỗ tự gọi");
+  // Các trang khác không được tự gọi lại danh sách đầy đủ (SearchPage gọi kèm ?search= là khác)
+  ["src/sections/ProgramsSection.jsx", "src/sections/RegisterSection.jsx"].forEach((file) => {
+    const source = fs.readFileSync(path.join(process.cwd(), file), "utf8");
+    assert.ok(!/\.get\(["\`']client\/programs["\`']\)/.test(source), `${file} tự gọi API thay vì dùng hook`);
+  });
+});
