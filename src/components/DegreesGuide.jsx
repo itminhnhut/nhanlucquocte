@@ -10,10 +10,10 @@ const LOOKUP_STEPS = [
 ];
 
 const SHOWN_FIELDS = [
-  "Họ tên, số CCCD và ngày sinh của học viên",
+  "Họ tên và ngày sinh của học viên",
   "Số hiệu văn bằng",
   "Ngành tốt nghiệp",
-  "Xếp loại và năm tốt nghiệp",
+  "Trình độ đào tạo (trung cấp, sơ cấp…)",
 ];
 
 const DEGREE_FAQS = [
@@ -24,7 +24,7 @@ const DEGREE_FAQS = [
   },
   {
     question: "Nhập đúng số CCCD nhưng không thấy văn bằng thì làm sao?",
-    answer: `Dữ liệu một số khóa có thể chưa được cập nhật lên hệ thống. Vui lòng liên hệ phòng đào tạo qua hotline ${appConfig.phone} hoặc email ${appConfig.email} để được kiểm tra.`,
+    answer: `Có hai khả năng: dữ liệu khóa của bạn chưa được cập nhật lên hệ thống, hoặc hồ sơ đã có nhưng chưa ghi số CCCD nên không tra được theo số này. Vui lòng liên hệ phòng đào tạo qua hotline ${appConfig.phone} hoặc email ${appConfig.email}, kèm số hiệu văn bằng để được tra trực tiếp.`,
   },
   {
     question: "Doanh nghiệp muốn xác minh văn bằng của ứng viên thì làm thế nào?",
@@ -68,7 +68,7 @@ function DegreesGuide() {
             Không tìm thấy kết quả?
           </h2>
           <p>
-            Kiểm tra lại số CCCD (đủ 12 chữ số, không có khoảng trắng). Nếu vẫn không có kết quả, liên hệ
+            Kiểm tra lại số CCCD (CCCD thường 12 chữ số, CMND cũ 9 chữ số). Nếu vẫn không có kết quả, liên hệ
             phòng đào tạo qua hotline{" "}
             <a href={`tel:${appConfig.phoneE164}`} className="font-semibold text-primary-dark underline">
               {appConfig.phone}
