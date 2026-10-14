@@ -55,6 +55,6 @@ export default defineConfig({
     },
   },
   preview: {
-    allowedHosts: ["vietuchcm.edu.vn", "www.vietuchcm.edu.vn"],
+    allowedHosts: ["trungcapnhanlucquocte.vn", "www.trungcapnhanlucquocte.vn"],
   },
 });
