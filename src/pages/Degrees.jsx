@@ -39,7 +39,13 @@ const SUMMARY_ROWS = [
   // không có trường đó thì ô là dấu "—".
   { label: "Trình độ", read: (row) => row?.qualification, gray: true },
   { label: "Xếp loại", read: (row) => row?.rank },
-  { label: "Năm tốt nghiệp", read: (row) => row?.yearOfGrad, gray: true },
+  // API có cả graduationDate (ngày đầy đủ) và yearOfGrad; bằng cũ chỉ có năm, bằng nhập
+  // trong admin có thể có cả ngày → hiện ngày khi có, không thì hiện năm.
+  {
+    label: "Ngày tốt nghiệp",
+    read: (row, formatDate) => (row?.graduationDate ? formatDate(row.graduationDate) : row?.yearOfGrad),
+    gray: true,
+  },
 ];
 
 /**
@@ -72,12 +78,21 @@ export const flattenRecords = (records) => {
         qualification: QUALIFICATION_LABEL[certificate.qualification] ?? "",
         deliveryMode: DELIVERY_LABEL[certificate.deliveryMode] ?? "",
         rank: certificate.rank ?? "",
+        graduationDate: certificate.graduationDate ?? "",
         yearOfGrad: certificate.yearOfGrad ? String(certificate.yearOfGrad) : "",
       };
-      // Cùng một tấm bằng có thể về từ CẢ HAI nguồn (một dòng ở hồ sơ văn bằng, một dòng
-      // nhập qua hệ thống học viên). Gộp theo số bằng và lấy trường nào có giá trị, nếu
-      // không trang sẽ báo "có 2 văn bằng" cho người chỉ có một.
-      const key = chuanHoaSoBang(certificate.certNumber) || `id-${certificate.id}`;
+      // Cùng một tấm bằng về từ CẢ HAI nguồn (bảng degrees và kho hồ sơ cũ) nên phải gộp,
+      // nếu không trang báo "có 2 văn bằng" cho người chỉ có một.
+      //
+      // Nhưng gộp theo mỗi số bằng là SAI: một số bằng cũ (001528/BC-NLQT) thuộc hai người
+      // khác nhau trên site cũ — tra số đó trả về 4 dòng cho 2 người. Gộp theo số bằng sẽ
+      // nhập hai người thành một và làm mất một người. Nên khoá gộp phải gồm cả người:
+      // họ tên + ngày sinh + số bằng.
+      const key = [
+        String(record.fullName ?? "").trim().toLowerCase(),
+        String(record.dateOfBirth ?? "").slice(0, 10),
+        chuanHoaSoBang(certificate.certNumber) || `id-${certificate.id}`,
+      ].join("|");
       const da_co = theoSoBang.get(key);
       if (!da_co) {
         theoSoBang.set(key, row);
@@ -310,7 +325,10 @@ function DegreesSection() {
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
                           <InfoItem label="Ngành" value={deg.program} />
                           <InfoItem label="Xếp loại" value={deg.rank} />
-                          <InfoItem label="Năm tốt nghiệp" value={deg.yearOfGrad} />
+                          <InfoItem
+                            label="Tốt nghiệp"
+                            value={deg.graduationDate ? formatDate(deg.graduationDate) : deg.yearOfGrad}
+                          />
                           <InfoItem label="Hình thức học" value={deg.deliveryMode} />
                         </div>
                       </div>

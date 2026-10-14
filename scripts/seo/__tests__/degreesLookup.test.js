@@ -124,7 +124,7 @@ test("should accept a 12-digit CCCD and a 9-digit CMND but reject anything else"
 
 test("should show every field the lookup can return", () => {
   // API gộp hai nguồn: thiếu dòng nào là người tra cứu mất thông tin có thật trong hồ sơ
-  ["Tên", "Ngày sinh", "Số hiệu văn bằng", "Tốt nghiệp ngành", "Trình độ", "Xếp loại", "Năm tốt nghiệp"].forEach(
+  ["Tên", "Ngày sinh", "Số hiệu văn bằng", "Tốt nghiệp ngành", "Trình độ", "Xếp loại", "Ngày tốt nghiệp"].forEach(
     (label) => assert.ok(source.includes(`label: "${label}"`), `thiếu dòng ${label}`)
   );
 });
@@ -176,4 +176,36 @@ test("should still list two genuinely different certificates", () => {
     },
   ]);
   assert.equal(rows.length, 2);
+});
+
+test("should not merge two different people who share one diploma number", () => {
+  // Một số bằng cũ (001528/BC-NLQT) thuộc HAI người khác nhau trên site cũ — API trả 4 dòng
+  // cho 2 người (mỗi người lặp 2 nguồn). Gộp theo mỗi số bằng là nhập hai người thành một
+  // và làm MẤT một người khỏi kết quả tra cứu.
+  const hai_nguoi = ["TRẦN THỤY THÙY TRANG", "LÂM THỊ HUYỀN TRANG"].flatMap((fullName, i) =>
+    ["certificate", "degree"].map((source) => ({
+      source,
+      fullName,
+      dateOfBirth: i === 0 ? "1997-04-27T00:00:00.000Z" : "1991-11-21T00:00:00.000Z",
+      certificates: [
+        { id: 100 + i, certNumber: "001528/BC-NLQT", program: "ĐIỀU DƯỠNG", qualification: source === "certificate" ? "TRUNG_CAP" : null },
+      ],
+    }))
+  );
+  const rows = flattenRecords(hai_nguoi);
+  assert.equal(rows.length, 2, "gộp mất một người");
+  assert.deepEqual(
+    rows.map((row) => row.fullName).sort(),
+    ["LÂM THỊ HUYỀN TRANG", "TRẦN THỤY THÙY TRANG"]
+  );
+  // Mỗi người vẫn được gộp đủ trường từ cả hai nguồn
+  rows.forEach((row) => assert.equal(row.qualification, "Trung cấp"));
+});
+
+test("should prefer the full graduation date over the year alone", () => {
+  const [ngay] = flattenRecords([
+    { source: "degree", fullName: "A", certificates: [{ id: 1, certNumber: "X", graduationDate: "2026-06-15T00:00:00.000Z", yearOfGrad: 2026 }] },
+  ]);
+  assert.equal(ngay.graduationDate, "2026-06-15T00:00:00.000Z");
+  assert.equal(ngay.yearOfGrad, "2026");
 });
