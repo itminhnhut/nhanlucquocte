@@ -8,8 +8,8 @@ module.exports = {
       env: {
         NODE_ENV: "production",
         PORT: 4002,
-        // Trống = dùng dữ liệu giả lập trong public/mock; điền URL khi có backend của trường
-        VITE_API_URL: "",
+        // API của trường — nguồn dữ liệu duy nhất. Để trống là website không có nội dung động.
+        VITE_API_URL: "https://truongdaynghe-api.x2ldh2.easypanel.host/api",
       },
     },
   ],

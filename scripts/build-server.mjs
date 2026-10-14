@@ -34,6 +34,8 @@ await build({
 });
 
 if (process.argv.includes("--tests")) {
+  // Xoá bản bundle cũ trước: test đã xoá nguồn mà còn file .cjs thì vẫn được node --test chạy
+  fs.rmSync(path.join(OUT_DIR, "tests"), { recursive: true, force: true });
   const testFiles = fs
     .readdirSync(TEST_DIR)
     .filter((file) => file.endsWith(".test.js"))

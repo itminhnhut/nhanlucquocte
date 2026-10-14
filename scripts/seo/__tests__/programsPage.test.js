@@ -44,8 +44,8 @@ test("should prerender the programs page with field headings, intro, FAQ and con
 
 test("should show confirmed quick facts and field comparison guides on program cards", () => {
   const programs = [
-    { id: 1, slug: "tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026", title: "TUYỂN SINH NGÀNH KỸ THUẬT SỬA CHỮA Ô TÔ", description: "KHAI GIẢNG NGÀY 07.10.2026", active: true },
-    { id: 2, slug: "khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap", title: "TUYỂN SINH NGÀNH KỸ THUẬT LÀM BÁNH", description: "KHAI GIẢNG NGÀY 07.09.2026", active: true },
+    { id: 1, slug: "trung-cap-ky-thuat-sua-chua-o-to", title: "TUYỂN SINH NGÀNH KỸ THUẬT SỬA CHỮA Ô TÔ", description: "KHAI GIẢNG NGÀY 07.10.2026", active: true },
+    { id: 2, slug: "ky-thuat-lam-banh", title: "TUYỂN SINH NGÀNH KỸ THUẬT LÀM BÁNH", description: "KHAI GIẢNG NGÀY 07.09.2026", active: true },
     { id: 3, slug: "nghiep-vu-nghe-nong-nghiep-he-so-cap", title: "TUYỂN SINH NGHIỆP VỤ NGHỀ NÔNG NGHIỆP HỆ SƠ CẤP", active: true },
   ];
   const data = initialDataForPath("/nganh-dao-tao", { programs, news: [] }, new Date("2026-09-25T02:00:00.000Z"));

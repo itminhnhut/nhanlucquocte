@@ -25,6 +25,9 @@ function SearchPage() {
     let ignore = false;
     const fetchPrograms = async () => {
       try {
+        // Xoá kết quả cũ trước: skeleton và kết quả giờ nằm chung một lưới, để lại danh sách
+        // của từ khoá trước là người dùng tưởng đó là kết quả của từ khoá vừa gõ.
+        setPrograms([]);
         setLoadingPrograms(true);
         setProgramsError("");
         const res = await https.get("client/programs", {
@@ -102,36 +105,40 @@ function SearchPage() {
               </p>
             )}
 
-            {q && loadingPrograms && (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-4">
-                {[...Array(8)].map((_, i) => (
-                  <div
-                    key={i}
-                    className="animate-pulse rounded-2xl border border-slate-200 bg-white p-4"
-                  >
-                    <div className="h-4 bg-slate-200 rounded w-3/4 mb-3"></div>
-                    <div className="h-3 bg-slate-200 rounded w-full mb-2"></div>
-                    <div className="h-3 bg-slate-200 rounded w-5/6"></div>
-                  </div>
-                ))}
-              </div>
-            )}
-
-            {programsError && (
-              <p className="text-[12px] text-red-500 mb-2">{programsError}</p>
-            )}
-
-            {q &&
-              !loadingPrograms &&
-              !programsError &&
-              programs.length === 0 && (
-                <p className="text-[12px] text-slate-500 mb-2 italic">
+            {/* Trang này ngắn nên footer nằm trong màn hình: mỗi lần vùng kết quả cao/thấp đi là
+                footer bị kéo theo. Chừa sẵn 60vh khi đang có từ khoá → footer rơi xuống dưới
+                màn hình, kết quả nhiều hay ít cũng không dịch gì trong tầm nhìn. */}
+            <div className={q ? "min-h-[60vh]" : ""}>
+            {/* Một chỗ duy nhất cho thông báo, luôn chiếm sẵn chiều cao: lỗi và "không tìm thấy"
+                trước đây là 2 thẻ chèn/bỏ khỏi luồng nên đẩy lưới kết quả lên xuống */}
+            <div className="min-h-[22px] mb-2" role="status" aria-live="polite">
+              {programsError && <p className="text-[12px] text-red-500">{programsError}</p>}
+              {q && !loadingPrograms && !programsError && programs.length === 0 && (
+                <p className="text-[12px] text-slate-500 italic">
                   Không tìm thấy ngành học nào phù hợp với từ khóa này.
                 </p>
               )}
+            </div>
 
-            {programs.length > 0 && (
+            {/* Skeleton nằm TRONG chính lưới kết quả, cùng số cột cùng khoảng cách. Để 3 thẻ:
+                kết quả nhiều hơn thì trang dài ra (nhảy nằm dưới màn hình), còn dựng sẵn 8 thẻ
+                rồi tụt xuống 2 thẻ là kéo cả trang co lại — đo được CLS 0,92 trên điện thoại. */}
+            {(loadingPrograms || programs.length > 0) && (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                {q && loadingPrograms &&
+                  [0, 1, 2].map((i) => (
+                    <div
+                      key={`cho-${i}`}
+                      aria-hidden="true"
+                      className="animate-pulse rounded-2xl border border-slate-200 bg-white p-4 flex flex-col gap-2"
+                    >
+                      <div className="h-[18px] w-3/4 rounded bg-slate-200" />
+                      <div className="h-3 w-full rounded bg-slate-100" />
+                      <div className="h-3 w-full rounded bg-slate-100" />
+                      <div className="h-3 w-4/6 rounded bg-slate-100" />
+                      <div className="mt-auto h-5 w-24 rounded-full bg-slate-100" />
+                    </div>
+                  ))}
                 {programs.map((p) => {
                   const desc =
                     p?.description ||
@@ -162,6 +169,7 @@ function SearchPage() {
                 })}
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>

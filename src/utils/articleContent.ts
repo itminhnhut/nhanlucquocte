@@ -7,6 +7,7 @@ import {
   dropEmptyHeadings,
   dropEmptyWrappers,
   dropForeignImages,
+  unwrapForeignImageLinks,
   fillMissingImageAlt,
   normalizeHeadingLevels,
   lazyLoadImages,
@@ -86,7 +87,7 @@ export function prepareArticleContent(
   const headings: ArticleHeading[] = [];
   // Mục "Câu hỏi thường gặp" → accordion như trang ngành (trước bước gắn id để mục lục vẫn trỏ đúng)
   const cleaned = normalizeHeadingLevels(
-    dropEmptyWrappers(dropEmptyHeadings(dropForeignImages(demoteH1(html))))
+    dropEmptyWrappers(dropEmptyHeadings(unwrapForeignImageLinks(dropForeignImages(demoteH1(html)))))
   );
   const withIds = renderFaqAccordion(removeQuillToc(cleaned)).replace(HEADING_PATTERN, (_match, level: string, attrs = "", inner: string) => {
       const text = decodeText(inner) || "Tiêu đề chưa có nội dung";

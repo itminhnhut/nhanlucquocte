@@ -1,6 +1,6 @@
 // CLI tạo sitemap lúc build (chạy bản đã bundle: dist-server/generate-sitemap.cjs,
 // xem scripts/build-server.mjs). Output mặc định: dist/sitemap.xml
-//   - VITE_API_URL: URL API; không khai báo → đọc dữ liệu giả lập trong public/mock
+//   - VITE_API_URL: URL API của trường; không khai báo → sitemap cũ được giữ nguyên
 import dotenv from "dotenv";
 import { generateSitemapFile } from "./seo/generate";
 

@@ -19,7 +19,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   {
     name: "Học viên nhà trường",
     major: "Ngành Công nghệ thông tin",
-    programSlug: "nganh-cong-nghe-thong-tin-he-trung-cap",
+    programSlug: "cong-nghe-thong-tin",
     photo: "/images/testimonials/hv-cntt.webp",
     content:
       "Giảng viên tại trường rất tận tâm và luôn hỗ trợ học viên hết mình. Tôi đã học được nhiều kiến thức thực tiễn, giúp ích rất nhiều cho công việc hiện tại.",
@@ -27,7 +27,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   {
     name: "Học viên nhà trường",
     major: "Ngành Quản trị kinh doanh",
-    programSlug: "tuyen-sinh-trung-cap-nganh-quan-tri-kinh-doanh",
+    programSlug: "quan-tri-kinh-doanh",
     photo: "/images/testimonials/hv-quan-tri-kinh-doanh.webp",
     content:
       "Chương trình học được thiết kế rất thực tế, bám sát nhu cầu thị trường lao động. Tôi cảm thấy tự tin khi bước vào môi trường làm việc.",
@@ -43,7 +43,7 @@ export const TESTIMONIALS: readonly Testimonial[] = [
   {
     name: "Học viên nhà trường",
     major: "Ngành Điều dưỡng",
-    programSlug: "chuyen-nganh-dieu-duong-he-trung-cap",
+    programSlug: "dieu-duong-he-trung-cap",
     photo: "/images/testimonials/hv-y-duoc.webp",
     content:
       "Cơ sở vật chất cùng sự nhiệt huyết của thầy cô là những điểm khiến tôi ấn tượng nhất. Học ở trường thực sự là một trải nghiệm đáng nhớ.",

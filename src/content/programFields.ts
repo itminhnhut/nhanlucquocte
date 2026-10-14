@@ -24,7 +24,7 @@
 // groupProgramsByField khớp theo slug TRƯỚC, không khớp thì dò từ khoá trong slug/tiêu đề.
 // Sau khi import xong: đối chiếu slug thật rồi cập nhật mảng `slugs` của từng lĩnh vực.
 
-/** Trang ngành đã có dữ liệu chưa? Hiện dữ liệu lấy từ public/mock (bài thật của trường) nên đã có.
+/** Trang ngành đã có dữ liệu chưa? Dữ liệu lấy từ client/programs của API nên đã có.
  *  Nếu tạm tắt mục ngành thì đổi về false, mọi link nội bộ sẽ trỏ về trang danh sách. */
 export const PROGRAM_PAGES_READY = true;
 
@@ -96,12 +96,12 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     interest: "Thích chăm sóc người bệnh",
     icon: "🩺",
     programs: [
-      p("chuyen-nganh-dieu-duong-he-trung-cap", "Điều dưỡng", "trung-cap", true),
-      p("tuyen-sinh-nganh-duoc-si-he-trung-cap-khai-giang-ngay-16-03-2026", "Dược sĩ", "trung-cap", true),
+      p("dieu-duong-he-trung-cap", "Điều dưỡng", "trung-cap", true),
+      p("duoc-si-he-trung-cap", "Dược sĩ", "trung-cap", true),
       p("cham-soc-nguoi-cao-tuoi", "Chăm sóc người cao tuổi", "so-cap", true),
-      p("tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026", "Trợ lý nha khoa", "so-cap"),
+      p("nghiep-vu-tro-ly-nha-khoa", "Trợ lý nha khoa", "so-cap"),
     ],
-    keywords: ["chuyen-nganh-dieu-duong-he-trung-cap", "duoc", "cao-tuoi", "nha-khoa"],
+    keywords: ["dieu-duong-he-trung-cap", "duoc", "cao-tuoi", "nha-khoa"],
   }),
   field({
     id: "lam-dep",
@@ -112,7 +112,7 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     icon: "💄",
     programs: [
       p("cham-soc-sac-dep-he-trung-cap", "Chăm sóc sắc đẹp", "trung-cap", true),
-      p("tuyen-sinh-nganh-beauty-therapy-lieu-phap-lam-dep", "Beauty Therapy", "so-cap"),
+      p("beauty-therapy-lieu-phap-lam-dep", "Beauty Therapy", "so-cap"),
       p("cham-soc-da-chuyen-nghiep", "Chăm sóc da", "so-cap"),
       p("cham-soc-nails-chuyen-nghiep-ngan-han", "Chăm sóc nails", "so-cap", true),
     ],
@@ -127,9 +127,9 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     icon: "🍰",
     programs: [
       p("ky-thuat-che-bien-mon-an", "Kỹ thuật chế biến món ăn", "trung-cap", true),
-      p("khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap", "Kỹ thuật làm bánh", "trung-cap", true),
+      p("ky-thuat-lam-banh", "Kỹ thuật làm bánh", "trung-cap", true),
       p("quan-tri-khach-san", "Quản trị khách sạn", "trung-cap", true),
-      p("khai-giang-nghiep-vu-le-tan", "Nghiệp vụ lễ tân", "so-cap", true),
+      p("nghiep-vu-le-tan", "Nghiệp vụ lễ tân", "so-cap", true),
       p("nghiep-vu-pha-che", "Nghiệp vụ pha chế", "so-cap", true),
     ],
     keywords: ["che-bien-mon-an", "lam-banh", "khach-san", "le-tan", "pha-che"],
@@ -143,10 +143,10 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     icon: "🔧",
     programs: [
       p("trung-cap-ky-thuat-xay-dung", "Kỹ thuật xây dựng", "trung-cap", true),
-      p("tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026", "Kỹ thuật sửa chữa ô tô", "trung-cap", true),
-      p("thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17", "Thiết kế nội thất", "trung-cap", true),
-      p("tuyen-sinh-ky-thuat-moc-xay-dung-va-trang-tri-noi-that", "Mộc xây dựng và trang trí nội thất", "trung-cap", true),
-      p("tuyen-sinh-thang-09-nghe-moc-noi-that-va-trang-tri", "Nghề mộc và trang trí nội thất", "so-cap", true),
+      p("trung-cap-ky-thuat-sua-chua-o-to", "Kỹ thuật sửa chữa ô tô", "trung-cap", true),
+      p("thiet-ke-noi-that", "Thiết kế nội thất", "trung-cap", true),
+      p("ky-thuat-moc-xay-dung-va-trang-tri-noi-that", "Mộc xây dựng và trang trí nội thất", "trung-cap", true),
+      p("moc-noi-that-va-trang-tri", "Nghề mộc và trang trí nội thất", "so-cap", true),
     ],
     keywords: ["xay-dung", "o-to", "noi-that", "moc"],
   }),
@@ -159,10 +159,10 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     icon: "📊",
     programs: [
       p("ke-toan-doanh-nghiep", "Kế toán doanh nghiệp", "trung-cap", true),
-      p("tuyen-sinh-trung-cap-nganh-quan-tri-kinh-doanh", "Quản trị kinh doanh", "trung-cap", true),
-      p("nganh-cong-nghe-thong-tin-he-trung-cap", "Công nghệ thông tin", "trung-cap", true),
+      p("quan-tri-kinh-doanh", "Quản trị kinh doanh", "trung-cap", true),
+      p("cong-nghe-thong-tin", "Công nghệ thông tin", "trung-cap", true),
     ],
-    keywords: ["ke-toan", "tuyen-sinh-trung-cap-nganh-quan-tri-kinh-doanh", "nganh-cong-nghe-thong-tin-he-trung-cap"],
+    keywords: ["ke-toan", "quan-tri-kinh-doanh", "cong-nghe-thong-tin"],
   }),
   field({
     id: "ngan-han",
@@ -186,8 +186,8 @@ export const PROGRAM_FIELDS: readonly ProgramField[] = [
     interest: "Đã có bằng trung cấp, muốn học tiếp",
     icon: "🎓",
     programs: [
-      p("tuyen-sinh-he-dai-hoc-nam-2025", "Liên thông từ trung cấp lên đại học", "lien-thong", true),
-      p("tuyen-sinh-he-lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc", "Quản trị dịch vụ ăn uống và ẩm thực", "lien-thong", true),
+      p("lien-thong-tu-trung-cap-len-dai-hoc", "Liên thông từ trung cấp lên đại học", "lien-thong", true),
+      p("lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc", "Quản trị dịch vụ ăn uống và ẩm thực", "lien-thong", true),
     ],
     keywords: ["lien-thong", "dai-hoc"],
   }),

@@ -8,7 +8,7 @@ import { buildSitemap } from "../sitemap";
 const strip = (html) => html.replace(/<!-- -->/g, "");
 const NOW = new Date("2026-09-25T03:00:00.000Z");
 const programs = [
-  { slug: "tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026", title: "TUYỂN SINH NGÀNH CÔNG NGHỆ KỸ THUẬT Ô TÔ", description: "KHAI GIẢNG NGÀY 07.10.2026" },
+  { slug: "trung-cap-ky-thuat-sua-chua-o-to", title: "TUYỂN SINH NGÀNH CÔNG NGHỆ KỸ THUẬT Ô TÔ", description: "KHAI GIẢNG NGÀY 07.10.2026" },
   { slug: "ke-toan-doanh-nghiep", title: "TUYỂN SINH NGÀNH KẾ TOÁN DOANH NGHIỆP", description: "" },
 ];
 

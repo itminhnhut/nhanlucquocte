@@ -1,7 +1,7 @@
 // Ngành ưu tiên tuyển sinh/SEO: luôn nằm đầu danh sách ngành ở trang chủ để có
 // link nội bộ từ trang chủ (trang chủ chỉ hiện 12 ngành đầu).
 // TODO: chốt lại danh sách ngành ưu tiên với nhà trường.
-export const FEATURED_PROGRAM_SLUGS: readonly string[] = ["chuyen-nganh-dieu-duong-he-trung-cap", "cham-soc-sac-dep-he-trung-cap"];
+export const FEATURED_PROGRAM_SLUGS: readonly string[] = ["dieu-duong-he-trung-cap", "cham-soc-sac-dep-he-trung-cap"];
 
 interface ProgramLike {
   slug?: string;

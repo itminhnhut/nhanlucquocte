@@ -15,12 +15,12 @@ const LEGACY_URLS = fs
   .filter(Boolean);
 
 const programSlugs = new Set(
-  JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/mock/programs.json"), "utf8")).map(
+  JSON.parse(fs.readFileSync(path.join(process.cwd(), "scripts/seo/__tests__/fixtures/programs.json"), "utf8")).map(
     (item) => item.slug
   )
 );
 const newsSlugs = new Set(
-  JSON.parse(fs.readFileSync(path.join(process.cwd(), "public/mock/posts.json"), "utf8")).map(
+  JSON.parse(fs.readFileSync(path.join(process.cwd(), "scripts/seo/__tests__/fixtures/posts.json"), "utf8")).map(
     (item) => item.slug
   )
 );

@@ -1,22 +1,10 @@
-import axios, { AxiosHeaders, AxiosInstance, AxiosResponse, AxiosAdapter } from "axios";
-import { API_URL, USE_MOCK } from "@/configs/env";
-import { mockRequest } from "./mockApi";
+import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { API_URL } from "@/configs/env";
 import { trackRequestEnd, trackRequestStart } from "./requestTracker";
-
-// Chưa có backend → trả dữ liệu giả lập ngay tại tầng axios, nên mọi chỗ gọi API giữ nguyên.
-// Endpoint không có trong mock (vd tra cứu văn bằng) vẫn đi ra mạng như bình thường.
-const mockAdapter: AxiosAdapter = async (config) => {
-  const url = config.url ?? "";
-  const data = await mockRequest(url, (config.params ?? {}) as Record<string, unknown>);
-  // getAdapter chuẩn hoá adapter mặc định (tên "xhr"/"http"/"fetch" tuỳ môi trường) về một hàm gọi được
-  if (data === null) return axios.getAdapter(axios.defaults.adapter)(config);
-  return { data, status: 200, statusText: "OK", headers: new AxiosHeaders(), config };
-};
 
 // API_URL đọc từ window.__ENV__ (runtime Docker/EasyPanel) hoặc import.meta.env (local dev)
 const https: AxiosInstance = axios.create({
   baseURL: API_URL,
-  ...(USE_MOCK ? { adapter: mockAdapter } : {}),
   timeout: 15000,
   headers: {
     "Content-Type": "application/json",

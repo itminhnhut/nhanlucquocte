@@ -1,8 +1,56 @@
 import { Seo } from "../components/Seo";
 import { staticPageMeta } from "../seo/pageMeta";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import https from "../utils/https";
 import DegreesGuide from "../components/DegreesGuide";
+
+// Tra cứu theo CCCD qua GET client/certificates/{idNumber}. Đây là bảng đang chứa dữ liệu văn
+// bằng của trường (bản ghi hợp nhất từ dữ liệu văn bằng cũ); bảng `degrees` của API rỗng nên
+// không dùng. API nhận đúng 9–13 chữ số và KHÔNG trả lại số CCCD, xếp loại hay năm tốt nghiệp.
+export const CCCD_PATTERN = /^\d{9,13}$/;
+
+const NOT_FOUND =
+  "Không tìm thấy thông tin văn bằng cho số CCCD này. Vui lòng kiểm tra lại hoặc liên hệ nhà trường.";
+
+const QUALIFICATION_LABEL = {
+  SO_CAP: "Sơ cấp",
+  TRUNG_CAP: "Trung cấp",
+  CAO_DANG: "Cao đẳng",
+  DAI_HOC: "Đại học",
+  GDPT: "Giáo dục phổ thông",
+  KHAC: "Khác",
+};
+
+const DELIVERY_LABEL = {
+  OFFLINE: "Học trực tiếp",
+  ONLINE: "Học trực tuyến",
+};
+
+// Khai ở một chỗ để lúc chờ và lúc có kết quả dựng đúng số dòng, cùng chiều cao → không giật.
+// Ô trống để dấu "—" (1 dòng) thay vì câu dài 2 dòng trên điện thoại, vì câu dài co lại khi có
+// dữ liệu là nhảy bố cục.
+const SUMMARY_ROWS = [
+  { label: "Tên", read: (row) => row?.fullName, highlight: true },
+  { label: "Ngày sinh", read: (row, formatDate) => (row?.dateOfBirth ? formatDate(row.dateOfBirth) : ""), gray: true },
+  { label: "Số hiệu văn bằng", read: (row) => row?.certNumber },
+  { label: "Tốt nghiệp ngành", read: (row) => row?.program },
+  { label: "Trình độ", read: (row) => row?.qualification, gray: true },
+];
+
+/** Một người có thể có nhiều văn bằng → dàn phẳng thành từng dòng để hiển thị */
+export const flattenRecords = (records) =>
+  records.flatMap((record) =>
+    (record.certificates ?? []).map((certificate) => ({
+      id: certificate.id,
+      fullName: record.fullName,
+      dateOfBirth: record.dateOfBirth,
+      certNumber: certificate.certNumber,
+      serialNo: certificate.serialNo,
+      program: certificate.program,
+      qualification: QUALIFICATION_LABEL[certificate.qualification] ?? "",
+      deliveryMode: DELIVERY_LABEL[certificate.deliveryMode] ?? "",
+    }))
+  );
 
 function DegreesSection() {
   const [cccdInput, setCccdInput] = useState("");
@@ -10,6 +58,7 @@ function DegreesSection() {
   const [degrees, setDegrees] = useState([]);
   const [error, setError] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
+  const inputRef = useRef(null);
   const seoMeta = staticPageMeta("/tra-cuu-van-bang");
 
   const formatDate = (iso) => {
@@ -24,6 +73,7 @@ function DegreesSection() {
 
   const handleSearch = async (e) => {
     e.preventDefault();
+    if (loading) return; // nhấn Enter liên tục trên điện thoại sẽ gọi API nhiều lần
     const code = cccdInput.trim();
 
     if (!code) {
@@ -33,36 +83,35 @@ function DegreesSection() {
       return;
     }
 
+    // Chặn tại trang để người dùng thấy lý do, thay vì nhận lỗi 400 của API
+    if (!CCCD_PATTERN.test(code)) {
+      // Ô nhập đã lọc sẵn chữ và dấu, nên chỉ còn khả năng sai độ dài
+      setError("Số CCCD phải có từ 9 đến 13 chữ số (CCCD thường là 12 số, CMND cũ 9 số).");
+      setDegrees([]);
+      setHasSearched(false);
+      return;
+    }
+
+    inputRef.current?.blur(); // nhập đúng rồi mới đóng bàn phím, sai thì để người dùng sửa ngay
     setHasSearched(true);
     setError("");
     setLoading(true);
 
     try {
-      const res = await https.get(`client/degrees/${encodeURIComponent(code)}`);
-
-      const list = Array.isArray(res.data?.data)
-        ? res.data.data
-        : Array.isArray(res.data)
-        ? res.data
-        : [];
+      const res = await https.get(`client/certificates/${encodeURIComponent(code)}`);
+      const records = Array.isArray(res?.data) ? res.data : [];
+      const list = flattenRecords(records);
 
       if (!list.length) {
         setDegrees([]);
-        setError(
-          "Không tìm thấy thông tin văn bằng cho số CCCD này. Vui lòng kiểm tra lại hoặc liên hệ nhà trường."
-        );
+        setError(NOT_FOUND);
       } else {
         setDegrees(list);
       }
     } catch (err) {
-      console.error("Fetch degree error:", err);
-      if (err?.response?.status === 404) {
-        setError(
-          "Không tìm thấy thông tin văn bằng cho số CCCD này. Vui lòng kiểm tra lại hoặc liên hệ nhà trường."
-        );
-      } else {
-        setError("Có lỗi xảy ra, vui lòng thử lại sau.");
-      }
+      console.error("Fetch certificate error:", err);
+      const status = err?.response?.status;
+      setError(status === 404 || status === 400 ? NOT_FOUND : "Có lỗi xảy ra, vui lòng thử lại sau.");
       setDegrees([]);
     } finally {
       setLoading(false);
@@ -70,7 +119,7 @@ function DegreesSection() {
   };
 
   const hasData = degrees.length > 0;
-  const primaryDegree = hasData ? degrees[degrees.length - 1] : null;
+  const primaryDegree = hasData ? degrees[0] : null;
 
   return (
     <>
@@ -114,24 +163,33 @@ function DegreesSection() {
                   <label htmlFor="cccdSearch" className="sr-only">
                     Số CCCD
                   </label>
+                  {/* Ô nhập lọc sẵn chỉ còn chữ số: gõ nhầm dấu cách hay dấu chấm trên điện thoại
+                      cũng không bật thông báo lỗi, nên khung thông báo không nhấp nháy */}
                   <div className="relative">
                     <input
+                      ref={inputRef}
                       id="cccdSearch"
                       type="text"
+                      inputMode="numeric"
+                      autoComplete="off"
+                      enterKeyHint="search"
+                      maxLength={13}
                       placeholder="Nhập số CCCD để tra cứu"
                       className="w-full text-[13px] pl-3 pr-10 py-2 rounded-full border border-slate-300 bg-white shadow-sm focus:border-primary-dark focus:ring-2 focus:ring-primary-dark/30 outline-none transition"
                       value={cccdInput}
-                      onChange={(e) => setCccdInput(e.target.value)}
+                      onChange={(e) => setCccdInput(e.target.value.replace(/\D/g, ""))}
                     />
                     {cccdInput && (
                       <button
                         type="button"
                         className="absolute inset-y-0 right-2 flex items-center text-slate-400 hover:text-slate-600 text-xs"
+                        aria-label="Xoá số đã nhập"
                         onClick={() => {
                           setCccdInput("");
                           setDegrees([]);
                           setError("");
                           setHasSearched(false);
+                          inputRef.current?.focus();
                         }}
                       >
                         ✕
@@ -152,72 +210,39 @@ function DegreesSection() {
 
             {/* Body */}
             <div className="px-5 sm:px-6 py-5">
-              {error && (
-                <p className="text-[12px] text-red-500 mb-3 bg-red-50 border border-red-100 rounded-md px-3 py-2">
-                  {error}
-                </p>
-              )}
-
-              {!hasData && !error && hasSearched && !loading && (
-                <p className="text-[12px] text-slate-500 mb-3 italic">
-                  Không có dữ liệu văn bằng cho số CCCD này.
-                </p>
-              )}
+              {/* Chừa sẵn chiều cao cho thông báo: hiện/ẩn không đẩy phần dưới xuống */}
+              <div className="min-h-[44px] mb-1" role="status" aria-live="polite">
+                {error && (
+                  <p className="text-[12px] text-red-500 bg-red-50 border border-red-100 rounded-md px-3 py-2">
+                    {error}
+                  </p>
+                )}
+                {!error && hasSearched && !loading && !hasData && (
+                  <p className="text-[12px] text-slate-500 italic px-3 py-2">
+                    Không có dữ liệu văn bằng cho số CCCD này.
+                  </p>
+                )}
+                {loading && (
+                  <p className="text-[12px] text-slate-500 italic px-3 py-2">Đang tra cứu văn bằng…</p>
+                )}
+              </div>
 
               {/* Thanh kẻ giống file mô tả */}
               <div className="h-[3px] bg-primary/70 mb-4 rounded-full" />
 
-              {/* Đang tra: hiện khung chờ đúng hình dạng kết quả, để người dùng thấy hệ thống
-                  đang chạy và không bị giật bố cục khi dữ liệu về */}
-              {loading && (
-                <div aria-hidden="true" className="mb-4 animate-pulse space-y-2.5">
-                  {[0, 1, 2, 3].map((row) => (
-                    <div key={row} className="flex items-center gap-3">
-                      <div className="h-3 w-24 rounded bg-slate-200" />
-                      <div className="h-3 flex-1 rounded bg-slate-100" />
-                    </div>
-                  ))}
-                </div>
-              )}
-              <span className="sr-only" role="status" aria-live="polite">
-                {loading ? "Đang tra cứu văn bằng" : ""}
-              </span>
-
-              {/* Summary for primary degree */}
+              {/* Khung kết quả: luôn đúng 5 dòng, lúc chờ chỉ phần giá trị đổi thành vạch mờ
+                  nên chiều cao không đổi — không giật khi dữ liệu về */}
               <div className="space-y-1.5 mb-4">
-                <RowLine
-                  label="Tên"
-                  value={primaryDegree?.fullName || ""}
-                  placeholder="Tên học viên sẽ hiển thị sau khi tra cứu"
-                  highlight
-                />
-
-                <RowLine
-                  label="Số CCCD"
-                  value={primaryDegree?.cccd || (hasSearched ? cccdInput : "")}
-                  placeholder="Số CCCD sẽ hiển thị sau khi tra cứu"
-                />
-
-                <RowLine
-                  label="Ngày sinh"
-                  value={
-                    primaryDegree?.dob ? formatDate(primaryDegree.dob) : ""
-                  }
-                  placeholder="Ngày sinh sẽ hiển thị sau khi tra cứu"
-                  gray
-                />
-
-                <RowLine
-                  label="Số hiệu văn bằng"
-                  value={primaryDegree?.degreeCode || ""}
-                  placeholder="Số hiệu văn bằng sẽ hiển thị sau khi tra cứu"
-                />
-
-                <RowLine
-                  label="Tốt nghiệp ngành"
-                  value={primaryDegree?.major || ""}
-                  placeholder="Tên ngành / chương trình sẽ hiển thị sau khi tra cứu"
-                />
+                {SUMMARY_ROWS.map((row) => (
+                  <RowLine
+                    key={row.label}
+                    label={row.label}
+                    value={loading ? "" : row.read(primaryDegree, formatDate) || ""}
+                    loading={loading}
+                    gray={row.gray}
+                    highlight={row.highlight}
+                  />
+                ))}
               </div>
 
               {/* Nếu có nhiều hơn 1 bản ghi, hiển thị danh sách chi tiết */}
@@ -225,8 +250,7 @@ function DegreesSection() {
                 <div className="mt-4 border-t border-slate-200 pt-4">
                   <p className="text-[12px] text-slate-500 mb-2">
                     Có <span className="font-semibold">{degrees.length}</span>{" "}
-                    lần ghi nhận văn bằng cho số CCCD này. Dưới đây là lịch sử
-                    chi tiết:
+                    văn bằng, chứng chỉ gắn với số CCCD này. Dưới đây là chi tiết:
                   </p>
                   <div className="space-y-3">
                     {degrees.map((deg, idx) => (
@@ -236,22 +260,17 @@ function DegreesSection() {
                       >
                         <div className="flex items-center justify-between mb-1.5">
                           <span className="font-semibold text-primary-dark">
-                            Lần {idx + 1} -{" "}
-                            {deg.degreeCode || "Không rõ mã bằng"}
+                            {deg.certNumber || "Không rõ số hiệu văn bằng"}
                           </span>
-                          {deg.createdAt && (
+                          {deg.qualification && (
                             <span className="text-[11px] text-slate-500">
-                              Cập nhật: {formatDate(deg.createdAt)}
+                              {deg.qualification}
                             </span>
                           )}
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
-                          <InfoItem label="Ngành" value={deg.major} />
-                          <InfoItem label="Xếp loại" value={deg.rank} />
-                          <InfoItem
-                            label="Năm tốt nghiệp"
-                            value={deg.yearOfGrad}
-                          />
+                          <InfoItem label="Ngành" value={deg.program} />
+                          <InfoItem label="Hình thức học" value={deg.deliveryMode} />
                         </div>
                       </div>
                     ))}
@@ -276,27 +295,27 @@ function DegreesSection() {
   );
 }
 
-function RowLine({ label, value, placeholder, gray, highlight }) {
-  const showPlaceholder = !value;
+function RowLine({ label, value, loading, gray, highlight }) {
   return (
-    <div className="grid grid-cols-[135px_minmax(0,1fr)] gap-x-4 items-stretch text-[13px]">
+    <div className="grid grid-cols-[104px_minmax(0,1fr)] sm:grid-cols-[135px_minmax(0,1fr)] gap-x-3 sm:gap-x-4 items-stretch text-[13px]">
       <div className="flex items-center justify-between text-slate-700 font-semibold">
         <span>{label}</span>
         <span>:</span>
       </div>
       <div
         className={[
-          "w-full rounded border text-[13px] px-3 py-2",
+          // min-h giữ đúng chiều cao 1 dòng cho cả 3 trạng thái: chờ, trống, có dữ liệu
+          "flex min-h-[38px] w-full items-center rounded border text-[13px] px-3 py-2",
           gray ? "bg-slate-100 border-slate-200" : "bg-white border-slate-200",
           highlight && "ring-1 ring-primary/30",
         ]
           .filter(Boolean)
           .join(" ")}
       >
-        {showPlaceholder ? (
-          <span className="text-slate-600">{placeholder}</span>
+        {loading ? (
+          <span aria-hidden="true" className="h-3 w-3/4 animate-pulse rounded bg-slate-200" />
         ) : (
-          <span className="text-slate-800">{value}</span>
+          <span className="text-slate-800">{value || <span className="text-slate-400">—</span>}</span>
         )}
       </div>
     </div>

@@ -29,47 +29,44 @@ export const LEGACY_PATHS: Readonly<Record<string, string>> = {
 
 /** Bài ngành cũ (.html) → slug ngành trong danh mục (src/content/programFields.ts) */
 export const LEGACY_PROGRAM_PATHS: Readonly<Record<string, string>> = {
-  "chuyen-nganh-dieu-duong-he-trung-cap-.html": "chuyen-nganh-dieu-duong-he-trung-cap",
-  "tuyen-sinh-nganh-duoc-si-he-trunng-cap-khai-giang-ngay-16-03-2026-.html": "tuyen-sinh-nganh-duoc-si-he-trung-cap-khai-giang-ngay-16-03-2026",
+  "chuyen-nganh-dieu-duong-he-trung-cap-.html": "dieu-duong-he-trung-cap",
+  "tuyen-sinh-nganh-duoc-si-he-trunng-cap-khai-giang-ngay-16-03-2026-.html": "duoc-si-he-trung-cap",
   "cham-soc-nguoi-cao-tuoi-.html": "cham-soc-nguoi-cao-tuoi",
-  "tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026.html": "tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026",
+  "tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026.html": "nghiep-vu-tro-ly-nha-khoa",
   "cham-soc-sac-dep-he-trung-cap-.html": "cham-soc-sac-dep-he-trung-cap",
-  "tuyen-sinh-nganh-beauty-therapy-lieu-phap-lam-dep-.html": "tuyen-sinh-nganh-beauty-therapy-lieu-phap-lam-dep",
+  "tuyen-sinh-nganh-beauty-therapy-lieu-phap-lam-dep-.html": "beauty-therapy-lieu-phap-lam-dep",
   "cham-soc-da-chuyen-nghiep-.html": "cham-soc-da-chuyen-nghiep",
   "cham-soc-nails-chuyen-nghiep-ngan-han-.html": "cham-soc-nails-chuyen-nghiep-ngan-han",
   "ky-thuat-che-bien-mon-an-.html": "ky-thuat-che-bien-mon-an",
-  "khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap-.html": "khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap",
+  "khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap-.html": "ky-thuat-lam-banh",
   "quan-tri-khach-san-.html": "quan-tri-khach-san",
-  "khai-giang-nghiep-vu-le-tan-.html": "khai-giang-nghiep-vu-le-tan",
+  "khai-giang-nghiep-vu-le-tan-.html": "nghiep-vu-le-tan",
   "nghiep-vu-pha-che.html": "nghiep-vu-pha-che",
   "trung-cap-ky-thuat-xay-dung-.html": "trung-cap-ky-thuat-xay-dung",
-  "tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026.html": "tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026",
-  "thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17-.html": "thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17",
-  "tuyen-sinh-ky-thuat-moc-xay-dung-va-trang-tri-noi-that-.html": "tuyen-sinh-ky-thuat-moc-xay-dung-va-trang-tri-noi-that",
-  "tuyen-sinh-thang-09-nghe-moc-noi-that-va-trang-tri-.html": "tuyen-sinh-thang-09-nghe-moc-noi-that-va-trang-tri",
+  "tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026.html": "trung-cap-ky-thuat-sua-chua-o-to",
+  "thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17-.html": "thiet-ke-noi-that",
+  "tuyen-sinh-ky-thuat-moc-xay-dung-va-trang-tri-noi-that-.html": "ky-thuat-moc-xay-dung-va-trang-tri-noi-that",
+  "tuyen-sinh-thang-09-nghe-moc-noi-that-va-trang-tri-.html": "moc-noi-that-va-trang-tri",
   "ke-toan-doanh-nghiep-.html": "ke-toan-doanh-nghiep",
-  "tuyen-sinh-trung-cap-nganh-quan-tri-kinh-doanh-.html": "tuyen-sinh-trung-cap-nganh-quan-tri-kinh-doanh",
-  "nganh-cong-nghe-thong-tin-he-trung-cap-.html": "nganh-cong-nghe-thong-tin-he-trung-cap",
+  "tuyen-sinh-trung-cap-nganh-quan-tri-kinh-doanh-.html": "quan-tri-kinh-doanh",
+  "nganh-cong-nghe-thong-tin-he-trung-cap-.html": "cong-nghe-thong-tin",
   "ngon-ngu-han-quoc.html": "ngon-ngu-han-quoc",
   "nghiep-vu-bao-mau.html": "nghiep-vu-bao-mau",
   "nghiep-vu-nghe-nong-nghiep-he-so-cap-.html": "nghiep-vu-nghe-nong-nghiep-he-so-cap",
-  "tuyen-sinh-he-dai-hoc-nam-2025.html": "tuyen-sinh-he-dai-hoc-nam-2025",
-  "tuyen-sinh-he-lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc-.html":
-    "tuyen-sinh-he-lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc",
+  "tuyen-sinh-he-dai-hoc-nam-2025.html": "lien-thong-tu-trung-cap-len-dai-hoc",
+  "tuyen-sinh-he-lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc-.html": "lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc",
 };
 
 /**
  * Bài tin cũ có slug KHÁC slug sau khi import (site trường để dấu gạch ở đầu/cuối slug, hoặc đổi
  * tiêu đề). Đối chiếu sitemap.xml của trường ngày 09/10/2026 — 7 URL này nếu không liệt kê ở đây
  * sẽ bị quy tắc chung đẩy sang /tin-tuc/<slug cũ> và rơi vào 404.
- * Đã khớp từng bài theo tiêu đề + ngày đăng với public/mock/posts.json.
+ * Đã khớp từng bài theo tiêu đề + ngày đăng với dữ liệu client/posts của API.
  */
 export const LEGACY_NEWS_PATHS: Readonly<Record<string, string>> = {
-  "-khep-lai-thanh-cong-le-trao-bang-tot-nghiep-trao-hoc-bong-ngay-05-05-2026.html":
-    "khep-lai-thanh-cong-le-trao-bang-tot-nghiep-2026-va-trao-hoc-bong",
-  "hoat-dong-hien-mau-.html": "hien-mau-hom-nay-trao-hy-vong-ngay-mai",
-  "le-ban-giao-xe-vinfast-8-cho-nganh-ky-thuat-sua-chua-o-to-.html":
-    "le-ban-giao-xe-vinfast-8-cho-nganh-ky-thuat-sua-chua-o-to",
+  "-khep-lai-thanh-cong-le-trao-bang-tot-nghiep-trao-hoc-bong-ngay-05-05-2026.html": "khep-lai-thanh-cong-le-trao-bang-tot-nghiep-trao-hoc-bong-ngay-05-05-2026",
+  "hoat-dong-hien-mau-.html": "hoat-dong-hien-mau",
+  "le-ban-giao-xe-vinfast-8-cho-nganh-ky-thuat-sua-chua-o-to-.html": "le-ban-giao-xe-vinfast-8-cho-nganh-ky-thuat-sua-chua-o-to",
   "tuyen-dung-nhan-vien-phuc-vu-nha-hang-.html": "tuyen-dung-nhan-vien-phuc-vu-nha-hang",
   "co-hoi-thuc-tap-tai-sheraton-.html": "co-hoi-thuc-tap-tai-sheraton",
   "tuyen-dung-nganh-f-b-.html": "tuyen-dung-nganh-f-b",

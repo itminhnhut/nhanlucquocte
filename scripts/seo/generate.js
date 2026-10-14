@@ -1,3 +1,4 @@
+import fs from "fs";
 import path from "path";
 import { loadContent, resolveApiUrl } from "./content";
 import { writeFileAtomic, writePages } from "./pages";
@@ -15,7 +16,14 @@ function logResult(label, result) {
 /** Build time: chỉ tạo sitemap (HTML tạo lúc container start vì cần window.__ENV__ do docker/env.sh chèn) */
 export async function generateSitemapFile(outputPath, env) {
   const content = await loadContent(resolveApiUrl(env));
-  writeFileAtomic(outputPath, buildSitemap(content));
+  // Lúc docker build, VITE_API_URL còn là placeholder → content rỗng. Ghi đè là tạo ra sitemap
+  // thiếu toàn bộ URL bài viết và trang ngành, rồi image mang theo bản thiếu đó đi deploy.
+  // Nhưng CHƯA có file nào thì vẫn phải ghi bản chỉ-trang-tĩnh: robots.txt trỏ vào
+  // /sitemap.xml, để trống là 404 cho tới khi tiến trình nền chạy xong — hoặc 404 mãi nếu
+  // API chết lúc container khởi động.
+  if (content.isComplete || !fs.existsSync(outputPath)) {
+    writeFileAtomic(outputPath, buildSitemap(content));
+  }
   const result = {
     programCount: content.programs.length,
     newsCount: content.news.length,

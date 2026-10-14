@@ -1,6 +1,6 @@
 // Tiện ích xử lý HTML nội dung từ CMS trước khi render.
 import appConfig from "../configs/appConfig";
-import { API_URL, EXTRA_IMAGE_HOSTS } from "./../configs/env";
+import { readEnv } from "./../configs/env";
 import { CONTENT_IMAGE_SIZES } from "../content/contentImageSizes";
 
 /**
@@ -39,7 +39,9 @@ export function fillMissingImageAlt(html: unknown, title: unknown): string {
  * Ảnh ở CDN hay tên miền lưu trữ riêng thì khai thêm bằng biến VITE_IMAGE_HOSTS.
  */
 function allowedImageHosts(): Set<string> {
-  const hosts = [appConfig.domain, API_URL, ...EXTRA_IMAGE_HOSTS.split(",")]
+  // Đọc env TẠI ĐÂY chứ không dùng hằng số đọc lúc nạp module: tiến trình tạo HTML sẵn nạp module
+  // trước khi chạy, nếu đọc sớm thì API_URL rỗng và ảnh của trường bị gỡ khỏi HTML.
+  const hosts = [appConfig.domain, readEnv("VITE_API_URL"), ...readEnv("VITE_IMAGE_HOSTS").split(",")]
     .map((value) => value.trim())
     .filter(Boolean)
     .map((value) => {
@@ -66,17 +68,61 @@ function allowedImageHosts(): Set<string> {
  *
  * Khi nhà trường gửi ảnh thật thì tải về public/images và chèn lại bằng đường dẫn của web này.
  */
+function isAllowedUrl(url: string): boolean {
+  if (!/^https?:\/\//i.test(url)) return true; // đường dẫn tương đối = của web này
+  try {
+    return allowedImageHosts().has(new URL(url).host);
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * srcset của bài lấy từ CMS vẫn trỏ ảnh gốc ở website khác, kể cả khi src đã được chuyển về
+ * bucket của trường. Có srcset kèm `sizes` là trình duyệt CHỌN TỪ srcset và BỎ QUA src —
+ * tức ảnh của nơi khác vẫn được tải thật trên mọi lần xem trang.
+ * Thấy một ứng viên lạ thì bỏ cả srcset và sizes, trình duyệt quay về dùng src đã được phép.
+ */
+function dropForeignSrcset(tag: string): string {
+  const found = /\ssrcset=("[^"]*"|'[^']*')/i.exec(tag);
+  if (!found) return tag;
+  const candidates = found[1].slice(1, -1).split(",");
+  const hasForeign = candidates.some((part) => {
+    const url = part.trim().split(/\s+/)[0];
+    return url ? !isAllowedUrl(url) : false;
+  });
+  if (!hasForeign) return tag;
+  return tag
+    .replace(/\ssrcset=("[^"]*"|'[^']*')/i, "")
+    .replace(/\ssizes=("[^"]*"|'[^']*')/i, "");
+}
+
 export function dropForeignImages(html: unknown): string {
   if (typeof html !== "string") return "";
   return html.replace(/<img\b[^>]*>/gi, (tag) => {
     const src = /src="([^"]*)"/i.exec(tag)?.[1] ?? /src='([^']*)'/i.exec(tag)?.[1] ?? "";
     if (!src) return "";
-    if (!/^https?:\/\//i.test(src)) return tag;
-    try {
-      return allowedImageHosts().has(new URL(src).host) ? tag : "";
-    } catch {
-      return "";
-    }
+    if (!isAllowedUrl(src)) return "";
+    return dropForeignSrcset(tag);
+  });
+}
+
+/**
+ * Bài lấy từ CMS còn giữ kiểu WordPress: mỗi ảnh bọc trong <a> trỏ về trang gốc ở website khác.
+ * Ảnh đã chuyển về bucket của trường nhưng cái vỏ <a> thì còn, nên trang vẫn dẫn link ra
+ * website đó (vừa là PR cho họ, vừa chuyển điểm liên kết sang). Thẻ <a> không có chữ, chỉ bọc
+ * ảnh → bỏ vỏ, giữ ảnh. Link CÓ chữ là trích dẫn trong bài → giữ nguyên, chỉ thêm rel an toàn.
+ */
+export function unwrapForeignImageLinks(html: unknown): string {
+  if (typeof html !== "string") return "";
+  return html.replace(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi, (match, attrs: string, inner: string) => {
+    const href = /href=("([^"]*)"|'([^']*)')/i.exec(attrs);
+    const url = href?.[2] ?? href?.[3] ?? "";
+    if (!url || isAllowedUrl(url)) return match;
+    const text = inner.replace(/<[^>]*>/g, "").replace(/&nbsp;/gi, " ").trim();
+    if (!text) return inner;
+    if (/\brel=/i.test(attrs)) return match;
+    return `<a${attrs} rel="nofollow noopener">${inner}</a>`;
   });
 }
 

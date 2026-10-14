@@ -10,6 +10,7 @@ import {
   dropEmptyHeadings,
   dropEmptyWrappers,
   dropForeignImages,
+  unwrapForeignImageLinks,
   fillMissingImageAlt,
   normalizeHeadingLevels,
   lazyLoadImages,
@@ -109,10 +110,16 @@ function ProgramDetailPage() {
     fetchProgram();
   }, [slug]);
 
-  // Lấy tin tức liên quan theo program.slug
+  // Lấy tin tức liên quan theo slug đã chốt. Tính ra giá trị rồi mới đưa vào deps: lúc đầu
+  // program còn null nên dùng slug trên URL, khi ngành tải xong giá trị thường KHÔNG đổi →
+  // effect không chạy lại. Trước đây deps là [program?.slug, slug] nên đổi từ undefined sang
+  // slug là gọi API tin liên quan lần hai.
+  const relatedSlug = program?.slug || slug;
   useEffect(() => {
-    const targetSlug = program?.slug || slug;
-    if (!targetSlug) return;
+    const targetSlug = relatedSlug;
+    if (!targetSlug) return undefined;
+    // Điều hướng nhanh giữa các ngành: response của ngành cũ về sau sẽ ghi đè ngành đang mở
+    let alive = true;
     const isBackgroundRefresh = areRelatedFromHtml.current;
     areRelatedFromHtml.current = false;
 
@@ -136,19 +143,22 @@ function ProgramDetailPage() {
           ? res
           : [];
 
+        if (!alive) return;
         setRelatedPosts(Array.isArray(data) ? data : []);
       } catch (err) {
         console.error("Error fetching related posts:", err);
-        if (isBackgroundRefresh) return;
+        if (isBackgroundRefresh || !alive) return;
         setRelatedPosts([]);
       } finally {
-        setLoadingPosts(false);
+        if (alive) setLoadingPosts(false);
       }
     };
 
     fetchRelatedPosts();
-    // Theo slug (không theo object program) → cập nhật ngầm ngành không gọi lại tin liên quan
-  }, [program?.slug, slug]);
+    return () => {
+      alive = false;
+    };
+  }, [relatedSlug]);
 
   const hasProgram = !!program;
   // Nội dung CMS: hạ h1 → h2, mục "Câu hỏi thường gặp" → dạng bấm-để-mở
@@ -156,7 +166,7 @@ function ProgramDetailPage() {
     // Gỡ khối liên hệ của bài gốc → hạ h1 → bỏ ảnh mượn của site khác → bỏ heading rỗng →
     // mục "Câu hỏi thường gặp" thành dạng bấm-để-mở → ảnh tải trễ, có alt và có kích thước
     const base = normalizeHeadingLevels(
-      dropEmptyWrappers(dropEmptyHeadings(dropForeignImages(demoteH1(stripContactBlock(program?.content)))))
+      dropEmptyWrappers(dropEmptyHeadings(unwrapForeignImageLinks(dropForeignImages(demoteH1(stripContactBlock(program?.content))))))
     );
     const withAlt = fillMissingImageAlt(lazyLoadImages(renderFaqAccordion(base)), program?.title);
     return addImageDimensions(withAlt);
@@ -217,7 +227,9 @@ function ProgramDetailPage() {
       <Seo meta={seoMeta} />
       <div className="max-w-7xl mx-auto px-4">
         {/* Breadcrumb + Back link */}
-        <div className="flex items-center justify-between gap-3 mb-4">
+        {/* min-h: tên ngành chỉ có sau khi API trả → hàng từ 1 dòng thành 2 dòng, đẩy nội dung
+            xuống 18px. Chừa sẵn 2 dòng. */}
+        <div className="flex min-h-[36px] items-start justify-between gap-3 mb-4">
           <div className="text-[12px] text-slate-500">
             <Link to="/" className="hover:text-primary-dark transition-colors">
               Trang chủ
