@@ -72,7 +72,11 @@ function NewsPage() {
       });
 
       setPage(targetPage);
-      const totalPages = payload?.meta?.totalPages ?? res?.meta?.totalPages;
+      // Interceptor của https.ts trả thẳng response.data, nên kiểu AxiosResponse mà
+      // @types/axios suy ra ở đây không đúng — đọc qua một biến đã nới kiểu.
+      /** @type {{ meta?: { totalPages?: number } }} */
+      const body = res;
+      const totalPages = payload?.meta?.totalPages ?? body?.meta?.totalPages;
       if (typeof totalPages === "number") {
         setHasMore(targetPage < totalPages);
       } else {

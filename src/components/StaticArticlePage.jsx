@@ -8,7 +8,8 @@ import appConfig from "../configs/appConfig";
 const BUTTON = "inline-flex items-center justify-center rounded-full px-4 py-2 text-[14px] font-semibold transition-colors";
 
 /** Khung chung cho các trang nội dung tĩnh: breadcrumb → H1 → mở bài → CTA → mục lục → nội dung */
-function StaticArticlePage({ path, crumb, heading, lead, sections, children }) {
+/** `children` tuỳ chọn: /hoc-phi và /hop-tac-doanh-nghiep không chèn thêm gì */
+function StaticArticlePage({ path, crumb, heading, lead, sections, children = null }) {
   const toc = sections.map((section, index) => ({ id: sectionId(index), label: section.heading }));
 
   return (

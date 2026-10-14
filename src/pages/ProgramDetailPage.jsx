@@ -136,13 +136,10 @@ function ProgramDetailPage() {
           },
         });
 
-        const data = Array.isArray(res?.data?.data)
-          ? res.data.data
-          : Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res)
-          ? res
-          : [];
+        // Hợp đồng API: thân phản hồi luôn là { data, meta } và `data` là mảng (API_DOCS mục 1).
+        // Nhánh res.data.data là tàn dư thời dùng dữ liệu giả lập — đã kiểm 3 endpoint thật,
+        // không cái nào lồng hai lớp.
+        const data = Array.isArray(res?.data) ? res.data : [];
 
         if (!alive) return;
         setRelatedPosts(Array.isArray(data) ? data : []);

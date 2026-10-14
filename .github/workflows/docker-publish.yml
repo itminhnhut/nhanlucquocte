@@ -44,6 +44,18 @@ jobs:
       - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
+      # ── 1b. Kiểm kiểu + test trước khi dựng image ───────────────────────────
+      # Dựng image xong mới phát hiện lỗi là đã deploy mất rồi; chặn ở đây rẻ hơn nhiều.
+      - name: ⚙️  Cài Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+      - name: 📦 Cài phụ thuộc
+        run: npm ci
+      - name: 🧪 Kiểm kiểu + chạy test
+        run: npm run verify
+
       # ── 2. Setup QEMU (multi-platform build: amd64 + arm64) ────────────────
       - name: 🔧 Set up QEMU
         uses: docker/setup-qemu-action@v3

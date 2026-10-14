@@ -11,11 +11,7 @@
  */
 
 // Type cho window.__ENV__ (được inject bởi docker/env.sh)
-declare global {
-  interface Window {
-    __ENV__?: Record<string, string>;
-  }
-}
+// Kiểu của window.__ENV__ khai ở src/global.d.ts
 
 /**
  * Lấy giá trị env theo thứ tự ưu tiên:

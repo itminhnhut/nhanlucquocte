@@ -266,9 +266,19 @@ function asciiSlug(value: string): string {
   return plain.replace(/[^a-z0-9]+/g, "-");
 }
 
+/**
+ * Hình dạng tối thiểu để xếp ngành vào lĩnh vực. Khai thêm các trường mà nơi gọi thật sự đọc
+ * (vd ProgramsPage dùng `program.id` làm key), nếu không TypeScript suy tham số generic về
+ * đúng interface này và báo "Property 'id' does not exist".
+ */
 interface ProgramLike {
   slug?: string;
   title?: string;
+  id?: number;
+  image?: string | null;
+  description?: string;
+  content?: string;
+  active?: boolean;
 }
 
 function matchField(program: ProgramLike): ProgramField {
