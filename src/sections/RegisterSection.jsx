@@ -6,6 +6,15 @@ import { trackEvent } from "../utils/analytics";
 import { useRef } from "react";
 import { PRIVACY_POLICY_PATH, consentNote } from "../content/privacy";
 import appConfig from "../configs/appConfig";
+import { usePrograms } from "../hooks/usePrograms";
+
+// Trình độ hiện tại, đúng các mức trường nhận (xem /tuyen-sinh)
+const CURRENT_LEVELS = [
+  "Đang học / đã tốt nghiệp THCS",
+  "Đang học / đã tốt nghiệp THPT",
+  "Đã có bằng trung cấp (muốn liên thông)",
+  "Khác",
+];
 
 const REGISTER_POINTS = [
   "Nhận người tốt nghiệp THCS, THPT — khai giảng nhiều đợt trong năm",
@@ -15,6 +24,10 @@ const REGISTER_POINTS = [
 ];
 
 function RegisterSection() {
+  // Ba trường dưới (ngành, trình độ, nơi ở) là những cột mà trang Tư vấn của admin ĐÃ CÓ
+  // nhưng luôn trống, vì form này chưa bao giờ hỏi. Thiếu chúng thì nhân viên tuyển sinh
+  // không biết người đăng ký muốn học ngành gì.
+  const { programs } = usePrograms();
   // Người dùng chạm vào form lần đầu → bước giữa của phễu (biết ai bỏ dở form)
   const startedRef = useRef(false);
   const onFormStart = () => {
@@ -34,6 +47,9 @@ function RegisterSection() {
       fullName: "",
       phone: "",
       email: "",
+      programId: "",
+      currentLevel: "",
+      location: "",
       message: "",
       consent: false,
     },
@@ -47,6 +63,10 @@ function RegisterSection() {
         phone: values.phone,
       };
       if (values.email) payload.email = values.email;
+      // API nhận programId là số; ô chọn trả chuỗi
+      if (values.programId) payload.programId = Number(values.programId);
+      if (values.currentLevel) payload.currentLevel = values.currentLevel;
+      if (values.location) payload.location = values.location.trim();
       // Bằng chứng đồng ý (Luật BVDLCN): API chưa có trường riêng → ghi kèm vào ghi chú
       payload.note = [values.message, consentNote()].filter(Boolean).join("\n");
 
@@ -213,6 +233,58 @@ function RegisterSection() {
                     {errors.email.message}
                   </p>
                 )}
+              </div>
+
+              {/* Ngành muốn học — lấy từ API nên luôn khớp danh mục đang tuyển sinh */}
+              <div className="flex flex-col gap-1">
+                <label htmlFor="reg-program" className="font-semibold text-[13px]">
+                  Ngành muốn học
+                </label>
+                <select
+                  id="reg-program"
+                  className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
+                  {...register("programId")}
+                >
+                  <option value="">Chưa chọn — nhờ trường tư vấn</option>
+                  {programs.map((program) => (
+                    <option key={program.id} value={program.id}>
+                      {program.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Trình độ hiện tại */}
+              <div className="flex flex-col gap-1">
+                <label htmlFor="reg-level" className="font-semibold text-[13px]">
+                  Trình độ hiện tại
+                </label>
+                <select
+                  id="reg-level"
+                  className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
+                  {...register("currentLevel")}
+                >
+                  <option value="">Chưa chọn</option>
+                  {CURRENT_LEVELS.map((level) => (
+                    <option key={level} value={level}>
+                      {level}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Nơi ở — để bộ phận tuyển sinh biết học viên đi lại thế nào */}
+              <div className="flex flex-col gap-1">
+                <label htmlFor="reg-location" className="font-semibold text-[13px]">
+                  Nơi ở hiện tại
+                </label>
+                <input
+                  id="reg-location"
+                  type="text"
+                  placeholder="Ví dụ: Quận Tân Bình, TPHCM"
+                  className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
+                  {...register("location")}
+                />
               </div>
 
               {/* Tin nhắn */}

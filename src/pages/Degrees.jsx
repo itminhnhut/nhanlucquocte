@@ -34,23 +34,77 @@ const SUMMARY_ROWS = [
   { label: "Ngày sinh", read: (row, formatDate) => (row?.dateOfBirth ? formatDate(row.dateOfBirth) : ""), gray: true },
   { label: "Số hiệu văn bằng", read: (row) => row?.certNumber },
   { label: "Tốt nghiệp ngành", read: (row) => row?.program },
+  // Ba dòng dưới tuỳ nguồn: hồ sơ văn bằng cũ có Trình độ, bằng cấp qua hệ thống học viên
+  // có Xếp loại và Năm tốt nghiệp. Luôn dựng đủ dòng để khung không đổi chiều cao; nguồn nào
+  // không có trường đó thì ô là dấu "—".
   { label: "Trình độ", read: (row) => row?.qualification, gray: true },
+  { label: "Xếp loại", read: (row) => row?.rank },
+  // API có cả graduationDate (ngày đầy đủ) và yearOfGrad; bằng cũ chỉ có năm, bằng nhập
+  // trong admin có thể có cả ngày → hiện ngày khi có, không thì hiện năm.
+  {
+    label: "Ngày tốt nghiệp",
+    read: (row, formatDate) => (row?.graduationDate ? formatDate(row.graduationDate) : row?.yearOfGrad),
+    gray: true,
+  },
 ];
 
-/** Một người có thể có nhiều văn bằng → dàn phẳng thành từng dòng để hiển thị */
-export const flattenRecords = (records) =>
-  records.flatMap((record) =>
-    (record.certificates ?? []).map((certificate) => ({
-      id: certificate.id,
-      fullName: record.fullName,
-      dateOfBirth: record.dateOfBirth,
-      certNumber: certificate.certNumber,
-      serialNo: certificate.serialNo,
-      program: certificate.program,
-      qualification: QUALIFICATION_LABEL[certificate.qualification] ?? "",
-      deliveryMode: DELIVERY_LABEL[certificate.deliveryMode] ?? "",
-    }))
+/**
+ * Một người có thể có nhiều văn bằng → dàn phẳng thành từng dòng để hiển thị.
+ *
+ * API gộp hai nguồn, mỗi nguồn chỉ có một nửa số trường (xem `source`):
+ *   "certificate" → qualification, level, deliveryMode;  rank, yearOfGrad = null
+ *   "degree"      → rank, yearOfGrad;                    qualification, level = null
+ * Nên map hết rồi để chỗ hiển thị tự bỏ qua trường rỗng.
+ */
+/** Chuẩn hoá số bằng theo đúng quy tắc API dùng để tra (docs mục 5): bỏ khoảng trắng,
+ *  không phân biệt hoa thường, `_` và gạch dài đều coi như gạch ngang. */
+const chuanHoaSoBang = (value) =>
+  String(value ?? "")
+    .toLowerCase()
+    .replace(/\s+/g, "")
+    .replace(/[_–—]/g, "-");
+
+export const flattenRecords = (records) => {
+  const theoSoBang = new Map();
+  records.forEach((record) =>
+    (record.certificates ?? []).forEach((certificate) => {
+      const row = {
+        id: certificate.id,
+        source: record.source ?? "",
+        fullName: record.fullName,
+        dateOfBirth: record.dateOfBirth,
+        certNumber: certificate.certNumber,
+        program: certificate.program,
+        qualification: QUALIFICATION_LABEL[certificate.qualification] ?? "",
+        deliveryMode: DELIVERY_LABEL[certificate.deliveryMode] ?? "",
+        rank: certificate.rank ?? "",
+        graduationDate: certificate.graduationDate ?? "",
+        yearOfGrad: certificate.yearOfGrad ? String(certificate.yearOfGrad) : "",
+      };
+      // Cùng một tấm bằng về từ CẢ HAI nguồn (bảng degrees và kho hồ sơ cũ) nên phải gộp,
+      // nếu không trang báo "có 2 văn bằng" cho người chỉ có một.
+      //
+      // Nhưng gộp theo mỗi số bằng là SAI: một số bằng cũ (001528/BC-NLQT) thuộc hai người
+      // khác nhau trên site cũ — tra số đó trả về 4 dòng cho 2 người. Gộp theo số bằng sẽ
+      // nhập hai người thành một và làm mất một người. Nên khoá gộp phải gồm cả người:
+      // họ tên + ngày sinh + số bằng.
+      const key = [
+        String(record.fullName ?? "").trim().toLowerCase(),
+        String(record.dateOfBirth ?? "").slice(0, 10),
+        chuanHoaSoBang(certificate.certNumber) || `id-${certificate.id}`,
+      ].join("|");
+      const da_co = theoSoBang.get(key);
+      if (!da_co) {
+        theoSoBang.set(key, row);
+        return;
+      }
+      Object.entries(row).forEach(([field, value]) => {
+        if (!da_co[field] && value) da_co[field] = value;
+      });
+    })
   );
+  return [...theoSoBang.values()];
+};
 
 function DegreesSection() {
   const [cccdInput, setCccdInput] = useState("");
@@ -270,6 +324,11 @@ function DegreesSection() {
                         </div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-1">
                           <InfoItem label="Ngành" value={deg.program} />
+                          <InfoItem label="Xếp loại" value={deg.rank} />
+                          <InfoItem
+                            label="Tốt nghiệp"
+                            value={deg.graduationDate ? formatDate(deg.graduationDate) : deg.yearOfGrad}
+                          />
                           <InfoItem label="Hình thức học" value={deg.deliveryMode} />
                         </div>
                       </div>

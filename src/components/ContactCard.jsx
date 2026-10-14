@@ -18,7 +18,8 @@ function ContactRow({ icon, label, children }) {
   );
 }
 
-function ContactCard({ programName }) {
+/** `programName` tuỳ chọn: có thì câu mở đầu nhắc tên ngành, không có thì nói chung */
+function ContactCard({ programName = "" }) {
   const phoneHref = `tel:${appConfig.phoneE164}`;
   return (
     <section

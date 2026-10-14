@@ -347,8 +347,10 @@ export function newsPageMeta(post: ContentItem, slug: string): PageMeta {
 export function notFoundPageMeta(): PageMeta {
   return {
     path: "/404",
-    title: `Không tìm thấy trang | ${BRAND_SUFFIX}`,
-    description: "Trang bạn tìm không tồn tại hoặc đã được di chuyển.",
+    // withBrandFit tự chọn biến thể tên trường còn vừa 60 ký tự
+    title: withBrandFit("Không tìm thấy trang"),
+    description:
+      "Đường dẫn này không còn tồn tại trên website Trường Trung cấp nghề Nhân Lực Quốc Tế. Xem ngành đào tạo hoặc tin tuyển sinh để tìm lại nội dung bạn cần.",
     ...DEFAULT_IMAGE,
     ogType: "website",
     isIndexable: false,

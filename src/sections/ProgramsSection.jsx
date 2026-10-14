@@ -1,8 +1,5 @@
-import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import http from "../utils/https";
-import { initialDataKeys, useInitialData } from "../data/initialData";
-import { whenIdle } from "../utils/whenIdle";
+import { usePrograms } from "../hooks/usePrograms";
 import { FEATURED_PROGRAM_SLUGS, withFeaturedFirst } from "../configs/featuredPrograms";
 
 // Trang chủ chỉ giới thiệu, không liệt kê hết: 12 ngành = đủ 3 hàng × 4 cột (máy tính),
@@ -12,50 +9,10 @@ const MAX_PROGRAMS = 12;
 import { programDisplayName, programLead } from "../seo/programCopy";
 
 function ProgramsSection() {
-  // HTML tạo sẵn đã có danh sách ngành → hiện ngay, rồi gọi API ngầm lấy bản mới nhất
-  const initialPrograms = useInitialData(initialDataKeys.programs);
-  const [programs, setPrograms] = useState(initialPrograms ?? []);
-  const [loading, setLoading] = useState(!initialPrograms);
-  const [error, setError] = useState("");
-
-  useEffect(() => {
-    // Đã có dữ liệu nhúng sẵn → cập nhật ngầm: không hiện khung chờ, lỗi thì giữ bản đang hiện
-    const isBackgroundRefresh = Boolean(initialPrograms);
-    const fetchPrograms = async () => {
-      try {
-        if (!isBackgroundRefresh) {
-          setLoading(true);
-          setError("");
-        }
-
-        const res = await http.get("client/programs");
-
-        const items = Array.isArray(res.data?.data)
-          ? res.data.data
-          : Array.isArray(res.data)
-            ? res.data
-            : [];
-
-        setPrograms(items);
-      } catch (err) {
-        console.error("Error fetching client programs:", err);
-        if (isBackgroundRefresh) return;
-        setError(
-          "Không tải được danh sách ngành đào tạo. Vui lòng thử lại sau."
-        );
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // Chưa có dữ liệu nhúng sẵn → gọi ngay; đã có rồi → làm mới khi trình duyệt rảnh,
-    // tránh tranh băng thông với phần hiển thị đầu tiên (LCP)
-    if (!isBackgroundRefresh) {
-      fetchPrograms();
-      return;
-    }
-    return whenIdle(fetchPrograms);
-  }, []);
+  // Dùng chung hook với /nganh-dao-tao và /tuyen-sinh: trước đây khối này có bản sao y nguyên
+  // của cùng logic, và nó vẫn gọi lại client/programs khi trình duyệt rảnh — 254 KB mỗi lần
+  // vào trang chủ dù danh sách đã nằm sẵn trong HTML tạo trước.
+  const { programs, loading, error } = usePrograms();
 
   return (
     <section id="programs" className="section-gradient py-8">

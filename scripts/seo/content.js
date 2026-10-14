@@ -68,7 +68,9 @@ function withoutProgramDuplicates(news, programs) {
 
 export async function loadContent(apiUrl) {
   if (!apiUrl) {
-    console.warn("⚠️  Chưa khai báo VITE_API_URL — giữ nguyên sitemap và trang đã tạo.");
+    // Bình thường ở bước docker build: VITE_API_URL còn là placeholder __VITE_API_URL__.
+    // Trang chi tiết và sitemap đầy đủ được tạo lúc container khởi động, khi đã có URL thật.
+    console.warn("ℹ️  Chưa có VITE_API_URL (bước build) — chỉ tạo phần tĩnh, chưa lấy ngành/tin.");
     return { programs: [], news: [], isComplete: false };
   }
   const [programs, news] = await Promise.all([

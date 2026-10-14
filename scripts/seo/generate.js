@@ -21,7 +21,8 @@ export async function generateSitemapFile(outputPath, env) {
   // Nhưng CHƯA có file nào thì vẫn phải ghi bản chỉ-trang-tĩnh: robots.txt trỏ vào
   // /sitemap.xml, để trống là 404 cho tới khi tiến trình nền chạy xong — hoặc 404 mãi nếu
   // API chết lúc container khởi động.
-  if (content.isComplete || !fs.existsSync(outputPath)) {
+  const daCo = fs.existsSync(outputPath);
+  if (content.isComplete || !daCo) {
     writeFileAtomic(outputPath, buildSitemap(content));
   }
   const result = {
@@ -29,7 +30,16 @@ export async function generateSitemapFile(outputPath, env) {
     newsCount: content.news.length,
     isComplete: content.isComplete,
   };
-  logResult(`Sitemap → ${outputPath}`, result);
+  if (content.isComplete) {
+    logResult(`Sitemap → ${outputPath}`, result);
+  } else if (daCo) {
+    console.log(`↩️  Giữ nguyên sitemap đang có ở ${outputPath} (chưa lấy được dữ liệu API).`);
+  } else {
+    console.log(
+      `✅ Sitemap tạm → ${outputPath}: chỉ các trang tĩnh. ` +
+        "URL ngành và tin sẽ được bổ sung lúc container khởi động."
+    );
+  }
   return result;
 }
 

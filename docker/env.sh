@@ -21,7 +21,7 @@ echo "[env-inject] Injecting runtime environment variables..."
 # ── Giá trị mặc định (fallback nếu EasyPanel không set) ──────────────────────
 # API của trường. EasyPanel set biến môi trường thì giá trị đó thắng; trống thì website không có
 # nội dung động (sitemap và trang đã tạo được giữ nguyên, xem scripts/seo/content.js).
-VITE_API_URL="${VITE_API_URL:-https://truongdaynghe-api.x2ldh2.easypanel.host/api}"
+VITE_API_URL="${VITE_API_URL:-https://api.trungcapnhanlucquocte.vn/api}"
 VITE_APP_URL="${VITE_APP_URL:-https://trungcapnhanlucquocte.vn}"
 # Host ảnh ngoài web và API (CDN, bucket lưu trữ), phân tách bằng dấu phẩy. Thiếu khai ở đây thì
 # ảnh trong bài trỏ tới host đó bị coi là ảnh mượn và bị gỡ — xem dropForeignImages (src/utils/html.ts).

@@ -9,7 +9,7 @@ module.exports = {
         NODE_ENV: "production",
         PORT: 4002,
         // API của trường — nguồn dữ liệu duy nhất. Để trống là website không có nội dung động.
-        VITE_API_URL: "https://truongdaynghe-api.x2ldh2.easypanel.host/api",
+        VITE_API_URL: "https://api.trungcapnhanlucquocte.vn/api",
       },
     },
   ],

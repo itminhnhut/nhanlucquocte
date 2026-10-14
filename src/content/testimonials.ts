@@ -1,15 +1,15 @@
 // Cảm nhận học viên — lấy từ khối "CẢM NHẬN HỌC VIÊN" trên website của trường
 // (trungcapnhanlucquocte.vn, 08/10/2026): giữ nguyên câu nói và ảnh.
-// Tên trên site cũ là tên mẫu của bên thiết kế web ("Nguyễn Văn A", "Trần Thị B"…) nên ở đây ghi
-// theo ngành học thay vì tên người không có thật.
+// Tên trên site cũ là tên mẫu của bên thiết kế web ("Nguyễn Văn A", "Trần Thị B"…) nên bỏ.
+// KHÔNG gắn tên ngành vào từng câu nói: trường chỉ công bố câu nói và ảnh, chưa bao giờ nói
+// người nói học ngành nào. Gán ngành là tự thêm dữ kiện, mà lại làm khối này trông đáng tin
+// hơn bản gốc.
 // TODO nhà trường cung cấp: tên thật + ảnh thật của học viên (kèm sự đồng ý đăng) để thay vào.
 export interface Testimonial {
+  /** Khoá để React phân biệt các slide */
+  id: string;
   /** Dòng tên hiển thị dưới câu nói */
   name: string;
-  /** Ngành hoặc khóa đang học */
-  major: string;
-  /** Slug ngành trong danh mục, để link về trang ngành (tuỳ chọn) */
-  programSlug?: string;
   /** Ảnh vuông trong public/images/testimonials */
   photo?: string;
   content: string;
@@ -17,33 +17,29 @@ export interface Testimonial {
 
 export const TESTIMONIALS: readonly Testimonial[] = [
   {
+    id: "hv-cntt",
     name: "Học viên nhà trường",
-    major: "Ngành Công nghệ thông tin",
-    programSlug: "cong-nghe-thong-tin",
     photo: "/images/testimonials/hv-cntt.webp",
     content:
       "Giảng viên tại trường rất tận tâm và luôn hỗ trợ học viên hết mình. Tôi đã học được nhiều kiến thức thực tiễn, giúp ích rất nhiều cho công việc hiện tại.",
   },
   {
+    id: "hv-quan-tri-kinh-doanh",
     name: "Học viên nhà trường",
-    major: "Ngành Quản trị kinh doanh",
-    programSlug: "quan-tri-kinh-doanh",
     photo: "/images/testimonials/hv-quan-tri-kinh-doanh.webp",
     content:
       "Chương trình học được thiết kế rất thực tế, bám sát nhu cầu thị trường lao động. Tôi cảm thấy tự tin khi bước vào môi trường làm việc.",
   },
   {
+    id: "hv-du-lich",
     name: "Học viên nhà trường",
-    major: "Ngành Quản trị khách sạn",
-    programSlug: "quan-tri-khach-san",
     photo: "/images/testimonials/hv-du-lich.webp",
     content:
       "Nhờ các buổi thực hành và chuyến tham quan thực tế, tôi hiểu rõ hơn về nghề mình theo đuổi. Đây là nơi lý tưởng để phát triển kỹ năng.",
   },
   {
+    id: "hv-y-duoc",
     name: "Học viên nhà trường",
-    major: "Ngành Điều dưỡng",
-    programSlug: "dieu-duong-he-trung-cap",
     photo: "/images/testimonials/hv-y-duoc.webp",
     content:
       "Cơ sở vật chất cùng sự nhiệt huyết của thầy cô là những điểm khiến tôi ấn tượng nhất. Học ở trường thực sự là một trải nghiệm đáng nhớ.",

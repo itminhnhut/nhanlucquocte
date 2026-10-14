@@ -13,7 +13,7 @@ const SHOWN_FIELDS = [
   "Họ tên và ngày sinh của học viên",
   "Số hiệu văn bằng",
   "Ngành tốt nghiệp",
-  "Trình độ đào tạo (trung cấp, sơ cấp…)",
+  "Trình độ đào tạo, xếp loại và năm tốt nghiệp (tuỳ hồ sơ)",
 ];
 
 const DEGREE_FAQS = [

@@ -18,6 +18,13 @@ function AnswerPart({ part }) {
  * Danh sách hỏi–đáp dạng bấm-để-mở (<details>, không cần JS).
  * questionTag: thẻ heading của câu hỏi theo cấu trúc trang (h2 hoặc h3).
  */
+/**
+ * @param {{
+ *   faqs: readonly { question: string; answer: string }[];
+ *   questionTag?: "h2" | "h3" | "h4";
+ *   openFirst?: boolean;
+ * }} props
+ */
 function FaqAccordion({ faqs, questionTag: QuestionTag = "h3", openFirst = false }) {
   return (
     <div className="rounded-2xl bg-white shadow-soft border border-slate-100 px-4 md:px-6 py-1">

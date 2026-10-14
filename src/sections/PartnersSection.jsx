@@ -3,7 +3,8 @@ import { PARTNERS } from "../content/partners";
 
 // Dải logo chạy liên tục bằng CSS (không JS, không ảnh hưởng tốc độ tải).
 // Danh sách lặp 2 lần để vòng chạy liền mạch; bản lặp thứ hai ẩn với trình đọc màn hình.
-function PartnerLogo({ partner, duplicate }) {
+/** `duplicate`: bản nhân đôi để băng chuyền chạy liền mạch — ẩn với trình đọc màn hình */
+function PartnerLogo({ partner, duplicate = false }) {
   return (
     <li
       className="flex w-[150px] shrink-0 flex-col items-center justify-center gap-2 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm sm:w-[180px]"

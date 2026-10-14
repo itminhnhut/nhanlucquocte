@@ -9,6 +9,7 @@ import {
   demoteH1,
   dropEmptyHeadings,
   dropEmptyWrappers,
+  closeUnclosedTags,
   dropForeignImages,
   unwrapForeignImageLinks,
   fillMissingImageAlt,
@@ -135,13 +136,10 @@ function ProgramDetailPage() {
           },
         });
 
-        const data = Array.isArray(res?.data?.data)
-          ? res.data.data
-          : Array.isArray(res?.data)
-          ? res.data
-          : Array.isArray(res)
-          ? res
-          : [];
+        // Hợp đồng API: thân phản hồi luôn là { data, meta } và `data` là mảng (API_DOCS mục 1).
+        // Nhánh res.data.data là tàn dư thời dùng dữ liệu giả lập — đã kiểm 3 endpoint thật,
+        // không cái nào lồng hai lớp.
+        const data = Array.isArray(res?.data) ? res.data : [];
 
         if (!alive) return;
         setRelatedPosts(Array.isArray(data) ? data : []);
@@ -166,7 +164,7 @@ function ProgramDetailPage() {
     // Gỡ khối liên hệ của bài gốc → hạ h1 → bỏ ảnh mượn của site khác → bỏ heading rỗng →
     // mục "Câu hỏi thường gặp" thành dạng bấm-để-mở → ảnh tải trễ, có alt và có kích thước
     const base = normalizeHeadingLevels(
-      dropEmptyWrappers(dropEmptyHeadings(unwrapForeignImageLinks(dropForeignImages(demoteH1(stripContactBlock(program?.content))))))
+      dropEmptyWrappers(dropEmptyHeadings(unwrapForeignImageLinks(dropForeignImages(closeUnclosedTags(demoteH1(stripContactBlock(program?.content)))))))
     );
     const withAlt = fillMissingImageAlt(lazyLoadImages(renderFaqAccordion(base)), program?.title);
     return addImageDimensions(withAlt);
