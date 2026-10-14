@@ -27,7 +27,7 @@ function ProgramCard({ program, now }) {
         )}
       </div>
 
-      <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600 line-clamp-3">{desc}</p>
+      <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600 line-clamp-4">{desc}</p>
 
       {(openingDate || highlights.length > 0) && (
         <ul className="mt-3 flex flex-wrap gap-1.5 text-[12px]">
