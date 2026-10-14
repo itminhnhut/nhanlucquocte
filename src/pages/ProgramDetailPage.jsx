@@ -9,6 +9,7 @@ import {
   demoteH1,
   dropEmptyHeadings,
   dropEmptyWrappers,
+  closeUnclosedTags,
   dropForeignImages,
   unwrapForeignImageLinks,
   fillMissingImageAlt,
@@ -166,7 +167,7 @@ function ProgramDetailPage() {
     // Gỡ khối liên hệ của bài gốc → hạ h1 → bỏ ảnh mượn của site khác → bỏ heading rỗng →
     // mục "Câu hỏi thường gặp" thành dạng bấm-để-mở → ảnh tải trễ, có alt và có kích thước
     const base = normalizeHeadingLevels(
-      dropEmptyWrappers(dropEmptyHeadings(unwrapForeignImageLinks(dropForeignImages(demoteH1(stripContactBlock(program?.content))))))
+      dropEmptyWrappers(dropEmptyHeadings(unwrapForeignImageLinks(dropForeignImages(closeUnclosedTags(demoteH1(stripContactBlock(program?.content)))))))
     );
     const withAlt = fillMissingImageAlt(lazyLoadImages(renderFaqAccordion(base)), program?.title);
     return addImageDimensions(withAlt);

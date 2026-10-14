@@ -126,6 +126,43 @@ export function unwrapForeignImageLinks(html: unknown): string {
   });
 }
 
+const VOID_TAGS = new Set([
+  "img", "br", "hr", "input", "meta", "link", "source",
+  "col", "area", "base", "embed", "param", "track", "wbr",
+]);
+
+/**
+ * Đóng lại những thẻ CMS mở mà không đóng.
+ *
+ * Nội dung dán từ Word hay bị cắt giữa markup (vd bài ngành "Chăm sóc da" kết thúc bằng
+ * `<p><span><b><span>` chưa đóng). Trình duyệt tự đóng theo luật parser HTML và kéo luôn các
+ * phần tử phía sau vào trong, nên cây DOM khác cây React dựng từ cùng chuỗi đó → hydrate lệch,
+ * React BỎ toàn bộ HTML tạo sẵn và render lại cả trang (lỗi #418/#423). Trang đó mất hết lợi
+ * ích SEO của prerender và nội dung nháy một nhịp khi tải.
+ *
+ * Đóng ở cuối chuỗi là đủ: phần chữ giữ nguyên, chỉ bù thẻ đóng còn thiếu.
+ */
+export function closeUnclosedTags(html: unknown): string {
+  if (typeof html !== "string") return "";
+  const stack: string[] = [];
+  const TAG = /<(\/?)([a-zA-Z][a-zA-Z0-9]*)\b[^>]*?(\/?)>/g;
+  let match: RegExpExecArray | null;
+  while ((match = TAG.exec(html)) !== null) {
+    const [, closing, rawName, selfClosing] = match;
+    const name = rawName.toLowerCase();
+    if (VOID_TAGS.has(name) || selfClosing === "/") continue;
+    if (!closing) {
+      stack.push(name);
+      continue;
+    }
+    // Thẻ đóng: khớp ngược lên stack, bỏ qua các thẻ bị quên đóng ở giữa
+    const at = stack.lastIndexOf(name);
+    if (at !== -1) stack.length = at;
+  }
+  if (!stack.length) return html;
+  return html + stack.reverse().map((name) => `</${name}>`).join("");
+}
+
 /**
  * Bỏ thẻ tiêu đề rỗng trong bài CMS (ví dụ <h3>&nbsp;</h3> do người soạn gõ thừa).
  * Tiêu đề rỗng làm vỡ thứ bậc heading — trang nhảy thẳng từ H1 xuống H3 — và lọt vào mục lục
