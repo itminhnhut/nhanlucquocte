@@ -2,6 +2,7 @@
 // đã tải 1 lần (scripts/seo/content.js). API danh sách trả đủ trường như API chi tiết.
 import { initialDataKeys, type InitialData } from "../data/initialData";
 import { itemSlug, type ContentItem } from "../seo/pageMeta";
+import { dropForeignImages, unwrapForeignImageLinks } from "../utils/html";
 
 interface SiteContent {
   programs: ContentItem[];
@@ -14,6 +15,17 @@ const RELATED_POSTS_LIMIT = 10;
 
 // Thẻ danh sách không hiện nội dung bài → bỏ `content` cho HTML nhẹ
 const withoutContent = <T extends { content?: unknown }>({ content: _content, ...rest }: T) => rest;
+
+/**
+ * Nội dung nhúng sẵn là chuỗi THÔ từ CMS. Phần hiển thị đã lọc ảnh và link của nơi khác, nhưng
+ * nếu nhúng chuỗi thô thì URL website trường khác vẫn nằm nguyên trong mã trang. Lọc trước khi
+ * nhúng; hai hàm này thuần và không đổi kết quả khi chạy lại, nên lúc hydrate client lọc lần
+ * nữa cũng ra đúng như vậy.
+ */
+const cleanContent = <T extends { content?: unknown }>(item: T): T =>
+  typeof item.content === "string"
+    ? { ...item, content: unwrapForeignImageLinks(dropForeignImages(item.content)) }
+    : item;
 
 function firstPostsPage(news: SiteContent["news"]) {
   return {
@@ -33,7 +45,7 @@ function programPageData(slug: string, content: SiteContent): InitialData {
     .slice(0, RELATED_POSTS_LIMIT)
     .map(withoutContent);
   return {
-    [initialDataKeys.program(slug)]: program,
+    [initialDataKeys.program(slug)]: cleanContent(program),
     [initialDataKeys.relatedPosts(slug)]: related,
   };
 }
@@ -67,7 +79,7 @@ function newsPageData(slug: string, content: SiteContent): InitialData {
   const post = findBySlug(content.news, slug);
   return post
     ? {
-        [initialDataKeys.post(slug)]: post,
+        [initialDataKeys.post(slug)]: cleanContent(post),
         [initialDataKeys.nearbyPosts(slug)]: nearbyPosts(content.news, slug),
         [initialDataKeys.latestPosts(slug)]: latestPosts(content.news, slug),
       }
