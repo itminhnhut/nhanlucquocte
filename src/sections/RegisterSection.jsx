@@ -242,7 +242,7 @@ function RegisterSection() {
                 </label>
                 <select
                   id="reg-program"
-                  className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
+                  className="w-full min-w-0 truncate rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
                   {...register("programId")}
                 >
                   <option value="">Chưa chọn — nhờ trường tư vấn</option>
@@ -261,7 +261,7 @@ function RegisterSection() {
                 </label>
                 <select
                   id="reg-level"
-                  className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
+                  className="w-full min-w-0 truncate rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
                   {...register("currentLevel")}
                 >
                   <option value="">Chưa chọn</option>
@@ -282,7 +282,7 @@ function RegisterSection() {
                   id="reg-location"
                   type="text"
                   placeholder="Ví dụ: Quận Tân Bình, TPHCM"
-                  className="rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
+                  className="w-full min-w-0 truncate rounded-xl border border-slate-200 bg-slate-50/60 px-3 py-2 text-[13px] outline-none transition hover:bg-white focus:border-primary focus:ring-1 focus:ring-primary/40"
                   {...register("location")}
                 />
               </div>

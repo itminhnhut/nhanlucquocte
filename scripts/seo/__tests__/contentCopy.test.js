@@ -4,7 +4,7 @@ import fs from "fs";
 import path from "path";
 import appConfig from "../../../src/configs/appConfig";
 import { programPageMeta } from "../../../src/seo/pageMeta";
-import { programSeoCopy } from "../../../src/seo/programCopy";
+import { programCardLead, programSeoCopy } from "../../../src/seo/programCopy";
 import { renderAppHtml } from "../../../src/ssr/renderPage";
 
 const CANONICAL_ADDRESS = "Số 6 Phan Đình Giót, phường Tân Sơn Hòa (Quận Tân Bình cũ), TP. Hồ Chí Minh";
@@ -131,4 +131,64 @@ test("should ask for the three fields the admin shows but never receives", () =>
   const source = fs.readFileSync(path.join(process.cwd(), "src/sections/RegisterSection.jsx"), "utf8");
   // API khai programId là số, ô select trả chuỗi
   assert.match(source, /payload\.programId = Number\(values\.programId\)/);
+});
+
+test("should keep the register form inside the screen on a phone", () => {
+  // Thẻ <select> lấy chiều rộng tối thiểu theo option DÀI NHẤT (tên ngành dài nhất), mà phần
+  // tử flex không co nhỏ hơn min-content nếu thiếu min-w-0 → cả form tràn ngang trên điện
+  // thoại, phải kéo ngang mới đọc được.
+  const source = fs.readFileSync(path.join(process.cwd(), "src/sections/RegisterSection.jsx"), "utf8");
+  const selects = source.match(/<select[\s\S]*?>/g) ?? [];
+  assert.equal(selects.length, 2, "số ô chọn đã đổi, xem lại phép kiểm này");
+  selects.forEach((tag) => {
+    assert.match(tag, /w-full/, "ô chọn thiếu w-full");
+    assert.match(tag, /min-w-0/, "ô chọn thiếu min-w-0 — tên ngành dài sẽ làm tràn ngang");
+  });
+});
+
+test("should fetch the program list once even when two blocks need it", () => {
+  // Trang chủ có hai chỗ cần danh sách: khối "Chương trình đào tạo" và ô chọn ngành trong form
+  // đăng ký. Mỗi chỗ tự gọi là tải client/programs hai lần — 254 KB nhân đôi.
+  const hook = fs.readFileSync(path.join(process.cwd(), "src/hooks/usePrograms.js"), "utf8");
+  assert.match(hook, /function fetchProgramsOnce/);
+  assert.match(hook, /if \(!inFlight\)/, "request đang bay phải được dùng chung");
+  assert.equal((hook.match(/\.get\("client\/programs"\)/g) ?? []).length, 1, "còn nhiều chỗ tự gọi");
+  // Các trang khác không được tự gọi lại danh sách đầy đủ (SearchPage gọi kèm ?search= là khác)
+  ["src/sections/ProgramsSection.jsx", "src/sections/RegisterSection.jsx"].forEach((file) => {
+    const source = fs.readFileSync(path.join(process.cwd(), file), "utf8");
+    assert.ok(!/\.get\(["\`']client\/programs["\`']\)/.test(source), `${file} tự gọi API thay vì dùng hook`);
+  });
+});
+
+test("should show the description staff wrote in the admin, not one canned sentence everywhere", () => {
+  // Trước đây cả 26 thẻ ngành đều hiện đúng một câu sinh sẵn giống hệt nhau — nhân viên viết
+  // mô tả trong trang quản trị xong website không dùng.
+  const real = {
+    slug: "nghiep-vu-tro-ly-nha-khoa",
+    description:
+      "CHƯƠNG TRÌNH ĐÀO TẠO NGHIỆP VỤ TRỢ LÝ NHA KHOA Nghề Trợ Lý Nha khoa đang là một trong những lĩnh vực có nhu cầu nhân lực cao tại các phòng khám.",
+  };
+  const lead = programCardLead(real.slug, real);
+  assert.match(lead, /^Nghề Trợ Lý Nha khoa/, "chưa bỏ dòng tiêu đề IN HOA");
+  assert.doesNotMatch(lead, /CHƯƠNG TRÌNH ĐÀO TẠO/);
+  // Không cắt bằng "…": thẻ đã có line-clamp-3 lo phần nhìn thấy, chữ đầy đủ vẫn trong trang
+  assert.doesNotMatch(lead, /…$/, "không nên cắt tay, CSS đã clamp");
+  assert.ok(lead.endsWith("phòng khám."), lead);
+});
+
+test("should fall back to the canned sentence rather than show a form dump or a past date", () => {
+  // Mô tả trong CMS phần lớn là bản sao thông báo: cặp nhãn–giá trị, mục đánh số, và ngày
+  // khai giảng ĐÃ QUA. Đưa lên thẻ thì vừa khó đọc vừa hiện ngày sai — ngày khai giảng đã có
+  // chỗ riêng và chỉ hiện khi chưa tới.
+  const DUMP = [
+    "THÔNG BÁO TUYỂN SINH NGÀNH BEAUTY THERAPY Khai giảng: 10/11/2025 Thời gian đào tạo: 02 năm NỘI DUNG CHƯƠNG TRÌNH Phần 1 Kiến thức cơ bản",
+    "TUYỂN SINH NGÀNH THIẾT KẾ NỘI THẤT KHÓA 17 Ngày khai giảng : 10/11/2025 Thiết kế nội thất hiểu một cách đơn giản là việc bố trí sắp xếp",
+    "Chương trình đào tạo: Ngành Dược Mã ngành: 5720201 1. Mục tiêu đào tạo ngành Dược: Nghề dược là nghề liên quan đến dược phẩm",
+  ];
+  DUMP.forEach((description) => {
+    const lead = programCardLead("dieu-duong-he-trung-cap", { description });
+    assert.match(lead, /^Tuyển sinh /, `không nên hiện nguyên bản: ${lead.slice(0, 60)}`);
+    assert.doesNotMatch(lead, /\d{1,2}[./]\d{1,2}[./]\d{4}/, "lọt ngày khai giảng đã qua");
+    assert.doesNotMatch(lead, /Mã ngành/);
+  });
 });
