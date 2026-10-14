@@ -5,16 +5,16 @@ import { Link } from "react-router-dom";
 import appConfig from "../configs/appConfig";
 import { useIsHydrated } from "../hooks/useIsHydrated";
 
-// Ảnh thật của trường (lớp học, lễ khai giảng, hoạt động hiến máu)
-const baseIntroImages = [
-  "/images/intro/intro-01.webp",
-  "/images/intro/intro-02.webp",
-  "/images/intro/intro-03.webp",
-  "/images/intro/intro-04.webp",
-  "/images/intro/intro-05.webp",
+// Ảnh thật của trường (lớp học, lễ khai giảng, hoạt động hiến máu).
+// Kích thước đọc từ chính file: thiếu width/height là trình duyệt không biết chừa ô bao nhiêu,
+// ảnh nhảy vào khi tải xong.
+const introImages = [
+  { src: "/images/intro/intro-01.webp", width: 760, height: 428 },
+  { src: "/images/intro/intro-02.webp", width: 760, height: 372 },
+  { src: "/images/intro/intro-03.webp", width: 760, height: 570 },
+  { src: "/images/intro/intro-04.webp", width: 760, height: 428 },
+  { src: "/images/intro/intro-05.webp", width: 760, height: 570 },
 ];
-
-const introImages = baseIntroImages;
 
 function IntroSection() {
   // Ảnh slider tải sau khi trang đã hiện: HTML tạo sẵn có mọi ảnh sẽ làm banner (LCP) tải chậm.
@@ -63,7 +63,9 @@ function IntroSection() {
               nextEl: ".intro-next",
             }}
             loop
-            loopAdditionalSlides={5}
+            // 5 ảnh: xin thêm 5 slide nhân bản là nhiều hơn số slide có, Swiper cảnh báo
+            // "not enough for loop mode" rồi TẮT loop. 2 là đủ cho slidesPerView tối đa 1.35.
+            loopAdditionalSlides={2}
             watchOverflow={false}
             observer={true}
             observeParents={true}
@@ -83,11 +85,13 @@ function IntroSection() {
             grabCursor={true}
             rewind={true}
           >
-            {introImages.map((src, index) => (
-              <SwiperSlide key={src} className="!h-full bg-slate-200">
+            {introImages.map((image, index) => (
+              <SwiperSlide key={image.src} className="!h-full bg-slate-200">
                 {isHydrated && (
                   <img
-                    src={src}
+                    src={image.src}
+                    width={image.width}
+                    height={image.height}
                     alt={`Học viên và cơ sở Trường Trung cấp nghề Nhân Lực Quốc Tế, ảnh ${index + 1}`}
                     loading="lazy"
                     decoding="async"
