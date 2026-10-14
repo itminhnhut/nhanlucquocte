@@ -68,7 +68,9 @@ export function programDisplayName(rawTitle: unknown, slug?: string): string {
     const level = publishedLevel(slug!);
     if (!level) return catalogName;
     if (level === "so-cap") return `Khóa học ${catalogName}`;
-    if (level === "lien-thong") return `${LEVEL_LABEL[level]} ${catalogName}`;
+    // "Liên thông đại học Liên thông từ trung cấp lên đại học" → tên đã có chữ đó thì để trần
+    if (level === "lien-thong")
+      return /liên thông/iu.test(catalogName) ? catalogName : `${LEVEL_LABEL[level]} ${catalogName}`;
     return TECHNICAL_NAME_PATTERN.test(catalogName) ? `Trung cấp ngành ${catalogName}` : `Trung cấp ${catalogName}`;
   }
   const { name, kind } = parseProgramName(rawTitle);
@@ -105,8 +107,25 @@ export function upcomingOpeningDate(program: { description?: unknown }, now: Dat
   return openingDate && isUpcomingDate(openingDate, now) ? openingDate : null;
 }
 
-function defaultDescription(name: string, kind: string): string {
-  const label = kind === "ngành" ? `trung cấp ${name}` : `khóa học ${name}`;
+/**
+ * Câu mô tả mặc định. KHÔNG được khẳng định hệ đào tạo khi trường chưa công bố:
+ * ba ngành (Chăm sóc da, Beauty Therapy, Trợ lý nha khoa) không có hệ nào trên trang của
+ * trường, mà câu cũ vẫn ghi "Tuyển sinh trung cấp …" cho mọi ngành không phải sơ cấp — tức
+ * description nói ngược lại chính nội dung trang (trang ghi "gọi hotline để được xác nhận").
+ */
+function defaultDescription(name: string, level: string | null): string {
+  // Tên danh mục của ngành liên thông đã chứa chữ "Liên thông" → không ghép tiền tố lần nữa
+  const alreadyLabelled = /liên thông/iu.test(name);
+  const label =
+    level === "trung-cap"
+      ? `trung cấp ${name}`
+      : level === "so-cap"
+        ? `khóa học ${name}`
+        : level === "lien-thong"
+          ? alreadyLabelled
+            ? name
+            : `liên thông đại học ${name}`
+          : `ngành ${name}`;
   // Giữ ngắn để còn chỗ ghép "Khai giảng dd.mm.yyyy." mà không vượt 160 ký tự
   return `Tuyển sinh ${label} tại TPHCM – Trường Trung cấp nghề Nhân Lực Quốc Tế, Tân Bình. Đăng ký tư vấn miễn phí.`;
 }
@@ -116,15 +135,21 @@ type ProgramInput = { title?: unknown; description?: unknown; metaDescription?: 
 /** Đoạn mở đầu có từ khoá (dùng cho meta description và đoạn đầu trang ngành) */
 export function programLead(slug: string, program: ProgramInput): string {
   // Ngành có trong danh mục → dùng tên gọn đã chốt; nếu không thì tách từ tiêu đề bài
+  // Ngành TRONG danh mục: chỉ nêu hệ khi trường đã công bố (null → không khẳng định gì).
+  // Ngành NGOÀI danh mục (BE vừa thêm, mình chưa đối chiếu): suy theo ngữ pháp tiêu đề y như
+  // programDisplayName đang làm, để title và description không nói khác nhau.
   const catalogName = PROGRAM_NAMES[slug];
-  const level = catalogName ? publishedLevel(slug) : null;
-  const { name, kind } = catalogName
-    ? { name: catalogName, kind: level === "so-cap" ? "khóa học" : "ngành" }
-    : parseProgramName(program.title);
+  const parsed = parseProgramName(program.title);
+  const name = catalogName ?? parsed.name;
+  const level = catalogName
+    ? publishedLevel(slug)
+    : parsed.kind === "ngành"
+      ? "trung-cap"
+      : "so-cap";
   return (
     (typeof program.metaDescription === "string" && program.metaDescription.trim()) ||
     PROGRAM_COPY[slug]?.description ||
-    defaultDescription(name, kind)
+    defaultDescription(name, level)
   );
 }
 

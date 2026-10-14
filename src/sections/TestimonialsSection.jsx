@@ -1,8 +1,6 @@
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
-import { Link } from "react-router-dom";
 import { REASONS, TESTIMONIALS } from "../content/testimonials";
-import { programHref } from "../content/programFields";
 
 const SECTION_TITLE = "text-center text-[22px] font-extrabold uppercase text-primary-dark mb-5";
 const EYEBROW = "text-center text-[13px] font-semibold uppercase tracking-wide text-slate-500 mb-1";
@@ -55,14 +53,14 @@ function TestimonialsSection() {
           className="max-w-3xl mx-auto pb-8"
         >
           {TESTIMONIALS.map((item) => (
-            <SwiperSlide key={item.major}>
+            <SwiperSlide key={item.id}>
               <figure className="testimonial-gradient rounded-3xl shadow-soft p-5 md:p-6 text-[13px] text-slate-600 min-h-[140px] flex flex-col justify-center">
                 <blockquote className="italic mb-3 leading-relaxed">“{item.content}”</blockquote>
                 <figcaption className="flex items-center gap-3">
                   {item.photo && (
                     <img
                       src={item.photo}
-                      alt={`Ảnh ${item.major}`}
+                      alt="Ảnh học viên của trường"
                       width={320}
                       height={320}
                       loading="lazy"
@@ -70,19 +68,7 @@ function TestimonialsSection() {
                       className="h-12 w-12 shrink-0 rounded-full object-cover"
                     />
                   )}
-                  <span>
                   <div className="font-semibold text-primary-dark">{item.name}</div>
-                  {item.programSlug ? (
-                    <Link
-                      to={programHref(item.programSlug)}
-                      className="text-[12px] text-slate-500 underline-offset-2 hover:text-primary hover:underline"
-                    >
-                      {item.major}
-                    </Link>
-                  ) : (
-                    <div className="text-[12px] text-slate-500">{item.major}</div>
-                  )}
-                  </span>
                 </figcaption>
               </figure>
             </SwiperSlide>

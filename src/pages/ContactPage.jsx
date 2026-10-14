@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Seo } from "../components/Seo";
 import { staticPageMeta } from "../seo/pageMeta";
@@ -6,6 +7,7 @@ import InlineText from "../components/InlineText";
 import { LANDMARKS, ROUTES, TRANSPORT_NOTES, VISIT_NOTES } from "../content/directions";
 
 function ContactPage() {
+  const [showMap, setShowMap] = useState(false);
   const schoolName = appConfigs.legalName;
 
   const address = appConfigs.address;
@@ -147,15 +149,42 @@ function ContactPage() {
                 để được hỗ trợ tốt nhất.
               </p>
 
+              {/* Bấm mới tải: iframe của Google gửi địa chỉ IP, referrer và cookie Google của
+                  người xem sang Google ngay khi mở trang. Chính sách bảo mật của trường nói
+                  không script theo dõi nào chạy trước khi người dùng đồng ý — nhúng thẳng là
+                  mâu thuẫn với câu đó. Khung giữ đúng tỉ lệ nên bấm vào không nhảy bố cục. */}
               <div className="relative w-full overflow-hidden rounded-2xl shadow-soft bg-slate-200">
                 <div className="pt-[62%] sm:pt-[60%] lg:pt-[70%]" />
-                <iframe
-                  title="Bản đồ đến Trường Trung cấp nghề Nhân Lực Quốc Tế, số 6 Phan Đình Giót, Tân Bình"
-                  src={appConfigs.mapUrl}
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                  className="absolute inset-0 w-full h-full border-0"
-                />
+                {showMap ? (
+                  <iframe
+                    title="Bản đồ đến Trường Trung cấp nghề Nhân Lực Quốc Tế, số 6 Phan Đình Giót, Tân Bình"
+                    src={appConfigs.mapUrl}
+                    loading="lazy"
+                    referrerPolicy="no-referrer-when-downgrade"
+                    className="absolute inset-0 w-full h-full border-0"
+                  />
+                ) : (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 px-5 text-center">
+                    <p className="text-[12px] sm:text-[13px] text-slate-600">
+                      Bản đồ do Google cung cấp. Mở bản đồ sẽ gửi địa chỉ IP của bạn cho Google.
+                    </p>
+                    <button
+                      type="button"
+                      onClick={() => setShowMap(true)}
+                      className="rounded-full bg-primary-dark px-5 py-2 text-[13px] font-semibold text-white shadow transition hover:bg-primary-dark/90"
+                    >
+                      Mở bản đồ
+                    </button>
+                    <a
+                      href={appConfigs.mapLink}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-[12px] font-medium text-primary-dark underline underline-offset-2"
+                    >
+                      Hoặc mở trong ứng dụng Google Maps
+                    </a>
+                  </div>
+                )}
               </div>
 
               <div className="bg-white/60 border border-dashed border-primary-dark/20 rounded-xl px-4 py-3 text-[12px] sm:text-[13px] text-slate-600">

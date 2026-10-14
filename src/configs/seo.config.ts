@@ -105,7 +105,8 @@ export const SEO_CONFIG: Record<string, SeoEntry> = {
   },
   "/tim-kiem": {
     title: withBrandFit("Tìm kiếm"),
-    description: "Tìm thông tin tuyển sinh và nội dung trên website Trường Trung cấp nghề Nhân Lực Quốc Tế.",
+    description:
+      "Tìm ngành đào tạo, tin tuyển sinh và lịch khai giảng trên website Trường Trung cấp nghề Nhân Lực Quốc Tế, Tân Bình, TPHCM. Nhập từ khoá để xem kết quả.",
   },
 };
 
