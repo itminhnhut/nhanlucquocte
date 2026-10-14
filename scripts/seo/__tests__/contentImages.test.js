@@ -12,7 +12,7 @@ import {
 import { CONTENT_IMAGE_SIZES } from "../../../src/content/contentImageSizes";
 
 const mock = (name) =>
-  JSON.parse(fs.readFileSync(path.join(process.cwd(), `public/mock/${name}.json`), "utf8"));
+  JSON.parse(fs.readFileSync(path.join(process.cwd(), `scripts/seo/__tests__/fixtures/${name}.json`), "utf8"));
 
 /** Chạy đúng chuỗi xử lý như trang ngành và trang tin */
 const clean = (html) =>
@@ -129,8 +129,8 @@ test("should keep images the school uploads through the admin", () => {
   // Ảnh upload qua trang quản trị nằm ở /admin/uploads của BACKEND → URL trên tên miền API,
   // không phải trungcapnhanlucquocte.vn. Lọc theo mỗi tên miền web là xoá sạch ảnh của trường.
   const html = fs.readFileSync(path.join(process.cwd(), "src/utils/html.ts"), "utf8");
-  assert.match(html, /API_URL/, "danh sách host phải gồm host của API");
-  assert.match(html, /EXTRA_IMAGE_HOSTS/, "phải khai thêm được host CDN qua biến môi trường");
+  assert.match(html, /readEnv\("VITE_API_URL"\)/, "danh sách host phải gồm host của API");
+  assert.match(html, /readEnv\("VITE_IMAGE_HOSTS"\)/, "phải khai thêm được host CDN qua biến môi trường");
   // Và phải nhắc lý do, để sau không ai rút gọn lại thành mỗi tên miền web
   assert.match(html, /upload|quản trị/i);
 });
@@ -151,4 +151,33 @@ test("should ship every image the articles point at, so nothing breaks at cutove
     })
   );
   assert.deepEqual(missing, [], "thiếu file ảnh trong public/img_data");
+});
+
+test("should keep school images while generating the static HTML, not only in the browser", () => {
+  // Tiến trình tạo HTML sẵn đóng gói bằng define: { "import.meta.env": "{}" } và không có window,
+  // nên env phải đọc được từ process.env. Thiếu nhánh đó thì API_URL = "" ngay lúc tạo trang,
+  // dropForeignImages coi ảnh trên host API là ảnh mượn và XOÁ khỏi HTML tạo sẵn. Nội dung bài đưa
+  // vào bằng dangerouslySetInnerHTML nên React không vá lại lúc hydrate → ảnh mất hẳn.
+  const before = process.env.VITE_API_URL;
+  try {
+    process.env.VITE_API_URL = "https://api-cua-truong.example/api";
+    const img = '<img src="https://api-cua-truong.example/cdn/uploads/a.png">';
+    assert.ok(dropForeignImages(`<p>x</p>${img}`).includes("uploads/a.png"), "ảnh upload bị xoá khi tạo HTML");
+    // Ảnh của site khác vẫn phải bị gỡ
+    assert.ok(!dropForeignImages('<img src="https://vhnthcm.edu.vn/a.jpg">').includes("vhnthcm"));
+  } finally {
+    if (before === undefined) delete process.env.VITE_API_URL;
+    else process.env.VITE_API_URL = before;
+  }
+});
+
+test("should let the server declare extra image hosts", () => {
+  // VITE_IMAGE_HOSTS trước đây đọc được nhưng docker/env.sh không ghi ra → không có cách nào khai
+  // host bucket/CDN mà không dựng lại image.
+  const envSh = fs.readFileSync(path.join(process.cwd(), "docker/env.sh"), "utf8");
+  // Mặc định là host bucket đang dùng; EasyPanel set biến thì giá trị đó thắng
+  assert.match(envSh, /VITE_IMAGE_HOSTS="\$\{VITE_IMAGE_HOSTS:-[^}]*\}"/, "chưa nhận biến từ môi trường");
+  const envScript = envSh.split("\n").find((line) => line.includes("window.__ENV__=")) ?? "";
+  assert.match(envScript, /VITE_IMAGE_HOSTS/, "chưa đẩy vào window.__ENV__");
+  assert.match(envSh, /VITE_IMAGE_HOSTS="\$VITE_IMAGE_HOSTS" nohup node/, "chưa truyền cho tiến trình tạo trang");
 });

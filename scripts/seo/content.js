@@ -1,11 +1,8 @@
-// Lấy danh sách chương trình + tin tức cho sitemap và HTML tạo sẵn.
-// Chưa khai báo VITE_API_URL → đọc dữ liệu giả lập trong public/mock (lấy từ website của trường),
-// không gọi mạng. Có API thật → đặt VITE_API_URL và dữ liệu lấy từ đó như cũ.
-import fs from "fs";
-import path from "path";
+// Lấy danh sách chương trình + tin tức cho sitemap và HTML tạo sẵn — nguồn duy nhất là API của
+// trường (VITE_API_URL). Chưa khai báo hoặc API lỗi → isComplete = false, nơi gọi giữ nguyên
+// sitemap và các trang đã tạo thay vì ghi đè bằng dữ liệu thiếu.
 import { itemSlug } from "../../src/seo/pageMeta";
 
-export const MOCK_DIR = path.join(process.cwd(), "public", "mock");
 const PAGE_LIMIT = 100;
 const MAX_PAGES = 50;
 const REQUEST_TIMEOUT_MS = 20000;
@@ -19,11 +16,6 @@ export function resolveApiUrl(env) {
   if (!isUsableUrl(env.VITE_API_URL)) return "";
   const url = env.VITE_API_URL;
   return url.endsWith("/") ? url : `${url}/`;
-}
-
-/** Đọc 1 file dữ liệu giả lập; lỗi đọc → mảng rỗng (nơi gọi tự coi là không đầy đủ) */
-function readMock(name) {
-  return JSON.parse(fs.readFileSync(path.join(MOCK_DIR, `${name}.json`), "utf8"));
 }
 
 async function fetchJson(url) {
@@ -76,18 +68,8 @@ function withoutProgramDuplicates(news, programs) {
 
 export async function loadContent(apiUrl) {
   if (!apiUrl) {
-    // Dữ liệu giả lập: đọc thẳng từ đĩa, luôn đầy đủ
-    try {
-      const programs = toPublishableItems(readMock("programs"));
-      return {
-        programs,
-        news: withoutProgramDuplicates(toPublishableItems(readMock("posts")), programs),
-        isComplete: true,
-      };
-    } catch (err) {
-      console.warn("⚠️  Không đọc được dữ liệu giả lập trong public/mock:", err.message);
-      return { programs: [], news: [], isComplete: false };
-    }
+    console.warn("⚠️  Chưa khai báo VITE_API_URL — giữ nguyên sitemap và trang đã tạo.");
+    return { programs: [], news: [], isComplete: false };
   }
   const [programs, news] = await Promise.all([
     fetchEndpoint(apiUrl, "client/programs"),
