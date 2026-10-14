@@ -80,16 +80,27 @@ function ProgramsPage() {
               tốt nghiệp trung cấp theo Luật Giáo dục nghề nghiệp số 124/2025/QH15, khóa sơ cấp được cấp
               chứng chỉ.
             </p>
-            {programs.length > 0 && (
-              <p className="mt-3 inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-600">
+            {/* Luôn dựng hàng này: trước đây chip chỉ xuất hiện khi API trả, làm header cao
+                thêm 63px và đẩy mọi mục bên dưới xuống. Lúc chờ chip là vạch mờ cùng cỡ. */}
+            <p className="mt-3 inline-flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-slate-600">
+              {loading ? (
+                <span
+                  aria-hidden="true"
+                  className="h-[30px] w-[232px] animate-pulse rounded-full bg-slate-100"
+                />
+              ) : programs.length > 0 ? (
                 <span className="rounded-full bg-blue-50 px-3 py-1 font-semibold text-primary-dark">
                   {programs.length} ngành và khóa học đang tuyển sinh
                 </span>
-                <Link to="/cau-hoi-thuong-gap" className="text-primary font-medium underline underline-offset-2">
-                  Chưa biết chọn ngành nào?
-                </Link>
-              </p>
-            )}
+              ) : (
+                // API lỗi hoặc chưa có ngành: giữ chỗ cho khỏi nhảy, nhưng KHÔNG pulse mãi
+                // như thể đang tải — thân trang đã có thông báo riêng.
+                <span aria-hidden="true" className="h-[30px] px-3 py-1" />
+              )}
+              <Link to="/cau-hoi-thuong-gap" className="text-primary font-medium underline underline-offset-2">
+                Chưa biết chọn ngành nào?
+              </Link>
+            </p>
           </header>
 
           <InterestGuide />

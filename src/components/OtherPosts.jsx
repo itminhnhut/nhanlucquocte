@@ -1,34 +1,21 @@
-import { useEffect, useState } from "react";
+import { useMemo } from "react";
 import { Link } from "react-router-dom";
-import https from "../utils/https";
 import { initialDataKeys, useInitialData } from "../data/initialData";
 import { formatDateVi } from "../utils/formatDate";
 
 const FALLBACK_COUNT = 5;
 
 // "Bài viết khác" cuối bài tin. HTML tạo sẵn: bài cũ hơn + mới hơn (src/ssr/initialDataForPath.ts)
-// để bot theo link tới mọi bài. Mở bằng điều hướng trong trình duyệt: lấy các bài mới nhất.
-// Dùng key={slug} ở nơi gọi để đổi bài thì lấy lại danh sách.
-function OtherPosts({ slug }) {
+// để bot theo link tới mọi bài.
+// Không có dữ liệu nhúng thì dùng chung danh sách `fallbackPosts` của trang cha — khối này và
+// sidebar "Tin mới nhất" trước đây mỗi bên tự gọi /client/posts, tức 2 request cho cùng một danh sách.
+// Dùng key={slug} ở nơi gọi để đổi bài thì dựng lại.
+function OtherPosts({ slug, fallbackPosts }) {
   const initialPosts = useInitialData(initialDataKeys.nearbyPosts(slug));
-  const [posts, setPosts] = useState(initialPosts ?? []);
-
-  useEffect(() => {
-    if (initialPosts) return;
-    let isCancelled = false;
-    https
-      .get("/client/posts", { params: { page: 1, limit: FALLBACK_COUNT + 1, noPaginate: false } })
-      .then((res) => {
-        const list = Array.isArray(res?.data) ? res.data : Array.isArray(res) ? res : [];
-        if (!isCancelled) setPosts(list.filter((post) => post.slug !== slug).slice(0, FALLBACK_COUNT));
-      })
-      .catch(() => {
-        /* Khối phụ: lỗi mạng thì không hiện */
-      });
-    return () => {
-      isCancelled = true;
-    };
-  }, [slug, initialPosts]);
+  const posts = useMemo(() => {
+    const list = initialPosts ?? fallbackPosts ?? [];
+    return list.filter((post) => post.slug !== slug).slice(0, FALLBACK_COUNT);
+  }, [initialPosts, fallbackPosts, slug]);
 
   if (!posts.length) return null;
 

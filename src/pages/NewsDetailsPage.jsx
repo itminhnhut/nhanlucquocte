@@ -73,12 +73,19 @@ function NewsDetailsPage() {
   const hasPost = !!post;
   // Bỏ bản ghi "ngành" có slug trùng đường dẫn của mục trên site (dữ liệu CMS gõ nhầm) → tránh link gãy
   const relatedPrograms = (post?.programs ?? []).filter((program) => !isReservedSlug(program?.slug));
-  // Đã nhúng sẵn trong HTML tạo trước → hiện ngay; chạy dev (không có HTML sẵn) thì gọi API
+  // Đã nhúng sẵn trong HTML tạo trước → hiện ngay; chạy dev (không có HTML sẵn) thì gọi API.
+  // useInitialData chốt giá trị tại lần mount đầu, mà trang này KHÔNG remount khi đổi slug
+  // (routes không đặt key) → chỉ được dùng dữ liệu nhúng cho đúng bài đầu tiên, từ bài thứ hai
+  // trở đi phải gọi API, nếu không danh sách đứng hình ở bài đầu.
   const embeddedLatest = useInitialData(initialDataKeys.latestPosts(slug));
   const [latestPosts, setLatestPosts] = useState(embeddedLatest ?? []);
+  const latestFromHtml = useRef(Boolean(embeddedLatest?.length));
 
   useEffect(() => {
-    if (embeddedLatest?.length) return undefined;
+    if (latestFromHtml.current) {
+      latestFromHtml.current = false;
+      return undefined;
+    }
     let alive = true;
     https
       .get("client/posts", { params: { page: 1, limit: 6 } })
@@ -86,11 +93,14 @@ function NewsDetailsPage() {
         if (!alive || !Array.isArray(res?.data)) return;
         setLatestPosts(res.data.filter((item) => item.slug !== slug).slice(0, 5));
       })
-      .catch(() => setLatestPosts([]));
+      .catch((err) => {
+        console.error("Error fetching latest posts:", err);
+        setLatestPosts([]);
+      });
     return () => {
       alive = false;
     };
-  }, [slug, embeddedLatest]);
+  }, [slug]);
   // Ngành gợi ý ở cột phải: lấy từ danh mục (luôn có, không phụ thuộc dữ liệu bài)
   const suggestedPrograms = ALL_PROGRAMS.filter((program) => program.levelConfirmed).slice(0, 6);
   const articleContent = useMemo(
@@ -114,7 +124,9 @@ function NewsDetailsPage() {
       <Seo meta={seoMeta} />
 
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between gap-3 mb-4 text-[12px] text-slate-500">
+        {/* min-h: đoạn tên bài chỉ có sau khi API trả, làm hàng này từ 1 dòng thành 2 dòng và
+            đẩy cả bài xuống 22px. Chừa sẵn 2 dòng thì không nhảy. */}
+        <div className="flex min-h-[36px] items-start justify-between gap-3 mb-4 text-[12px] text-slate-500">
           <div className="flex items-center flex-wrap gap-1">
             <Link to="/" className="hover:text-primary-dark transition">
               Trang chủ
@@ -266,7 +278,7 @@ function NewsDetailsPage() {
 
                 <ContactCard />
 
-                <OtherPosts key={slug} slug={slug} />
+                <OtherPosts key={slug} slug={slug} fallbackPosts={latestPosts} />
               </article>
             )}
           </div>
@@ -296,14 +308,16 @@ function NewsDetailsPage() {
               </div>
             )}
 
-            {latestPosts.length > 0 && (
+            {latestPosts.some((item) => item.slug !== slug) && (
               <div className="bg-white border border-slate-200 rounded-2xl p-4">
                 <h2 className="mb-3 flex items-center gap-2 text-[15px] font-bold text-slate-900">
                   <span className="inline-block h-4 w-1 rounded-full bg-primary-dark" />
                   <span>Tin mới nhất</span>
                 </h2>
                 <ul className="divide-y divide-slate-100 text-[13px]">
-                  {latestPosts.map((item) => (
+                  {latestPosts
+                    .filter((item) => item.slug !== slug)
+                    .map((item) => (
                     <li key={item.slug} className="py-2 first:pt-0 last:pb-0">
                       <Link
                         to={`/tin-tuc/${item.slug}`}
