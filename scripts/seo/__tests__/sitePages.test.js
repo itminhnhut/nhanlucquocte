@@ -68,7 +68,7 @@ test("should fill the news list with latest posts, a consult card and internal l
     title: `Bài ${i}`,
     summary: "Tóm tắt",
     createdAt: "2026-09-10T02:00:00.000Z",
-    programs: i === 6 ? [{ slug: "khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap", title: "TUYỂN SINH NGÀNH KỸ THUẬT LÀM BÁNH" }] : [],
+    programs: i === 6 ? [{ slug: "ky-thuat-lam-banh", title: "TUYỂN SINH NGÀNH KỸ THUẬT LÀM BÁNH" }] : [],
   }));
   const content = { programs: [], news, isComplete: true };
   const html = renderAppHtml("/tin-tuc", initialDataForPath("/tin-tuc", content)).replace(/<!-- -->/g, "");

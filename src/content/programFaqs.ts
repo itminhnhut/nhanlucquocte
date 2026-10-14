@@ -21,7 +21,7 @@ const ADVICE = "[Đăng ký tư vấn](/#register) để nhận chương trình 
 
 export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
   {
-    slugs: ["chuyen-nganh-dieu-duong-he-trung-cap"],
+    slugs: ["dieu-duong-he-trung-cap"],
     name: "Điều dưỡng",
     faqs: [
       {
@@ -36,7 +36,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["tuyen-sinh-nganh-duoc-si-he-trung-cap-khai-giang-ngay-16-03-2026"],
+    slugs: ["duoc-si-he-trung-cap"],
     name: "Dược sĩ",
     faqs: [
       {
@@ -51,7 +51,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["cham-soc-sac-dep-he-trung-cap", "tuyen-sinh-nganh-beauty-therapy-lieu-phap-lam-dep", "cham-soc-da-chuyen-nghiep", "cham-soc-nails-chuyen-nghiep-ngan-han"],
+    slugs: ["cham-soc-sac-dep-he-trung-cap", "beauty-therapy-lieu-phap-lam-dep", "cham-soc-da-chuyen-nghiep", "cham-soc-nails-chuyen-nghiep-ngan-han"],
     name: "Chăm sóc sắc đẹp",
     faqs: [
       {
@@ -67,7 +67,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["ky-thuat-che-bien-mon-an", "khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap", "nghiep-vu-pha-che"],
+    slugs: ["ky-thuat-che-bien-mon-an", "ky-thuat-lam-banh", "nghiep-vu-pha-che"],
     name: "Bếp – Bánh – Pha chế",
     faqs: [
       {
@@ -83,7 +83,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["quan-tri-khach-san", "khai-giang-nghiep-vu-le-tan"],
+    slugs: ["quan-tri-khach-san", "nghiep-vu-le-tan"],
     name: "Khách sạn – Lễ tân",
     faqs: [
       {
@@ -98,7 +98,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026", "trung-cap-ky-thuat-xay-dung", "thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17", "tuyen-sinh-ky-thuat-moc-xay-dung-va-trang-tri-noi-that"],
+    slugs: ["trung-cap-ky-thuat-sua-chua-o-to", "trung-cap-ky-thuat-xay-dung", "thiet-ke-noi-that", "ky-thuat-moc-xay-dung-va-trang-tri-noi-that"],
     name: "Kỹ thuật – Xây dựng – Nội thất",
     faqs: [
       {
@@ -114,7 +114,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["ke-toan-doanh-nghiep", "tuyen-sinh-trung-cap-nganh-quan-tri-kinh-doanh", "nganh-cong-nghe-thong-tin-he-trung-cap"],
+    slugs: ["ke-toan-doanh-nghiep", "quan-tri-kinh-doanh", "cong-nghe-thong-tin"],
     name: "Kế toán – Kinh doanh – CNTT",
     faqs: [
       {
@@ -130,7 +130,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["nghiep-vu-bao-mau", "cham-soc-nguoi-cao-tuoi", "tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026", "ngon-ngu-han-quoc", "nghiep-vu-nghe-nong-nghiep-he-so-cap"],
+    slugs: ["nghiep-vu-bao-mau", "cham-soc-nguoi-cao-tuoi", "nghiep-vu-tro-ly-nha-khoa", "ngon-ngu-han-quoc", "nghiep-vu-nghe-nong-nghiep-he-so-cap"],
     name: "Khóa sơ cấp, ngắn hạn",
     faqs: [
       {
@@ -145,7 +145,7 @@ export const PROGRAM_FAQ_GROUPS: readonly ProgramFaqGroup[] = [
     ],
   },
   {
-    slugs: ["tuyen-sinh-he-dai-hoc-nam-2025", "tuyen-sinh-he-lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc"],
+    slugs: ["lien-thong-tu-trung-cap-len-dai-hoc", "lien-thong-dai-hoc-nganh-quan-tri-dich-vu-an-uong-va-am-thuc"],
     name: "Liên thông đại học",
     faqs: [
       {

@@ -8,7 +8,7 @@ import { renderAppHtml } from "../../../src/ssr/renderPage";
 
 const PROGRAM = {
   id: 1,
-  slug: "chuyen-nganh-dieu-duong-he-trung-cap",
+  slug: "dieu-duong-he-trung-cap",
   title: "TUYỂN SINH NGÀNH ĐIỀU DƯỠNG",
   description: "KHAI GIẢNG NGÀY 07.09.2026",
   content: "<p>Nội dung ngành điều dưỡng chi tiết.</p>",
@@ -21,7 +21,7 @@ const POST = {
   summary: "Lộ trình học spa",
   createdAt: "2026-09-10T20:00:00.000Z",
   content: '<h2 id="buoc-1">Bước 1</h2><p>Nội dung bài spa.</p>',
-  programs: [{ slug: "chuyen-nganh-dieu-duong-he-trung-cap" }],
+  programs: [{ slug: "dieu-duong-he-trung-cap" }],
 };
 const CONTENT = { programs: [PROGRAM], news: [POST], isComplete: true };
 
@@ -59,10 +59,10 @@ test("should embed only the data each page renders, without list item content", 
   assert.equal(home.programs[0].content, undefined);
   assert.equal(home["posts:1"].data[0].content, undefined);
 
-  const detail = initialDataForPath("/nganh-dao-tao/chuyen-nganh-dieu-duong-he-trung-cap", CONTENT);
-  assert.equal(detail["program:chuyen-nganh-dieu-duong-he-trung-cap"].content, PROGRAM.content);
+  const detail = initialDataForPath("/nganh-dao-tao/dieu-duong-he-trung-cap", CONTENT);
+  assert.equal(detail["program:dieu-duong-he-trung-cap"].content, PROGRAM.content);
   assert.deepEqual(
-    detail["relatedPosts:chuyen-nganh-dieu-duong-he-trung-cap"].map((post) => post.slug),
+    detail["relatedPosts:dieu-duong-he-trung-cap"].map((post) => post.slug),
     ["hoc-spa"]
   );
 
@@ -72,7 +72,7 @@ test("should embed only the data each page renders, without list item content", 
 });
 
 test("should render program page body with keyword heading, lead and CMS content", () => {
-  const path = "/nganh-dao-tao/chuyen-nganh-dieu-duong-he-trung-cap";
+  const path = "/nganh-dao-tao/dieu-duong-he-trung-cap";
 
   const html = renderAppHtml(path, initialDataForPath(path, CONTENT));
 
@@ -85,7 +85,7 @@ test("should render program page body with keyword heading, lead and CMS content
 test("should render home page body with links to every program and latest news", () => {
   const html = renderAppHtml("/", initialDataForPath("/", CONTENT));
 
-  assert.match(html, /href="\/nganh-dao-tao\/chuyen-nganh-dieu-duong-he-trung-cap"/);
+  assert.match(html, /href="\/nganh-dao-tao\/dieu-duong-he-trung-cap"/);
   assert.match(html, /Trung cấp Điều dưỡng/);
   assert.match(html, /href="\/tin-tuc\/hoc-spa"/);
 });
@@ -154,7 +154,7 @@ test("should remove the whole nested Quill table of contents and keep the articl
 });
 
 test("should render the opening date badge from the time the page was generated", () => {
-  const path = "/nganh-dao-tao/chuyen-nganh-dieu-duong-he-trung-cap";
+  const path = "/nganh-dao-tao/dieu-duong-he-trung-cap";
   const program = { ...PROGRAM, description: "KHAI GIẢNG NGÀY 28.09.2026" };
   const content = { ...CONTENT, programs: [program] };
 

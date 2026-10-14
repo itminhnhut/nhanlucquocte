@@ -105,7 +105,7 @@ test("should mark short courses with a certificate and only list an upcoming sta
   assert.equal(program.programType, "Sơ cấp, ngắn hạn");
   assert.equal(program.educationalCredentialAwarded, "Chứng chỉ");
   assert.equal(program.startDate, "2099-10-07");
-  const past = programPageMeta({ title: "TUYỂN SINH NGÀNH ĐIỀU DƯỠNG", description: "KHAI GIẢNG NGÀY 07.09.2020" }, "chuyen-nganh-dieu-duong-he-trung-cap");
+  const past = programPageMeta({ title: "TUYỂN SINH NGÀNH ĐIỀU DƯỠNG", description: "KHAI GIẢNG NGÀY 07.09.2020" }, "dieu-duong-he-trung-cap");
   assert.equal(nodeOf(past, "EducationalOccupationalProgram").startDate, undefined);
 });
 

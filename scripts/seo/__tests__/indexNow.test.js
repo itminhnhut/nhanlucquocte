@@ -12,7 +12,7 @@ const TEMPLATE =
   '<!DOCTYPE html>\n<html lang="vi">\n  <head>\n    <meta charset="UTF-8" />\n  </head>\n' +
   '  <body><div id="root"></div></body>\n</html>';
 const CONTENT = {
-  programs: [{ slug: "chuyen-nganh-dieu-duong-he-trung-cap", title: "TUYỂN SINH NGÀNH ĐIỀU DƯỠNG", content: "<p>A</p>" }],
+  programs: [{ slug: "dieu-duong-he-trung-cap", title: "TUYỂN SINH NGÀNH ĐIỀU DƯỠNG", content: "<p>A</p>" }],
   news: [{ slug: "hoc-spa", title: "Học spa", content: "<p>B</p>" }],
   isComplete: true,
 };
@@ -49,7 +49,7 @@ test("should report only indexable pages whose HTML changed since the last gener
     news: [{ ...CONTENT.news[0], content: "<p>B đã sửa</p>" }],
   });
 
-  assert.ok(first.changedPaths.includes("/nganh-dao-tao/chuyen-nganh-dieu-duong-he-trung-cap"));
+  assert.ok(first.changedPaths.includes("/nganh-dao-tao/dieu-duong-he-trung-cap"));
   assert.ok(first.changedPaths.includes("/"));
   assert.ok(!first.changedPaths.includes("/tim-kiem"), "trang noindex không gửi IndexNow");
   assert.deepEqual(unchanged.changedPaths, []);

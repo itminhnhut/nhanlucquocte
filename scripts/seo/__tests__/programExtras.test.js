@@ -13,12 +13,12 @@ test("should build fit info for every program in the catalog", () => {
     assert.ok(extras.entry, slug);
     extras.sameField.forEach((item) => assert.notEqual(item.path, `/nganh-dao-tao/${slug}`));
   });
-  assert.equal(programExtras("chuyen-nganh-dieu-duong-he-trung-cap")?.name, "Điều dưỡng");
+  assert.equal(programExtras("dieu-duong-he-trung-cap")?.name, "Điều dưỡng");
   assert.equal(programExtras("nganh-moi-chua-xep-nhom"), null);
 });
 
 test("should only state entry levels the school has confirmed", () => {
-  assert.match(programExtras("tuyen-sinh-cong-nghe-ky-thuat-o-to-khai-giang-ngay-03-03-2026").entry, /THCS, THPT/);
+  assert.match(programExtras("trung-cap-ky-thuat-sua-chua-o-to").entry, /THCS, THPT/);
   assert.match(programExtras("ke-toan-doanh-nghiep").entry, /THCS, THPT/);
   assert.equal(programExtras("ke-toan-doanh-nghiep").schedule, undefined);
   assert.match(programExtras("nghiep-vu-nghe-nong-nghiep-he-so-cap").credential, /chứng chỉ/);
@@ -26,14 +26,14 @@ test("should only state entry levels the school has confirmed", () => {
   // Trường đã công bố rõ trên trang của mình (xem căn cứ ở đầu src/content/programFields.ts)
   assert.match(programExtras("cham-soc-nguoi-cao-tuoi").credential, /chứng chỉ/);
   assert.match(programExtras("nghiep-vu-pha-che").credential, /chứng chỉ/);
-  assert.match(programExtras("thong-bao-tuyen-sinh-nganh-thiet-ke-noi-that-khoa-17").credential, /bằng tốt nghiệp trung cấp/);
+  assert.match(programExtras("thiet-ke-noi-that").credential, /bằng tốt nghiệp trung cấp/);
   // Ngành trường chưa công bố rõ hệ đào tạo → không nêu văn bằng
-  assert.equal(programExtras("tuyen-sinh-khoa-32-nghiep-vu-tro-ly-nha-khoa-khai-giang-ngay-01-07-2026").credential, null);
+  assert.equal(programExtras("nghiep-vu-tro-ly-nha-khoa").credential, null);
   assert.equal(programExtras("cham-soc-da-chuyen-nghiep").credential, null);
 });
 
 test("should link related programs in the same field", () => {
-  const extras = programExtras("khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap");
+  const extras = programExtras("ky-thuat-lam-banh");
   assert.deepEqual(extras.sameField.map((item) => item.name), [
     "Kỹ thuật chế biến món ăn",
     "Quản trị khách sạn",
@@ -43,7 +43,7 @@ test("should link related programs in the same field", () => {
 });
 
 test("should prerender the fit block on a program page", () => {
-  const program = { id: 1, slug: "khai-giang-ky-thuat-lam-banh-khoa-106-he-trung-cap", title: "Làm bánh", content: "<p>Nội dung</p>", active: true };
+  const program = { id: 1, slug: "ky-thuat-lam-banh", title: "Làm bánh", content: "<p>Nội dung</p>", active: true };
   const path = `/nganh-dao-tao/${program.slug}`;
   const html = renderAppHtml(path, initialDataForPath(path, { programs: [program], news: [] })).replace(/<!-- -->/g, "");
   assert.match(html, /Ngành Kỹ thuật làm bánh có phù hợp với bạn\?/);

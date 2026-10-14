@@ -135,11 +135,11 @@ test("should demote h1 headings inside CMS content to h2", () => {
 });
 
 test("should put featured programs first on the homepage keeping the rest in order", () => {
-  const programs = [{ slug: "a" }, { slug: "b" }, { slug: "chuyen-nganh-dieu-duong-he-trung-cap" }, { slug: "c" }];
+  const programs = [{ slug: "a" }, { slug: "b" }, { slug: "dieu-duong-he-trung-cap" }, { slug: "c" }];
 
   assert.deepEqual(
     withFeaturedFirst(programs).map((program) => program.slug),
-    ["chuyen-nganh-dieu-duong-he-trung-cap", "a", "b", "c"]
+    ["dieu-duong-he-trung-cap", "a", "b", "c"]
   );
 });
 

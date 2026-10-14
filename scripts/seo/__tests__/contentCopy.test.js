@@ -46,7 +46,7 @@ test("should give campus images descriptive alt text", () => {
 });
 
 test("should keep program descriptions short and free of the old ward", () => {
-  ["chuyen-nganh-dieu-duong-he-trung-cap", "cham-soc-sac-dep-he-trung-cap"].forEach((slug) => {
+  ["dieu-duong-he-trung-cap", "cham-soc-sac-dep-he-trung-cap"].forEach((slug) => {
     const { description } = programPageMeta({ title: "TUYỂN SINH NGÀNH X" }, slug);
 
     assert.doesNotMatch(description, /Bàn Cờ|Quận 3/, slug);

@@ -43,7 +43,7 @@ export const GALLERY_ALBUMS: readonly GalleryAlbum[] = [
     title: "Lễ trao bằng tốt nghiệp và học bổng",
     description:
       "Lễ trao bằng tốt nghiệp kết hợp trao học bổng cho học viên hoàn thành chương trình.",
-    postSlug: "khep-lai-thanh-cong-le-trao-bang-tot-nghiep-2026-va-trao-hoc-bong",
+    postSlug: "khep-lai-thanh-cong-le-trao-bang-tot-nghiep-trao-hoc-bong-ngay-05-05-2026",
     photos: [
       { name: "trao-bang-san-khau", alt: "Sân khấu lễ trao bằng tốt nghiệp hệ trung cấp của nhà trường", width: 1024, height: 768 },
       { name: "trao-bang-hoc-vien", alt: "Học viên nhận bằng tốt nghiệp trong buổi lễ", width: 1024, height: 768 },
@@ -90,7 +90,7 @@ export const GALLERY_ALBUMS: readonly GalleryAlbum[] = [
     id: "cong-dong",
     title: "Hoạt động cộng đồng",
     description: "Học viên và cán bộ, giáo viên nhà trường tham gia hiến máu tình nguyện.",
-    postSlug: "hien-mau-hom-nay-trao-hy-vong-ngay-mai",
+    postSlug: "hoat-dong-hien-mau",
     photos: [
       { name: "hien-mau-tinh-nguyen", alt: "Học viên và giáo viên tham gia hiến máu tình nguyện", width: 2048, height: 1536 },
     ],
