@@ -27,7 +27,8 @@ function ProgramCard({ program, now }) {
         )}
       </div>
 
-      <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600 line-clamp-4">{desc}</p>
+      {/* Không clamp: hiện đủ mô tả nhân viên viết trong admin, không cắt bằng dấu ba chấm */}
+      <p className="mt-1.5 text-[13px] leading-relaxed text-slate-600">{desc}</p>
 
       {(openingDate || highlights.length > 0) && (
         <ul className="mt-3 flex flex-wrap gap-1.5 text-[12px]">

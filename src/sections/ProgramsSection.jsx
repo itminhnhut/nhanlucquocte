@@ -76,7 +76,7 @@ function ProgramsSection() {
                     )}
                   </div>
                   {desc && (
-                    <div className="text-[11px] text-slate-500 line-clamp-4 leading-relaxed">
+                    <div className="text-[11px] text-slate-500 leading-relaxed">
                       {desc}
                     </div>
                   )}
