@@ -74,3 +74,11 @@ npm run audit:seo -- http://localhost:8088 bao-cao.md     # bản build chạy q
 Quét như Googlebot: robots.txt, sitemap, từng trang (title, description, canonical, H1, từ khoá
 trong `src/seo/keywords.ts`, số chữ, ảnh, link nội bộ, schema, Open Graph), trang mồ côi, tranh từ
 khoá. Xuất báo cáo Markdown (mặc định `seo-audit-report.md`). Kết quả gần nhất: `docs/seo-audit-2026-09-24.md`.
+
+## public/img_data — đừng xoá
+
+47 ảnh của website cũ. Không bài nào trên web mới trỏ tới chúng nữa (backend đã chuyển ảnh
+sang bucket), nhưng các URL đó vẫn đang sống trên chính tên miền của trường và Google đã
+index. Web mới thay chỗ site cũ ở cùng tên miền, nên xoá thư mục là mọi URL ảnh cũ thành 404.
+
+Chỉ xoá khi Search Console cho thấy không còn lượt truy cập nào vào `/img_data/...`.

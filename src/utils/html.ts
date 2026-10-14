@@ -21,13 +21,63 @@ export function lazyLoadImages(html: unknown): string {
   return html.replace(/<img\b(?![^>]*\sloading=)/gi, '<img loading="lazy" decoding="async"');
 }
 
-/** Ảnh trong bài CMS thiếu alt → gắn alt theo tiêu đề bài (ảnh không alt vừa hại SEO vừa hại
- *  người dùng trình đọc màn hình). Chỉ thêm khi thẻ img chưa có alt. */
+/**
+ * Dấu hiệu alt bị dán từ kết quả tìm ảnh Google chứ không phải người viết tự mô tả ảnh.
+ *
+ * Rà dữ liệu thật (API ngày 15/10/2026): 21/22 giá trị alt trong bài là tiêu đề kết quả tìm
+ * ảnh, giữ nguyên cả dấu "..." bị cắt, và nêu tên đơn vị khác — "Tuyển Sinh Hueic",
+ * "CỔNG TUYỂN SINH UEH", "Học viện Nông nghiệp Việt Nam: … | Đảng Cộng sản Việt Nam",
+ * "Cao đẳng kế toán doanh nghiệp - Cao ...", "VIỆC LÀM NGÀNH F&B | Facebook".
+ * Để nguyên là trang của trường đi quảng cáo cho nơi khác, ngay trong thuộc tính mà Google và
+ * trình đọc màn hình đều đọc. Thay bằng alt mô tả theo tiêu đề trang.
+ */
+// Chỉ nhận những dấu hiệu CHỈ xuất hiện ở chữ dán từ nơi khác. Không chặn theo từ như
+// "cao đẳng" hay "đại học": ngành liên thông của trường vốn nói về đại học, chặn cả từ đó là
+// thay oan alt mô tả đúng.
+const BORROWED_ALT_PATTERNS: readonly RegExp[] = [
+  /\.{3}\s*$|…\s*$/u, // đuôi "..." của tiêu đề bị Google cắt giữa câu
+  /\|/u, // dấu | phân cách "tiêu đề | tên site"
+  /\b(hueic|ueh|facebook|youtube|tiktok|shopee|wikipedia)\b/iu, // tên site khác
+  /\btop\s*\d+\b/iu, // tiêu đề bài xếp hạng: "TOP 26 Địa Chỉ…"
+];
+
+/** Alt này do người viết mô tả ảnh, hay dán từ nơi khác? */
+export function isBorrowedAlt(alt: string): boolean {
+  const text = alt.trim();
+  if (!text) return false;
+  // Nhắc đúng tên trường thì giữ
+  if (/nhân lực quốc tế/iu.test(text)) return false;
+  return BORROWED_ALT_PATTERNS.some((pattern) => pattern.test(text));
+}
+
+/**
+ * Ảnh trong bài CMS thiếu alt → gắn alt theo tiêu đề bài (ảnh không alt vừa hại SEO vừa hại
+ * người dùng trình đọc màn hình). Alt dán từ nơi khác cũng bị thay bằng alt theo tiêu đề.
+ */
 export function fillMissingImageAlt(html: unknown, title: unknown): string {
   if (typeof html !== "string") return "";
-  const label = String(title ?? "").replace(/"/g, "").trim();
+  // Nhãn đi vào thuộc tính HTML nên phải escape; và dùng hàm thay thế chứ không dùng chuỗi,
+  // vì `$&` trong chuỗi thay thế của String.replace bị nở thành phần vừa khớp.
+  const label = String(title ?? "")
+    .trim()
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "");
   if (!label) return html;
-  return html.replace(/<img\b(?![^>]*\salt=)/gi, `<img alt="${label}"`);
+  // Bắt cả nháy kép, nháy đơn và không nháy: CMS sinh cả ba, mà chỉ bắt nháy kép thì thẻ có
+  // alt='…' bị coi là thiếu alt → chèn thêm alt thứ hai, trình duyệt lấy cái ĐẦU nên alt thật
+  // của người viết bị thay oan.
+  const ALT_ATTR = /\salt\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i;
+  return html.replace(/<img\b[^>]*>/gi, (tag) => {
+    const found = ALT_ATTR.exec(tag);
+    if (!found) return tag.replace(/<img\b/i, () => `<img alt="${label}"`);
+    const alt = found[1] ?? found[2] ?? found[3] ?? "";
+    // alt="" là người soạn bỏ trống ô, không phải khai ảnh trang trí: 22/45 ảnh trong thân bài
+    // đang như vậy. Điền nhãn theo tiêu đề để Google và trình đọc màn hình có gì mà đọc.
+    if (alt.trim() && !isBorrowedAlt(alt)) return tag;
+    return tag.replace(ALT_ATTR, () => ` alt="${label}"`);
+  });
 }
 
 /**

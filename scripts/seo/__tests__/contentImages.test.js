@@ -7,6 +7,8 @@ import {
   dropEmptyHeadings,
   dropEmptyWrappers,
   dropForeignImages,
+  fillMissingImageAlt,
+  isBorrowedAlt,
   normalizeHeadingLevels,
 } from "../../../src/utils/html";
 import { CONTENT_IMAGE_SIZES } from "../../../src/content/contentImageSizes";
@@ -180,4 +182,93 @@ test("should let the server declare extra image hosts", () => {
   const envScript = envSh.split("\n").find((line) => line.includes("window.__ENV__=")) ?? "";
   assert.match(envScript, /VITE_IMAGE_HOSTS/, "chưa đẩy vào window.__ENV__");
   assert.match(envSh, /VITE_IMAGE_HOSTS="\$VITE_IMAGE_HOSTS" nohup node/, "chưa truyền cho tiến trình tạo trang");
+});
+
+test("should keep the old site's image files so indexed image URLs survive the cutover", () => {
+  // 47 ảnh trong public/img_data KHÔNG còn được bài nào trên web mới trỏ tới (backend đã
+  // chuyển hết ảnh sang bucket). Nhưng chúng vẫn đang sống trên chính tên miền của trường:
+  //   GET https://trungcapnhanlucquocte.vn/img_data/images/1.jpg → 200 image/jpeg
+  // Web mới THAY CHỖ site cũ ở cùng tên miền, nên xoá thư mục này là mọi URL ảnh Google đã
+  // index thành 404. 22 MB là giá rẻ để không mất lượt truy cập từ Google Hình ảnh.
+  // Khi nào Search Console cho thấy không còn lượt vào từ các URL đó thì mới xoá.
+  const dir = path.join(process.cwd(), "public/img_data/images");
+  assert.ok(fs.existsSync(dir), "đã xoá public/img_data — URL ảnh site cũ sẽ 404");
+  const files = fs.readdirSync(dir).filter((name) => /\.(jpe?g|png|webp|gif)$/i.test(name));
+  assert.ok(files.length >= 40, `chỉ còn ${files.length} ảnh, trước đó có 47`);
+});
+
+test("should replace alt text pasted from another site's search results", () => {
+  // Rà API thật: 21/22 alt trong bài là tiêu đề kết quả tìm ảnh Google, nêu tên đơn vị khác.
+  // Google và trình đọc màn hình đều đọc alt → để nguyên là trang của trường PR cho nơi khác.
+  const BORROWED = [
+    "Trang trí nội thất - Tuyển Sinh Hueic",
+    "CỔNG TUYỂN SINH UEH",
+    "Cao đẳng kế toán doanh nghiệp - Cao ...",
+    "Học viện Nông nghiệp Việt Nam: Đẩy mạnh | Đảng Cộng sản Việt Nam",
+    "VIỆC LÀM NGÀNH F&B | Facebook",
+    "TOP 26 Địa Chỉ Làm Nail Đẹp, Giảm Và Nổi ...",
+    "Nhân viên lễ tân khách sạn là gì? Mức độ ...",
+  ];
+  BORROWED.forEach((alt) => assert.ok(isBorrowedAlt(alt), `không nhận ra alt vay: ${alt}`));
+
+  const html = `<p><img src="/a.jpg" alt="CỔNG TUYỂN SINH UEH"></p>`;
+  const out = fillMissingImageAlt(html, "Liên thông từ trung cấp lên đại học");
+  assert.ok(!out.includes("UEH"), "alt của trường khác vẫn còn");
+  assert.match(out, /alt="Liên thông từ trung cấp lên đại học"/);
+});
+
+test("should keep an alt that really describes the picture", () => {
+  const GIU = [
+    "Trường Nhân Lực Quốc Tế",
+    "Quy trình kế toán bán hàng",
+    // Ngành liên thông của trường vốn nói về đại học — không được chặn theo từ khoá ngành học
+    "Liên thông từ trung cấp lên đại học",
+    "Sinh viên cao đẳng thực hành tại xưởng của trường",
+  ];
+  GIU.forEach((alt) => assert.ok(!isBorrowedAlt(alt), `gỡ oan alt mô tả thật: ${alt}`));
+
+  const html = `<p><img src="/a.jpg" alt="Quy trình kế toán bán hàng"></p>`;
+  assert.equal(fillMissingImageAlt(html, "Kế toán doanh nghiệp"), html);
+});
+
+test("should still fill in an alt that is missing entirely", () => {
+  const out = fillMissingImageAlt(`<img src="/a.jpg">`, "Điều dưỡng hệ trung cấp");
+  assert.match(out, /alt="Điều dưỡng hệ trung cấp"/);
+});
+
+test("should not add a second alt to an image that uses single quotes", () => {
+  // Chỉ bắt alt nháy kép thì thẻ dùng nháy đơn bị coi là thiếu alt → chèn alt thứ hai, trình
+  // duyệt lấy cái ĐẦU nên alt mô tả thật của người viết bị thay oan. CMS này có sinh nháy đơn
+  // (chính file html.ts đã phải xử lý nháy đơn cho src và srcset).
+  const html = `<p><img src="/a.jpg" alt='Quy trình kế toán bán hàng'></p>`;
+  const out = fillMissingImageAlt(html, "Kế toán doanh nghiệp");
+  assert.equal((out.match(/\salt\s*=/gi) || []).length, 1, "có 2 thuộc tính alt trong một thẻ");
+  assert.ok(out.includes("Quy trình kế toán bán hàng"), "alt mô tả thật bị thay oan");
+});
+
+test("should fill in an alt that the author left blank", () => {
+  // alt="" trong thân bài là ô bị bỏ trống, không phải khai ảnh trang trí: 22/45 ảnh đang vậy
+  const out = fillMissingImageAlt(`<p><img src="/a.jpg" alt=""></p>`, "Điều dưỡng hệ trung cấp");
+  assert.match(out, /alt="Điều dưỡng hệ trung cấp"/);
+  assert.equal((out.match(/\salt\s*=/gi) || []).length, 1);
+});
+
+test("should not let the page title break out of the alt attribute", () => {
+  // `$&` trong chuỗi thay thế của String.replace nở thành phần vừa khớp → thẻ hỏng;
+  // và dấu < > & chưa escape thì vừa hỏng thuộc tính vừa làm addImageDimensions trượt thẻ
+  const out = fillMissingImageAlt(`<img src="/a.jpg">`, 'Giá 5$& <b>khuyến mãi</b> & hơn');
+  assert.equal((out.match(/\salt\s*=/gi) || []).length, 1, out);
+  // `$&` không được nở thành phần vừa khớp (tức thẻ <img …> không được lọt vào trong alt).
+  // Lưu ý: chuỗi escape đúng là "$&amp;" nên không thể kiểm bằng includes("$&").
+  assert.ok(!/alt="[^"]*<img/.test(out), out);
+  assert.equal((out.match(/<img/gi) || []).length, 1, out);
+  // Dấu < > & phải thành thực thể, nếu không thẻ hỏng và addImageDimensions trượt thẻ
+  assert.ok(!/alt="[^"]*<b>/.test(out), "thẻ HTML thô lọt vào thuộc tính alt");
+  assert.match(out, /alt="Giá 5\$&amp; &lt;b&gt;khuyến mãi&lt;\/b&gt; &amp; hơn"/);
+});
+
+test("should replace the real CMS alt that ends in an ellipsis", () => {
+  // Giá trị THẬT trong CMS có đuôi ba chấm — fixture trước đó của tôi ghi thiếu
+  assert.ok(isBorrowedAlt("Đá massage, hoa lan, khăn tắm..."));
+  assert.ok(!isBorrowedAlt("Đá massage, hoa lan, khăn tắm"));
 });
