@@ -13,7 +13,7 @@ npm run dev
 `.env` needs:
 
 ```
-VITE_API_URL=https://truongdaynghe-api.x2ldh2.easypanel.host/api
+VITE_API_URL=https://api.trungcapnhanlucquocte.vn/api
 ```
 
 ## Build & Preview

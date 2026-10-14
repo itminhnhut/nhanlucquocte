@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import { dropForeignImages, unwrapForeignImageLinks } from "../../../src/utils/html";
 
-const API_HOST = "https://truongdaynghe-api.x2ldh2.easypanel.host/api";
+const API_HOST = "https://api.trungcapnhanlucquocte.vn/api";
 const BUCKET = "truongdaynghe-rustfs.x2ldh2.easypanel.host";
 
 const withEnv = (fn) => {
