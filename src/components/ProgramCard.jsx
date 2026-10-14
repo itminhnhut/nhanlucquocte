@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { FEATURED_PROGRAM_SLUGS } from "../configs/featuredPrograms";
-import { programDisplayName, programLead, upcomingOpeningDate } from "../seo/programCopy";
+import { programCardLead, programDisplayName, upcomingOpeningDate } from "../seo/programCopy";
 import { programHighlights } from "../content/programExtras";
 
 // Thẻ 1 ngành trên trang /programs: tên, mô tả có từ khoá, nhãn nhanh (khai giảng, văn bằng,
@@ -8,7 +8,7 @@ import { programHighlights } from "../content/programExtras";
 // `now`: thời điểm render (HTML tạo sẵn) → nhãn khai giảng khớp khi hydrate.
 function ProgramCard({ program, now }) {
   const name = program.title ? programDisplayName(program.title, program.slug) : program.name || "Ngành đào tạo";
-  const desc = programLead(program.slug, program);
+  const desc = programCardLead(program.slug, program);
   const isFeatured = FEATURED_PROGRAM_SLUGS.includes(program.slug);
   const openingDate = upcomingOpeningDate(program, now);
   const highlights = programHighlights(program.slug);

@@ -153,6 +153,72 @@ export function programLead(slug: string, program: ProgramInput): string {
   );
 }
 
+/**
+ * Mô tả hiện trên THẺ ngành (trang chủ, /nganh-dao-tao) — lấy từ `description` của API.
+ *
+ * Trước đây thẻ nào cũng hiện đúng một câu sinh sẵn giống hệt nhau cho cả 26 ngành, tức là
+ * nhân viên viết mô tả trong trang quản trị xong website không dùng. Nhưng chữ từ CMS không
+ * dùng thẳng được: phần lớn mở đầu bằng một dòng tiêu đề IN HOA ("TUYỂN SINH HỆ TRUNG CẤP
+ * KHÓA 107 - KỸ THUẬT BÁNH CHUYÊN NGHIỆP NGÀY KHAI GIẢNG : 05.05.2026") rồi mới tới câu mô
+ * tả thật. Bỏ dòng tiêu đề đó đi, còn lại mới là thứ đáng hiện trên thẻ.
+ *
+ * Giữ nguyên câu sinh sẵn làm phương án dự phòng: mô tả trống, hoặc sau khi dọn còn quá ngắn
+ * thì thà hiện câu chung còn hơn hiện một mẩu cụt.
+ */
+const MIN_USEFUL_LEAD = 40;
+
+/** Một "từ" coi là IN HOA khi không có chữ thường nào (số và dấu câu tính là trung tính) */
+function isUpperWord(word: string): boolean {
+  return word.length > 0 && word === word.toUpperCase() && /\p{L}/u.test(word);
+}
+
+/**
+ * Bỏ dòng tiêu đề IN HOA ở đầu mô tả CMS.
+ * Chữ trong CMS không có dấu chấm câu nên tiêu đề chạy thẳng vào thân — tách theo câu không
+ * ăn thua, phải cắt theo chữ in hoa.
+ */
+function stripUpperHeadline(text: string): string {
+  const words = text.split(" ");
+  let cut = 0;
+  while (cut < words.length && (isUpperWord(words[cut]) || !/\p{L}/u.test(words[cut]))) cut += 1;
+  if (cut < 3) return text; // chỉ vài chữ viết hoa, không phải tiêu đề
+  const rest = words.slice(cut).join(" ").trim();
+  return rest.length >= MIN_USEFUL_LEAD ? rest : text;
+}
+
+/**
+ * Đoạn mở đầu có đọc như lời giới thiệu không, hay là dòng biểu mẫu?
+ *
+ * Mô tả trong CMS phần lớn là bản sao thông báo tuyển sinh: "Tên ngành, nghề : Quản trị kinh
+ * doanh Mã ngành, nghề : 5340404", "Khai giảng: 10/11/2025 Thời gian đào tạo: 02 năm",
+ * "(Thời gian đào tạo: 24 tháng) I. MỤC TIÊU…". Đưa mấy thứ đó lên thẻ thì vừa khó đọc, vừa
+ * hiện NGÀY KHAI GIẢNG ĐÃ QUA — mà ngày khai giảng đã có chỗ riêng và chỉ hiện khi chưa tới.
+ */
+function looksLikeProse(text: string): boolean {
+  const opening = text.split(/\s+/u).slice(0, 8).join(" ");
+  if (/:/u.test(opening)) return false; // cặp nhãn – giá trị
+  if (/^(\(|\d+\.|[IVX]+\.)/u.test(text)) return false; // mục đánh số, chú thích trong ngoặc
+  if (/\d{1,2}[./-]\d{1,2}[./-]\d{4}/u.test(opening)) return false; // mở đầu bằng một ngày
+  return true;
+}
+
+/**
+ * Mô tả hiện trên THẺ ngành (trang chủ, /nganh-dao-tao).
+ *
+ * Ưu tiên `description` nhân viên viết trong trang quản trị — trước đây mọi thẻ đều hiện đúng
+ * một câu sinh sẵn giống hệt nhau cho cả 26 ngành, tức là viết mô tả xong website không dùng.
+ * Nhưng chỉ nhận khi nó thật sự đọc được; còn lại vẫn dùng câu sinh sẵn, vì thà hiện câu chung
+ * còn hơn hiện một mẩu biểu mẫu kèm ngày đã qua.
+ */
+export function programCardLead(slug: string, program: ProgramInput): string {
+  const raw = typeof program.description === "string" ? program.description.replace(/\s+/g, " ").trim() : "";
+  const cleaned = raw ? stripUpperHeadline(raw) : "";
+  if (cleaned.length < MIN_USEFUL_LEAD || !looksLikeProse(cleaned)) return programLead(slug, program);
+  // KHÔNG cắt bằng "…": thẻ đã có line-clamp-3 của CSS lo phần nhìn thấy, mà chữ đầy đủ vẫn
+  // nằm trong trang cho Google đọc. Cắt tay là vừa mất nội dung vừa thừa dấu ba chấm.
+  return cleaned;
+}
+
 export function programSeoCopy(
   slug: string,
   program: ProgramInput,

@@ -6,7 +6,7 @@ import { FEATURED_PROGRAM_SLUGS, withFeaturedFirst } from "../configs/featuredPr
 // 4 hàng × 3 (tablet), 6 hàng × 2 (điện thoại) → hàng nào cũng đầy, không lẻ ô.
 // Xem đủ 26 ngành thì bấm "Xem tất cả ngành đào tạo".
 const MAX_PROGRAMS = 12;
-import { programDisplayName, programLead } from "../seo/programCopy";
+import { programCardLead, programDisplayName } from "../seo/programCopy";
 
 function ProgramsSection() {
   // Dùng chung hook với /nganh-dao-tao và /tuyen-sinh: trước đây khối này có bản sao y nguyên
@@ -56,7 +56,7 @@ function ProgramsSection() {
             !error &&
             withFeaturedFirst(programs).slice(0, MAX_PROGRAMS).map((p) => {
               const key = p.id || p.slug || p.title;
-              const desc = programLead(p.slug, p);
+              const desc = programCardLead(p.slug, p);
 
               return (
                 <Link
