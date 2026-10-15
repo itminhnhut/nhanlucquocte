@@ -258,9 +258,24 @@
     vertical-align: top;
   }
 
-  .rich-text td {
+  /* Chỉ nới ô cho bảng có cột nhãn (học kỳ × môn học) — bảng mã môn học của Quản trị kinh doanh
+     có 7 cột toàn số 2–5 ký tự, nới 11rem làm bảng phình từ 517px lên 1233px, phải kéo ngang
+     gấp đôi. */
+  .rich-text table:has(th[scope="row"]) td {
     min-width: 11rem;
   }
+}
+
+/* Lexical ghi căn lề ảnh bằng inline style (margin: 0 auto 0 0) — style đó bị lọc bỏ, nên dựa vào
+   thuộc tính data- mà trình soạn thảo để lại, nếu không ảnh căn trái sẽ bị kéo về giữa. */
+.rich-text img[data-image-alignment="left"] {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.rich-text img[data-image-alignment="right"] {
+  margin-left: auto;
+  margin-right: 0;
 }
 
 /* Bóng mờ hai mép khi bảng còn phần chưa nhìn thấy — thuần CSS, hết cuộn là bóng tự biến mất.

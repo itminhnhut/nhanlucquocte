@@ -24,7 +24,8 @@ export function categoryBySlug(slug: string | null | undefined): PostCategory | 
 
 export function categoryByValue(value: unknown): PostCategory | null {
   if (typeof value !== "string" || !value.trim()) return null;
-  const canonical = value.trim().toLowerCase();
+  // Trang quản trị có thể lưu tiếng Việt dạng NFD (tổ hợp dấu rời) → so chuỗi thô sẽ hụt im lặng
+  const canonical = value.normalize("NFC").trim().toLowerCase();
   return POST_CATEGORIES.find((item) => item.value === canonical) ?? null;
 }
 

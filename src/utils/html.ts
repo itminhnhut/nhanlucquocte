@@ -292,7 +292,7 @@ export function normalizeHeadingLevels(html: unknown): string {
  * Giữ lại những khai báo CSS thật sự thuộc về nội dung. Mọi thứ còn lại là tàn dư của trình soạn
  * thảo: Word dán vào kèm font Aptos, cỡ 12pt, lề 11px; link Google Drive mang màu #467886.
  */
-const KEPT_DECLARATIONS = new Set(["text-align", "white-space"]);
+const KEPT_DECLARATIONS = new Set(["text-align", "white-space", "text-decoration", "text-decoration-line"]);
 
 /**
  * Kích thước ảnh trong CMS được ghi bằng inline style (`width: 2048px; height: 1152px`).
@@ -321,6 +321,10 @@ function keepContentDeclarations(style: string): string {
     .filter((declaration) => {
       const property = declaration.slice(0, declaration.indexOf(":")).trim().toLowerCase();
       if (!KEPT_DECLARATIONS.has(property)) return false;
+      // Dấu nháy trong giá trị là đường thoát: style='text-align:center" onmouseover="x()'
+      // ghép lại thành style="text-align:center" onmouseover="x()" — chuỗi trơ biến thành
+      // thuộc tính sự kiện CHẠY THẬT. Khai báo tử tế không bao giờ chứa nháy, nên bỏ thẳng.
+      if (/["'<>]/.test(declaration)) return false;
       // url(...) trong nội dung CMS chỉ có thể là ảnh nền từ nơi khác → bỏ luôn cho chắc
       return !/url\s*\(|expression\s*\(/i.test(declaration);
     })
@@ -337,7 +341,7 @@ function keepContentDeclarations(style: string): string {
 export function stripEditorStyling(html: unknown): string {
   if (typeof html !== "string" || !html) return "";
   return html
-    .replace(/<\/?font\b[^>]*>/gi, "")
+    .replace(/<\/?font\b(?:"[^"]*"|'[^']*'|[^>"'])*>/gi, "")
     // Giá trị thuộc tính có thể chứa dấu ">" (alt="a > b") nên không được cắt thẻ ở dấu > đầu
     // tiên — phải đi qua các chuỗi trong nháy trước.
     .replace(/<([a-z][a-z0-9]*)\b((?:"[^"]*"|'[^']*'|[^>"'])*?)(\/?)>/gi, (match, tag: string, attrs: string, selfClose: string) => {
@@ -382,6 +386,53 @@ export function wrapTables(html: unknown): string {
     out += `${html.slice(last, start)}<div class="rich-text-table">${html.slice(start, end)}</div>`;
     last = end;
   }
-  // Bảng thiếu thẻ đóng → giữ nguyên, closeUnclosedTags lo phần vá
+  // Bảng thiếu thẻ đóng → giữ nguyên. Hàm này phải chạy TRƯỚC closeUnclosedTags: nếu chạy sau,
+  // thẻ </table> đã được bù vào cuối chuỗi nên cả phần còn lại của bài bị nuốt vào khung cuộn.
   return out + html.slice(last);
+}
+
+/**
+ * Chặn mã chạy được lọt từ CMS vào trang.
+ *
+ * Nội dung bài đi thẳng vào dangerouslySetInnerHTML. Hôm nay nội dung sạch, nhưng chỉ cần một tài
+ * khoản quản trị bị chiếm là chèn được `<img src=x onerror=...>` chạy trên mọi trang công khai.
+ * Đây là lớp chặn cuối, KHÔNG thay cho việc giữ tài khoản cẩn thận.
+ *
+ * Giữ lại iframe của YouTube/Vimeo vì trình soạn thảo có khối video thật (VideoNode xuất ra iframe);
+ * iframe trỏ nơi khác thì gỡ, vì không có lý do chính đáng nào để bài tuyển sinh nhúng trang lạ.
+ */
+const VIDEO_HOSTS: readonly string[] = ["youtube.com", "www.youtube.com", "youtube-nocookie.com", "www.youtube-nocookie.com", "player.vimeo.com"];
+
+const SCRIPT_BLOCK = /<(script|style|object|embed)\b[\s\S]*?<\/\1\s*>/gi;
+const LONE_DANGEROUS_TAG = /<\/?(script|style|object|embed)\b[^>]*>/gi;
+const EVENT_ATTR = /\son[a-z]+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi;
+const UNSAFE_URL_ATTR = /\s(href|src|xlink:href|formaction)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
+const UNSAFE_SCHEME = /^\s*(?:javascript|vbscript|data)\s*:/i;
+
+function isVideoEmbed(tag: string): boolean {
+  const src = /\ssrc\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/i.exec(tag);
+  const url = src?.[1] ?? src?.[2] ?? src?.[3] ?? "";
+  try {
+    return VIDEO_HOSTS.includes(new URL(url, "https://trungcapnhanlucquocte.vn").host);
+  } catch {
+    return false;
+  }
+}
+
+export function stripUnsafeMarkup(html: unknown): string {
+  if (typeof html !== "string" || !html) return "";
+  return html
+    .replace(SCRIPT_BLOCK, "")
+    .replace(LONE_DANGEROUS_TAG, "")
+    .replace(/<iframe\b[^>]*>(?:[\s\S]*?<\/iframe\s*>)?/gi, (tag) => (isVideoEmbed(tag) ? tag : ""))
+    .replace(/<([a-z][a-z0-9]*)\b((?:"[^"]*"|'[^']*'|[^>"'])*?)(\/?)>/gi, (match, tag: string, attrs: string, selfClose: string) => {
+      let next = attrs.replace(EVENT_ATTR, "");
+      next = next.replace(UNSAFE_URL_ATTR, (attr, name: string, quoted = "", single = "", bare = "") => {
+        const url = quoted || single || bare || "";
+        // data:image an toàn và có thật trong nội dung (ảnh dán trực tiếp); data:text/html thì không
+        if (/^\s*data:image\//i.test(url)) return attr;
+        return UNSAFE_SCHEME.test(url) ? "" : attr;
+      });
+      return next === attrs ? match : `<${tag}${next}${selfClose}>`;
+    });
 }

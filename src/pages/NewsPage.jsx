@@ -4,7 +4,7 @@ import { programDisplayName } from "../seo/programCopy";
 import { PROGRAM_FIELDS } from "../content/programFields";
 import appConfig from "../configs/appConfig";
 import { GUIDES, guidePath } from "../content/guides";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { CATEGORY_PARAM, POST_CATEGORIES, categoryBySlug, categoryPath } from "../configs/postCategories";
 import https from "../utils/https";
@@ -22,6 +22,11 @@ function NewsPage() {
   const [searchParams] = useSearchParams();
   const activeCategory = categoryBySlug(searchParams.get(CATEGORY_PARAM));
 
+  // Mỗi lần đổi danh mục là một "lượt" mới. Phản hồi của lượt cũ về muộn thì bỏ, nếu không
+  // bấm "Xem thêm" rồi đổi chip ngay sẽ nối bài của danh mục cũ vào danh sách đang lọc — và sai
+  // như vậy cho tới khi tải lại trang.
+  const luot = useRef(0);
+
   // Trang 1 đã nhúng sẵn trong HTML tạo trước → hiện ngay, rồi gọi API ngầm lấy bản mới nhất.
   // Chỉ dùng được cho danh sách KHÔNG lọc, vì HTML tạo sẵn chứa toàn bộ bài mới nhất.
   const initialPage = useInitialData(initialDataKeys.firstPostsPage);
@@ -34,6 +39,7 @@ function NewsPage() {
 
   // isBackgroundRefresh: đang hiện dữ liệu nhúng sẵn → không hiện khung chờ, lỗi thì giữ bản đang hiện
   const fetchPosts = async (targetPage = 1, append = false, isBackgroundRefresh = false, categoryValue = null) => {
+    const luotNay = luot.current;
     try {
       if (!isBackgroundRefresh) {
         append ? setLoadingMore(true) : setLoading(true);
@@ -59,6 +65,8 @@ function NewsPage() {
         : Array.isArray(res)
         ? res
         : [];
+
+      if (luotNay !== luot.current) return; // đã đổi danh mục → phản hồi này không còn đúng
 
       setPosts((prev) => {
         const combined = append ? [...prev, ...data] : data;
@@ -91,15 +99,16 @@ function NewsPage() {
       }
     } catch (err) {
       console.error("Error fetching news list:", err);
-      if (isBackgroundRefresh) return;
+      if (luotNay !== luot.current || isBackgroundRefresh) return;
       setError("Không tải được danh sách tin tức. Vui lòng thử lại sau.");
       if (!append) setPosts([]);
     } finally {
-      append ? setLoadingMore(false) : setLoading(false);
+      if (luotNay === luot.current) append ? setLoadingMore(false) : setLoading(false);
     }
   };
 
   useEffect(() => {
+    luot.current += 1;
     // Đang lọc → không có dữ liệu nhúng sẵn, phải hiện khung chờ và gọi API thật
     const dungBanNhungSan = !activeCategory && Boolean(initialPage);
     setPosts(dungBanNhungSan ? initialPage.data : []);
