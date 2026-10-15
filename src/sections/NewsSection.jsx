@@ -4,6 +4,7 @@ import https from "../utils/https";
 import { initialDataKeys, useInitialData } from "../data/initialData";
 import { whenIdle } from "../utils/whenIdle";
 import { formatDateVi } from "../utils/formatDate";
+import { POST_CATEGORIES, categoryByValue, categoryPath } from "../configs/postCategories";
 
 // 8 bài = 2 hàng × 4 cột (máy tính), 4 hàng × 2 (điện thoại) → cũng luôn đầy hàng.
 // Ít hơn ngành vì thẻ tin có ảnh, để trang chủ không quá dài.
@@ -65,10 +66,24 @@ function NewsSection() {
         <h2 className="text-center text-[22px] font-extrabold uppercase text-primary-dark mb-1">
           Tin tức &amp; sự kiện
         </h2>
-        <p className="text-center text-[13px] text-slate-500 mb-5">
+        <p className="text-center text-[13px] text-slate-500 mb-4">
           Cập nhật thông tin tuyển sinh, hoạt động ngoại khóa và chương trình
           hợp tác doanh nghiệp mới nhất.
         </p>
+
+        {/* Lối tắt tới từng danh mục: 8 thẻ mới nhất không bao giờ phủ hết 4 danh mục (hiện tại
+            thiếu hẳn Du học), nên mở đường đi thẳng thay vì thêm thẻ — thêm thẻ tốn thêm ảnh. */}
+        <nav aria-label="Danh mục tin tức" className="mb-5 flex flex-wrap justify-center gap-2">
+          {POST_CATEGORIES.map((item) => (
+            <Link
+              key={item.slug}
+              to={categoryPath(item.slug)}
+              className="rounded-full border border-slate-200 bg-white px-3.5 py-1.5 text-[12px] font-medium text-slate-700 hover:border-primary hover:text-primary-dark"
+            >
+              {item.label}
+            </Link>
+          ))}
+        </nav>
 
         {loading && (
           <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 text-[13px]">
@@ -116,8 +131,13 @@ function NewsSection() {
                   />
                 )}
                 <div className="px-3 py-2.5">
-                  <div className="text-[11px] text-slate-500 mb-1">
-                    {formatDateVi(n.createdAt) || "Tin tức"}
+                  <div className="mb-1 flex items-center gap-2 text-[11px] text-slate-500">
+                    {categoryByValue(n.category) && (
+                      <span className="rounded-full bg-primary/10 px-2 py-0.5 font-semibold text-primary-dark">
+                        {categoryByValue(n.category).label}
+                      </span>
+                    )}
+                    <span>{formatDateVi(n.createdAt) || "Tin tức"}</span>
                   </div>
                   <h3 className="font-semibold text-slate-900 text-[13px] line-clamp-2">
                     {n.title || "Bài viết"}
