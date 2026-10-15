@@ -243,6 +243,12 @@
   white-space: nowrap;
   text-align: left;
   vertical-align: middle;
+  /* Dính lại khi cuộn ngang: bảng rộng hơn màn thì cuộn sang phải sẽ mất cột nhãn, người đọc
+     không còn biết dòng đang đọc thuộc học kỳ hay phần nào. */
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: #f8fafc;
 }
 
 /* Trên điện thoại, nhãn hàng dài ("Phần 3. Trang trí & Hoàn thiện bề mặt") mà không cho xuống

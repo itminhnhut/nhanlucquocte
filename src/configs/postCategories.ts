@@ -33,3 +33,18 @@ export function categoryByValue(value: unknown): PostCategory | null {
 export function categoryPath(slug?: string | null): string {
   return slug ? `/tin-tuc?${CATEGORY_PARAM}=${slug}` : "/tin-tuc";
 }
+
+/**
+ * Lọc sẵn danh sách bài đã nhúng trong HTML tạo trước theo danh mục đang xem.
+ *
+ * HTML tạo trước sinh theo ĐƯỜNG DẪN nên `/tin-tuc` và `/tin-tuc?danh-muc=du-hoc` dùng chung một
+ * file, đều chứa 10 bài mới nhất chưa lọc. Nếu cứ hiện thẳng, ai mở link danh mục được chia sẻ sẽ
+ * thấy 10 bài sai rồi mới nhảy về đúng. Lọc ngay trên dữ liệu đã có thì lần vẽ đầu đã đúng danh
+ * mục — ít bài hơn danh sách thật, nhưng không có bài nào sai — rồi bản đầy đủ từ API thay vào.
+ */
+export function filterByCategory<T>(posts: readonly T[], category: PostCategory | null): T[] {
+  if (!category) return [...posts];
+  // Không ràng buộc T phải có `category`: ràng buộc vào thì kiểu thật của bài viết bị thu hẹp
+  // còn mỗi trường đó, và mọi chỗ đọc title/slug/image phía sau sẽ đỏ.
+  return posts.filter((post) => categoryByValue((post as { category?: unknown })?.category)?.slug === category.slug);
+}

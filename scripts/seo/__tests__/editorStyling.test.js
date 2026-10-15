@@ -45,14 +45,12 @@ test("should leave an element without style untouched", () => {
   assert.equal(stripEditorStyling(html), html);
 });
 
-test("should not break a self-closing image", () => {
-  // Kích thước ảnh không còn nằm trong inline style: chỉ một chiều thì bỏ hẳn, đủ hai chiều
-  // thì chuyển thành thuộc tính (xem bài kiểm "forced pixel height" bên dưới)
+test("should keep the width an author set on a small image", () => {
+  // Bỏ cả kích thước thì ảnh nhỏ phóng to hết cột, khác hẳn ý người soạn
   const out = stripEditorStyling(`<img src="/a.jpg" alt="Lớp học" style="font-size:12pt; width: 300px" />`);
-  assert.ok(out.includes('src="/a.jpg"'));
-  assert.ok(out.includes('alt="Lớp học"'));
-  assert.ok(!/style=/.test(out));
-  assert.ok(!out.includes("12pt"));
+  assert.ok(out.includes('width="300"'), "giữ bề ngang người soạn đặt");
+  assert.ok(out.includes('src="/a.jpg"') && out.includes('alt="Lớp học"'));
+  assert.ok(!/style=/.test(out) && !out.includes("12pt"));
   assert.ok(out.trim().endsWith("/>"), "vẫn là thẻ tự đóng");
 });
 
@@ -107,9 +105,12 @@ test("should not overwrite width and height the CMS already wrote as attributes"
   assert.ok(!out.includes("2048"));
 });
 
-test("should ignore sizes that are not in pixels", () => {
+test("should not turn a percentage width into a fixed pixel attribute", () => {
+  // width:100% nghĩa là "rộng bằng cột", không phải một con số pixel. Bỏ đi thì CSS vẫn cho ảnh
+  // rộng hết cột, nên ý người soạn được giữ.
   const out = stripEditorStyling(`<img src="/a.png" style="width: 100%; height: auto" />`);
-  assert.ok(!/width="/.test(out), "không đoán kích thước từ phần trăm");
+  assert.ok(!/width="\d/.test(out), "không đoán số pixel từ phần trăm");
+  assert.ok(!/style=/.test(out));
 });
 
 test("should still strip style when an attribute value contains a closing bracket", () => {
@@ -205,4 +206,10 @@ test("should be safe to run twice", () => {
   const html = `<p style="font-size:12pt"><img src="/a.png" style="width:600px;height:400px"></p>`;
   const mot = stripEditorStyling(html);
   assert.equal(stripEditorStyling(mot), mot, "chạy ở máy chủ rồi chạy lại ở trình duyệt");
+});
+
+test("should keep only the height when that is all the author set", () => {
+  const out = stripEditorStyling(`<img src="/a.png" style="height: 240px" />`);
+  assert.ok(out.includes('height="240"'));
+  assert.ok(!/width="/.test(out));
 });

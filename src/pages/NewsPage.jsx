@@ -6,7 +6,7 @@ import appConfig from "../configs/appConfig";
 import { GUIDES, guidePath } from "../content/guides";
 import { useEffect, useRef, useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { CATEGORY_PARAM, POST_CATEGORIES, categoryBySlug, categoryPath } from "../configs/postCategories";
+import { CATEGORY_PARAM, POST_CATEGORIES, categoryBySlug, categoryPath, filterByCategory } from "../configs/postCategories";
 import https from "../utils/https";
 import { initialDataKeys, useInitialData } from "../data/initialData";
 import { formatDateVi } from "../utils/formatDate";
@@ -30,7 +30,7 @@ function NewsPage() {
   // Trang 1 đã nhúng sẵn trong HTML tạo trước → hiện ngay, rồi gọi API ngầm lấy bản mới nhất.
   // Chỉ dùng được cho danh sách KHÔNG lọc, vì HTML tạo sẵn chứa toàn bộ bài mới nhất.
   const initialPage = useInitialData(initialDataKeys.firstPostsPage);
-  const [posts, setPosts] = useState(initialPage?.data ?? []);
+  const [posts, setPosts] = useState(() => filterByCategory(initialPage?.data ?? [], activeCategory));
   const [loading, setLoading] = useState(!initialPage);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
@@ -109,10 +109,11 @@ function NewsPage() {
 
   useEffect(() => {
     luot.current += 1;
-    // Đang lọc → không có dữ liệu nhúng sẵn, phải hiện khung chờ và gọi API thật
-    const dungBanNhungSan = !activeCategory && Boolean(initialPage);
-    setPosts(dungBanNhungSan ? initialPage.data : []);
-    fetchPosts(1, false, dungBanNhungSan, activeCategory?.value ?? null);
+    // Lọc sẵn trên dữ liệu nhúng sẵn: có bài nào đúng danh mục thì hiện ngay rồi làm mới ngầm,
+    // không bắt người đọc nhìn khung chờ. Không có bài nào thì mới hiện khung chờ.
+    const batDau = filterByCategory(initialPage?.data ?? [], activeCategory);
+    setPosts(batDau);
+    fetchPosts(1, false, batDau.length > 0, activeCategory?.value ?? null);
   }, [activeCategory?.slug]);
 
   const featured = posts[0] || null;

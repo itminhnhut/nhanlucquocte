@@ -298,8 +298,9 @@ const KEPT_DECLARATIONS = new Set(["text-align", "white-space", "text-decoration
  * Kích thước ảnh trong CMS được ghi bằng inline style (`width: 2048px; height: 1152px`).
  * Để nguyên thì inline style thắng quy tắc `height: auto` của rich-text.css: ảnh co lại vừa cột
  * nhưng KHUNG vẫn cao đúng 1152px, phần thừa thành một mảng trắng lớn dưới ảnh.
- * Chuyển sang thuộc tính width/height — trình duyệt chỉ dùng để suy tỉ lệ khung (chống nhảy bố
- * cục), còn kích thước hiển thị do CSS quyết.
+ * Chuyển sang thuộc tính width/height. Khác inline style ở chỗ `max-width: 100%` của rich-text.css
+ * vẫn đè được chúng khi màn hẹp, và `height: auto` giữ đúng tỉ lệ — nên ảnh co theo cột thay vì
+ * giữ nguyên khung cao chết cứng.
  */
 const PX_SIZE = /(?:^|;)\s*(width|height)\s*:\s*(\d+(?:\.\d+)?)px/gi;
 
@@ -308,8 +309,11 @@ function imageSizeToAttributes(tag: string, style: string): string {
   if (/\swidth\s*=/i.test(tag) || /\sheight\s*=/i.test(tag)) return tag;
   const size: Record<string, string> = {};
   for (const [, prop, value] of style.matchAll(PX_SIZE)) size[prop.toLowerCase()] = String(Math.round(Number(value)));
-  if (!size.width || !size.height) return tag;
-  return tag.replace(/<img\b/i, `<img width="${size.width}" height="${size.height}"`);
+  // Người soạn chỉ đặt một chiều (thường là bề ngang cho ảnh nhỏ) thì vẫn phải giữ: bỏ cả hai sẽ
+  // làm ảnh phóng to hết cột, khác hẳn ý người soạn.
+  const kichThuoc = ["width", "height"].filter((prop) => size[prop]).map((prop) => ` ${prop}="${size[prop]}"`).join("");
+  if (!kichThuoc) return tag;
+  return tag.replace(/<img\b/i, `<img${kichThuoc}`);
 }
 
 const STYLE_ATTR_PATTERN = /\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
