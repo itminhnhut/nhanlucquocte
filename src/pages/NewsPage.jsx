@@ -4,8 +4,9 @@ import { programDisplayName } from "../seo/programCopy";
 import { PROGRAM_FIELDS } from "../content/programFields";
 import appConfig from "../configs/appConfig";
 import { GUIDES, guidePath } from "../content/guides";
-import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useEffect, useRef, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
+import { CATEGORY_PARAM, POST_CATEGORIES, categoryBySlug, categoryPath, filterByCategory } from "../configs/postCategories";
 import https from "../utils/https";
 import { initialDataKeys, useInitialData } from "../data/initialData";
 import { formatDateVi } from "../utils/formatDate";
@@ -17,9 +18,19 @@ const SIDEBAR_GUIDE_COUNT = 6;
 
 function NewsPage() {
 
-  // Trang 1 đã nhúng sẵn trong HTML tạo trước → hiện ngay, rồi gọi API ngầm lấy bản mới nhất
+  // Lọc theo danh mục bằng tham số trên URL → mỗi chip là một link thật, bấm back vẫn đúng
+  const [searchParams] = useSearchParams();
+  const activeCategory = categoryBySlug(searchParams.get(CATEGORY_PARAM));
+
+  // Mỗi lần đổi danh mục là một "lượt" mới. Phản hồi của lượt cũ về muộn thì bỏ, nếu không
+  // bấm "Xem thêm" rồi đổi chip ngay sẽ nối bài của danh mục cũ vào danh sách đang lọc — và sai
+  // như vậy cho tới khi tải lại trang.
+  const luot = useRef(0);
+
+  // Trang 1 đã nhúng sẵn trong HTML tạo trước → hiện ngay, rồi gọi API ngầm lấy bản mới nhất.
+  // Chỉ dùng được cho danh sách KHÔNG lọc, vì HTML tạo sẵn chứa toàn bộ bài mới nhất.
   const initialPage = useInitialData(initialDataKeys.firstPostsPage);
-  const [posts, setPosts] = useState(initialPage?.data ?? []);
+  const [posts, setPosts] = useState(() => filterByCategory(initialPage?.data ?? [], activeCategory));
   const [loading, setLoading] = useState(!initialPage);
   const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState("");
@@ -27,7 +38,8 @@ function NewsPage() {
   const [hasMore, setHasMore] = useState(initialPage ? 1 < initialPage.meta.totalPages : true);
 
   // isBackgroundRefresh: đang hiện dữ liệu nhúng sẵn → không hiện khung chờ, lỗi thì giữ bản đang hiện
-  const fetchPosts = async (targetPage = 1, append = false, isBackgroundRefresh = false) => {
+  const fetchPosts = async (targetPage = 1, append = false, isBackgroundRefresh = false, categoryValue = null) => {
+    const luotNay = luot.current;
     try {
       if (!isBackgroundRefresh) {
         append ? setLoadingMore(true) : setLoading(true);
@@ -39,6 +51,7 @@ function NewsPage() {
           page: targetPage,
           limit: LIMIT,
           noPaginate: false,
+          ...(categoryValue ? { category: categoryValue } : {}),
         },
       });
 
@@ -52,6 +65,8 @@ function NewsPage() {
         : Array.isArray(res)
         ? res
         : [];
+
+      if (luotNay !== luot.current) return; // đã đổi danh mục → phản hồi này không còn đúng
 
       setPosts((prev) => {
         const combined = append ? [...prev, ...data] : data;
@@ -84,17 +99,22 @@ function NewsPage() {
       }
     } catch (err) {
       console.error("Error fetching news list:", err);
-      if (isBackgroundRefresh) return;
+      if (luotNay !== luot.current || isBackgroundRefresh) return;
       setError("Không tải được danh sách tin tức. Vui lòng thử lại sau.");
       if (!append) setPosts([]);
     } finally {
-      append ? setLoadingMore(false) : setLoading(false);
+      if (luotNay === luot.current) append ? setLoadingMore(false) : setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPosts(1, false, Boolean(initialPage));
-  }, []);
+    luot.current += 1;
+    // Lọc sẵn trên dữ liệu nhúng sẵn: có bài nào đúng danh mục thì hiện ngay rồi làm mới ngầm,
+    // không bắt người đọc nhìn khung chờ. Không có bài nào thì mới hiện khung chờ.
+    const batDau = filterByCategory(initialPage?.data ?? [], activeCategory);
+    setPosts(batDau);
+    fetchPosts(1, false, batDau.length > 0, activeCategory?.value ?? null);
+  }, [activeCategory?.slug]);
 
   const featured = posts[0] || null;
   const latest = posts.slice(1, 1 + LATEST_COUNT);
@@ -124,6 +144,29 @@ function NewsPage() {
             </p>
           </header>
 
+          {/* Lọc theo danh mục — để ngay trong trang thay vì thêm mục vào menu trên (menu đã dài).
+              Mỗi chip là thẻ <a> thật nên bấm back đúng, chia sẻ link được, Google bò vào được;
+              thẻ canonical vẫn trỏ /tin-tuc nên bản lọc không bị coi là trang trùng nội dung. */}
+          <nav aria-label="Lọc tin theo danh mục" className="mb-6 flex flex-wrap gap-2">
+            {[{ slug: "", label: "Tất cả" }, ...POST_CATEGORIES].map((item) => {
+              const dangChon = (activeCategory?.slug ?? "") === item.slug;
+              return (
+                <Link
+                  key={item.slug || "tat-ca"}
+                  to={categoryPath(item.slug)}
+                  aria-current={dangChon ? "page" : undefined}
+                  className={
+                    dangChon
+                      ? "rounded-full bg-primary px-4 py-2 text-[13px] font-semibold text-white"
+                      : "rounded-full border border-slate-200 bg-white px-4 py-2 text-[13px] font-medium text-slate-700 hover:border-primary hover:text-primary-dark"
+                  }
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+          </nav>
+
           {loading && <NewsSkeleton />}
 
           {!loading && error && (
@@ -132,11 +175,23 @@ function NewsPage() {
 
           {!loading && !error && posts.length === 0 && (
             <div className="rounded-2xl border border-slate-200 bg-white px-4 py-8 text-center text-[14px] text-slate-600">
-              Chưa có bài viết nào. Xem{" "}
-              <Link to="/cam-nang" className={LINK}>
-                cẩm nang tuyển sinh
-              </Link>{" "}
-              trong lúc chờ tin mới.
+              {activeCategory ? (
+                <>
+                  Chưa có bài viết nào trong mục {activeCategory.label}.{" "}
+                  <Link to="/tin-tuc" className={LINK}>
+                    Xem tất cả tin tức
+                  </Link>
+                  .
+                </>
+              ) : (
+                <>
+                  Chưa có bài viết nào. Xem{" "}
+                  <Link to="/cam-nang" className={LINK}>
+                    cẩm nang tuyển sinh
+                  </Link>{" "}
+                  trong lúc chờ tin mới.
+                </>
+              )}
             </div>
           )}
 
@@ -205,7 +260,7 @@ function NewsPage() {
                         type="button"
                         onClick={() => {
                           if (loadingMore) return;
-                          fetchPosts(page + 1, true);
+                          fetchPosts(page + 1, true, false, activeCategory?.value ?? null);
                         }}
                         disabled={loadingMore}
                         className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-slate-300 bg-white text-[13px] font-semibold text-slate-700 hover:border-primary-dark hover:text-primary-dark transition disabled:cursor-wait disabled:opacity-60"

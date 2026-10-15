@@ -4,19 +4,9 @@ import https from "../utils/https";
 import { initialDataKeys, useInitialData } from "../data/initialData";
 import { useIsHydrated } from "../hooks/useIsHydrated";
 import { Seo } from "../components/Seo";
-import {
-  addImageDimensions,
-  demoteH1,
-  dropEmptyHeadings,
-  dropEmptyWrappers,
-  closeUnclosedTags,
-  dropForeignImages,
-  unwrapForeignImageLinks,
-  fillMissingImageAlt,
-  normalizeHeadingLevels,
-  lazyLoadImages,
-} from "../utils/html";
-import { extractFaqSection, renderFaqAccordion } from "../seo/faq";
+import { demoteH1 } from "../utils/html";
+import { prepareArticleContent } from "../utils/articleContent";
+import { extractFaqSection } from "../seo/faq";
 import FaqAccordion from "../components/FaqAccordion";
 import ContactCard from "../components/ContactCard";
 import appConfig from "../configs/appConfig";
@@ -160,15 +150,14 @@ function ProgramDetailPage() {
 
   const hasProgram = !!program;
   // Nội dung CMS: hạ h1 → h2, mục "Câu hỏi thường gặp" → dạng bấm-để-mở
-  const contentHtml = useMemo(() => {
-    // Gỡ khối liên hệ của bài gốc → hạ h1 → bỏ ảnh mượn của site khác → bỏ heading rỗng →
-    // mục "Câu hỏi thường gặp" thành dạng bấm-để-mở → ảnh tải trễ, có alt và có kích thước
-    const base = normalizeHeadingLevels(
-      dropEmptyWrappers(dropEmptyHeadings(unwrapForeignImageLinks(dropForeignImages(closeUnclosedTags(demoteH1(stripContactBlock(program?.content)))))))
-    );
-    const withAlt = fillMissingImageAlt(lazyLoadImages(renderFaqAccordion(base)), program?.title);
-    return addImageDimensions(withAlt);
-  }, [program?.content, program?.title]);
+  // Dùng chung bộ xử lý với trang tin: trước đây trang này chép lại y nguyên các bước đó
+  // nhưng BỎ hai việc — gắn id cho tiêu đề và thu danh sách mục — nên không có mục lục và
+  // cũng không nhảy tới từng mục được.
+  const article = useMemo(
+    () => prepareArticleContent(stripContactBlock(program?.content), program?.title),
+    [program?.content, program?.title]
+  );
+  const contentHtml = article.html;
   // Ảnh trong bài tải trễ → gỡ nền chờ khi từng ảnh về (rich-text.css)
   const contentRef = useRef(null);
   useImagePlaceholder(contentRef, contentHtml);
@@ -227,22 +216,24 @@ function ProgramDetailPage() {
         {/* Breadcrumb + Back link */}
         {/* min-h: tên ngành chỉ có sau khi API trả → hàng từ 1 dòng thành 2 dòng, đẩy nội dung
             xuống 18px. Chừa sẵn 2 dòng. */}
-        <div className="flex min-h-[36px] items-start justify-between gap-3 mb-4">
-          <div className="text-[12px] text-slate-500">
-            <Link to="/" className="hover:text-primary-dark transition-colors">
+        {/* Một dòng: line-clamp-1 biến span thành khối (-webkit-box) nên nó tự nhảy xuống
+            dòng riêng, không phải vì chữ dài. truncate mới là thứ cắt trong cùng một dòng. */}
+        <div className="flex min-h-[20px] items-center justify-between gap-3 mb-4">
+          <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap text-[12px] text-slate-500">
+            <Link to="/" className="shrink-0 hover:text-primary-dark transition-colors">
               Trang chủ
             </Link>
-            <span className="mx-1.5">/</span>
+            <span className="shrink-0">/</span>
             <Link
               to="/nganh-dao-tao"
-              className="hover:text-primary-dark transition-colors"
+              className="shrink-0 hover:text-primary-dark transition-colors"
             >
               Chương trình đào tạo
             </Link>
             {hasProgram && (
               <>
-                <span className="mx-1.5">/</span>
-                <span className="text-slate-700 line-clamp-1">
+                <span className="shrink-0">/</span>
+                <span className="truncate text-slate-700">
                   {programDisplayName(program.title, program.slug)}
                 </span>
               </>
@@ -267,7 +258,10 @@ function ProgramDetailPage() {
         {/* MAIN CONTENT */}
         <div className="grid lg:grid-cols-[minmax(0,3fr)_minmax(260px,1.4fr)] gap-6 lg:gap-8 items-start">
           {/* LEFT – DETAIL */}
-          <div>
+          {/* min-w-0: ô của lưới mặc định là min-width:auto nên tự nong rộng theo nội dung —
+              một cái bảng rộng sẽ kéo cả cột ra ngoài màn hình điện thoại và vô hiệu hóa
+              overflow-x của khung bọc bảng. Khóa về 0 thì bảng tự cuộn trong khung của nó. */}
+          <div className="min-w-0">
             {/* Loading skeleton */}
             {loadingProgram && (
               // Cùng khung với nội dung thật (nhãn, H1, chip, ảnh 3:2) → không nhảy bố cục khi tải xong
@@ -277,7 +271,7 @@ function ProgramDetailPage() {
                   <div className="h-7 w-3/4 bg-slate-200 rounded-lg mb-2" />
                   <div className="h-6 w-56 bg-slate-200 rounded-full" />
                 </div>
-                <div className="w-full aspect-[3/2] max-h-[320px] md:max-h-[380px] bg-slate-200 rounded-2xl" />
+                <div className="mx-auto w-full max-w-[480px] md:max-w-[570px] aspect-[3/2] bg-slate-200 rounded-2xl" />
                 <div className="space-y-2 mt-4">
                   <div className="h-3 bg-slate-200 rounded" />
                   <div className="h-3 bg-slate-200 rounded w-5/6" />
@@ -332,7 +326,7 @@ function ProgramDetailPage() {
                       width="1200"
                       height="800"
                       fetchpriority="high"
-                      className="w-full h-auto aspect-[3/2] max-h-[320px] md:max-h-[380px] object-cover rounded-2xl shadow-[0_15px_40px_rgba(15,23,42,0.3)]"
+                      className="mx-auto w-full max-w-[480px] md:max-w-[570px] h-auto aspect-[3/2] object-cover rounded-2xl shadow-[0_15px_40px_rgba(15,23,42,0.3)]"
                     />
                   </div>
                 )}
@@ -341,6 +335,35 @@ function ProgramDetailPage() {
                 <p className="text-[13px] md:text-[14px] text-slate-700 mb-4">
                   {leadText}
                 </p>
+
+                {/* Mục lục — cùng dạng với trang tin tức. Bài ngành dài và nhiều mục, không có
+                    mục lục thì người đọc phải cuộn hết mới biết bài có gì. */}
+                {article.headings.length > 2 && (
+                  <nav
+                    className="mb-5 rounded-xl border border-blue-100 bg-blue-50/60 p-4"
+                    aria-label="Mục lục bài viết"
+                  >
+                    <div className="mb-3 flex items-center justify-between gap-3">
+                      <h2 className="text-[15px] font-bold text-primary-dark">Mục lục bài viết</h2>
+                      <span className="rounded-full bg-white px-2 py-0.5 text-[11px] font-medium text-slate-500">
+                        {article.headings.length} mục
+                      </span>
+                    </div>
+                    <ol className="m-0 grid list-none gap-1 p-0 text-[13px]">
+                      {article.headings.map((heading, index) => (
+                        <li key={heading.id} style={{ paddingLeft: `${Math.max(0, heading.level - 2) * 14}px` }}>
+                          <a
+                            href={`#${heading.id}`}
+                            className="flex gap-2 rounded-md px-2 py-1.5 text-slate-700 transition hover:bg-white hover:text-primary-dark"
+                          >
+                            <span className="shrink-0 font-semibold text-primary-dark">{index + 1}.</span>
+                            <span>{heading.text}</span>
+                          </a>
+                        </li>
+                      ))}
+                    </ol>
+                  </nav>
+                )}
 
                 {/* Body content – nếu BE trả content dạng HTML */}
                 {program.content ? (

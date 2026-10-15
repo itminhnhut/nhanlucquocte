@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { categoryByValue, categoryPath } from "../configs/postCategories";
 import https from "../utils/https";
 import { Seo } from "../components/Seo";
 import ContactCard from "../components/ContactCard";
@@ -124,23 +125,22 @@ function NewsDetailsPage() {
       <Seo meta={seoMeta} />
 
       <div className="max-w-7xl mx-auto px-4">
-        {/* min-h: đoạn tên bài chỉ có sau khi API trả, làm hàng này từ 1 dòng thành 2 dòng và
-            đẩy cả bài xuống 22px. Chừa sẵn 2 dòng thì không nhảy. */}
-        <div className="flex min-h-[36px] items-start justify-between gap-3 mb-4 text-[12px] text-slate-500">
-          <div className="flex items-center flex-wrap gap-1">
-            <Link to="/" className="hover:text-primary-dark transition">
+        {/* Một dòng, tên bài dài thì cắt bằng dấu ba chấm. line-clamp-1 biến span thành khối
+            (-webkit-box) nên nó tự nhảy xuống dòng riêng; truncate mới cắt trong cùng dòng.
+            min-h giữ đúng chiều cao một dòng để lúc tên bài về không đẩy nội dung. */}
+        <div className="flex min-h-[20px] items-center justify-between gap-3 mb-4 text-[12px] text-slate-500">
+          <div className="flex min-w-0 items-center gap-1.5 whitespace-nowrap">
+            <Link to="/" className="shrink-0 hover:text-primary-dark transition">
               Trang chủ
             </Link>
-            <span>/</span>
-            <Link to="/tin-tuc" className="hover:text-primary-dark transition">
+            <span className="shrink-0">/</span>
+            <Link to="/tin-tuc" className="shrink-0 hover:text-primary-dark transition">
               Tin tức
             </Link>
             {hasPost && (
               <>
-                <span>/</span>
-                <span className="text-slate-700 line-clamp-1">
-                  {post.title}
-                </span>
+                <span className="shrink-0">/</span>
+                <span className="truncate text-slate-700">{post.title}</span>
               </>
             )}
           </div>
@@ -160,7 +160,8 @@ function NewsDetailsPage() {
         )}
 
         <div className="grid lg:grid-cols-[minmax(0,3fr)_minmax(240px,1fr)] gap-6 lg:gap-8 items-start">
-          <div>
+          {/* min-w-0: xem ghi chú cùng chỗ ở ProgramDetailPage — chặn bảng kéo rộng cột */}
+          <div className="min-w-0">
             {loading && (
               // Cùng khung với bài thật (H1 2 dòng, ảnh 3:2, thân bài) → không nhảy bố cục khi tải xong
               <div className="animate-pulse space-y-4 min-h-[100vh]" aria-hidden="true">
@@ -183,8 +184,15 @@ function NewsDetailsPage() {
               <article className="space-y-4">
                 <div>
                   {post.category && (
+                    // Danh mục dẫn về danh sách đã lọc; danh mục lạ (nhân viên gõ tay) thì chỉ hiện chữ
                     <p className="text-[12px] font-semibold uppercase text-primary-dark mb-1 tracking-wide">
-                      {post.category}
+                      {categoryByValue(post.category) ? (
+                        <Link to={categoryPath(categoryByValue(post.category).slug)} className="hover:underline">
+                          {categoryByValue(post.category).label}
+                        </Link>
+                      ) : (
+                        post.category
+                      )}
                     </p>
                   )}
                   <h1 className="text-[22px] md:text-[26px] font-extrabold text-slate-900 leading-tight">

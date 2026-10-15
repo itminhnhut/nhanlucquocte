@@ -2,7 +2,7 @@
 // đã tải 1 lần (scripts/seo/content.js). API danh sách trả đủ trường như API chi tiết.
 import { initialDataKeys, type InitialData } from "../data/initialData";
 import { itemSlug, type ContentItem } from "../seo/pageMeta";
-import { dropForeignImages, unwrapForeignImageLinks } from "../utils/html";
+import { dropForeignImages, fillMissingImageAlt, unwrapForeignImageLinks } from "../utils/html";
 
 interface SiteContent {
   programs: ContentItem[];
@@ -22,9 +22,18 @@ const withoutContent = <T extends { content?: unknown }>({ content: _content, ..
  * nhúng; hai hàm này thuần và không đổi kết quả khi chạy lại, nên lúc hydrate client lọc lần
  * nữa cũng ra đúng như vậy.
  */
-const cleanContent = <T extends { content?: unknown }>(item: T): T =>
+const cleanContent = <T extends { content?: unknown; title?: unknown }>(item: T): T =>
   typeof item.content === "string"
-    ? { ...item, content: unwrapForeignImageLinks(dropForeignImages(item.content)) }
+    ? {
+        ...item,
+        // Lọc đúng những gì phần hiển thị lọc: ảnh và link của nơi khác, VÀ alt dán từ kết quả
+        // tìm ảnh Google ("Trang trí nội thất - Tuyển Sinh Hueic"). Thiếu bước alt thì trang
+        // render sạch nhưng chữ đó vẫn nằm nguyên trong mã nguồn trang.
+        content: fillMissingImageAlt(
+          unwrapForeignImageLinks(dropForeignImages(item.content)),
+          item.title
+        ),
+      }
     : item;
 
 function firstPostsPage(news: SiteContent["news"]) {

@@ -217,13 +217,85 @@
 }
 
 /* Tables */
-.rich-text table {
-  display: block;
+/* Khung ngoài lo việc cuộn ngang trên điện thoại, để bảng bên trong vẫn là display:table và
+   trải kín bề ngang cột — bảng để display:block sẽ co lại bằng bề ngang chữ. */
+.rich-text-table {
   width: 100%;
   max-width: 100%;
   overflow-x: auto;
+  margin: 1.25rem 0;
+}
+
+.rich-text table {
+  width: 100%;
+  min-width: 320px;
   border-collapse: collapse;
   margin: 1.25rem 0;
+}
+
+.rich-text-table > table {
+  margin: 0;
+}
+
+/* Cột đầu của bảng chương trình học chỉ cần vừa đủ chữ "Học kỳ 1:" */
+.rich-text th[scope="row"] {
+  width: 1%;
+  white-space: nowrap;
+  text-align: left;
+  vertical-align: middle;
+  /* Dính lại khi cuộn ngang: bảng rộng hơn màn thì cuộn sang phải sẽ mất cột nhãn, người đọc
+     không còn biết dòng đang đọc thuộc học kỳ hay phần nào. */
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background-color: #f8fafc;
+}
+
+/* Trên điện thoại, nhãn hàng dài ("Phần 3. Trang trí & Hoàn thiện bề mặt") mà không cho xuống
+   dòng thì nó nuốt gần hết bề ngang, cột nội dung còn vài chục pixel và chữ rơi mỗi dòng một từ.
+   Cho nhãn xuống dòng, đồng thời đặt bề ngang tối thiểu cho ô nội dung để câu còn đọc được —
+   bảng rộng hơn khung thì cuộn ngang, đã có bóng mép báo hiệu. */
+@media (max-width: 639px) {
+  .rich-text th[scope="row"] {
+    width: auto;
+    white-space: normal;
+    min-width: 7.5rem;
+    max-width: 10rem;
+    vertical-align: top;
+  }
+
+  /* Chỉ nới ô cho bảng có cột nhãn (học kỳ × môn học) — bảng mã môn học của Quản trị kinh doanh
+     có 7 cột toàn số 2–5 ký tự, nới 11rem làm bảng phình từ 517px lên 1233px, phải kéo ngang
+     gấp đôi. */
+  .rich-text table:has(th[scope="row"]) td {
+    min-width: 11rem;
+  }
+}
+
+/* Lexical ghi căn lề ảnh bằng inline style (margin: 0 auto 0 0) — style đó bị lọc bỏ, nên dựa vào
+   thuộc tính data- mà trình soạn thảo để lại, nếu không ảnh căn trái sẽ bị kéo về giữa. */
+.rich-text img[data-image-alignment="left"] {
+  margin-left: 0;
+  margin-right: auto;
+}
+
+.rich-text img[data-image-alignment="right"] {
+  margin-left: auto;
+  margin-right: 0;
+}
+
+/* Bóng mờ hai mép khi bảng còn phần chưa nhìn thấy — thuần CSS, hết cuộn là bóng tự biến mất.
+   Hai lớp nền trắng "local" cuộn cùng nội dung và che bóng khi đã ở đầu/cuối. */
+.rich-text-table {
+  background-image:
+    linear-gradient(to right, #fff, rgba(255, 255, 255, 0)),
+    linear-gradient(to left, #fff, rgba(255, 255, 255, 0)),
+    radial-gradient(farthest-side at 0 50%, rgba(15, 23, 42, 0.16), rgba(15, 23, 42, 0)),
+    radial-gradient(farthest-side at 100% 50%, rgba(15, 23, 42, 0.16), rgba(15, 23, 42, 0));
+  background-position: left center, right center, left center, right center;
+  background-repeat: no-repeat;
+  background-size: 32px 100%, 32px 100%, 12px 100%, 12px 100%;
+  background-attachment: local, local, scroll, scroll;
 }
 
 .rich-text th,
