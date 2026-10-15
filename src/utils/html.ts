@@ -287,3 +287,101 @@ export function normalizeHeadingLevels(html: unknown): string {
   }
   return out;
 }
+
+/**
+ * Giữ lại những khai báo CSS thật sự thuộc về nội dung. Mọi thứ còn lại là tàn dư của trình soạn
+ * thảo: Word dán vào kèm font Aptos, cỡ 12pt, lề 11px; link Google Drive mang màu #467886.
+ */
+const KEPT_DECLARATIONS = new Set(["text-align", "white-space"]);
+
+/**
+ * Kích thước ảnh trong CMS được ghi bằng inline style (`width: 2048px; height: 1152px`).
+ * Để nguyên thì inline style thắng quy tắc `height: auto` của rich-text.css: ảnh co lại vừa cột
+ * nhưng KHUNG vẫn cao đúng 1152px, phần thừa thành một mảng trắng lớn dưới ảnh.
+ * Chuyển sang thuộc tính width/height — trình duyệt chỉ dùng để suy tỉ lệ khung (chống nhảy bố
+ * cục), còn kích thước hiển thị do CSS quyết.
+ */
+const PX_SIZE = /(?:^|;)\s*(width|height)\s*:\s*(\d+(?:\.\d+)?)px/gi;
+
+function imageSizeToAttributes(tag: string, style: string): string {
+  if (!/^<img\b/i.test(tag)) return tag;
+  if (/\swidth\s*=/i.test(tag) || /\sheight\s*=/i.test(tag)) return tag;
+  const size: Record<string, string> = {};
+  for (const [, prop, value] of style.matchAll(PX_SIZE)) size[prop.toLowerCase()] = String(Math.round(Number(value)));
+  if (!size.width || !size.height) return tag;
+  return tag.replace(/<img\b/i, `<img width="${size.width}" height="${size.height}"`);
+}
+
+const STYLE_ATTR_PATTERN = /\sstyle\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s>]+))/gi;
+
+function keepContentDeclarations(style: string): string {
+  return style
+    .split(";")
+    .map((declaration) => declaration.trim())
+    .filter((declaration) => {
+      const property = declaration.slice(0, declaration.indexOf(":")).trim().toLowerCase();
+      if (!KEPT_DECLARATIONS.has(property)) return false;
+      // url(...) trong nội dung CMS chỉ có thể là ảnh nền từ nơi khác → bỏ luôn cho chắc
+      return !/url\s*\(|expression\s*\(/i.test(declaration);
+    })
+    .join("; ");
+}
+
+/**
+ * Bỏ định dạng do trình soạn thảo dán vào (Word, Google Docs) để bài hiện đúng kiểu chữ của
+ * website: cùng một cỡ chữ, cùng khoảng cách dòng, link cùng màu thương hiệu.
+ *
+ * CHỮ NGHĨA GIỮ NGUYÊN TUYỆT ĐỐI — hàm này chỉ đụng tới thuộc tính style và thẻ <font>. Trước đây
+ * mỗi bài trông một kiểu vì inline style của Word thắng mọi quy tắc trong rich-text.css.
+ */
+export function stripEditorStyling(html: unknown): string {
+  if (typeof html !== "string" || !html) return "";
+  return html
+    .replace(/<\/?font\b[^>]*>/gi, "")
+    // Giá trị thuộc tính có thể chứa dấu ">" (alt="a > b") nên không được cắt thẻ ở dấu > đầu
+    // tiên — phải đi qua các chuỗi trong nháy trước.
+    .replace(/<([a-z][a-z0-9]*)\b((?:"[^"]*"|'[^']*'|[^>"'])*?)(\/?)>/gi, (match, tag: string, attrs: string, selfClose: string) => {
+      if (!/\sstyle\s*=/i.test(attrs)) return match;
+      let style = "";
+      const next = attrs.replace(STYLE_ATTR_PATTERN, (_attr, quoted = "", single = "", bare = "") => {
+        style += `${quoted || single || bare || ""};`;
+        const kept = keepContentDeclarations(quoted || single || bare || "");
+        return kept ? ` style="${kept}"` : "";
+      });
+      return imageSizeToAttributes(`<${tag}${next}${selfClose}>`, style);
+    });
+}
+
+/**
+ * Bọc bảng trong một khung cuộn ngang riêng.
+ *
+ * Trước đây rich-text.css cho chính thẻ <table> thành display:block để cuộn được trên điện thoại,
+ * nhưng block làm bảng co lại bằng bề ngang chữ — bảng chương trình học chỉ chiếm nửa cột. Tách
+ * phần cuộn ra khung ngoài thì bảng trở lại display:table và trải kín cột.
+ */
+export function wrapTables(html: unknown): string {
+  if (typeof html !== "string" || !html) return "";
+  const TABLE_TAG = /<(\/?)table\b[^>]*>/gi;
+  let out = "";
+  let last = 0;
+  let depth = 0;
+  let start = -1;
+  // Đếm độ sâu để lấy đúng thẻ đóng của bảng NGOÀI CÙNG: bắt ở </table> đầu tiên thì bảng lồng
+  // bảng sẽ sinh ra <div> đóng giữa chừng, trình duyệt kéo phần còn lại ra ngoài bảng.
+  for (let match = TABLE_TAG.exec(html); match; match = TABLE_TAG.exec(html)) {
+    const closing = match[1] === "/";
+    if (!closing) {
+      if (depth === 0) start = match.index;
+      depth += 1;
+      continue;
+    }
+    if (depth === 0) continue; // thẻ đóng lạc lõng → bỏ qua, không cắt nội dung
+    depth -= 1;
+    if (depth > 0) continue;
+    const end = match.index + match[0].length;
+    out += `${html.slice(last, start)}<div class="rich-text-table">${html.slice(start, end)}</div>`;
+    last = end;
+  }
+  // Bảng thiếu thẻ đóng → giữ nguyên, closeUnclosedTags lo phần vá
+  return out + html.slice(last);
+}
