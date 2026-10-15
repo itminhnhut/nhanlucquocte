@@ -66,6 +66,24 @@ function ProgramExtras({ slug }) {
         </div>
       )}
 
+      {extras.otherPrograms.length > 0 && (
+        <div className="mt-5">
+          <h3 className="text-[15px] font-bold text-slate-800 mb-2">Ngành khác tại trường</h3>
+          <ul className="flex flex-wrap gap-2">
+            {extras.otherPrograms.map((item) => (
+              <li key={item.path}>
+                <Link
+                  to={item.path}
+                  className="inline-flex rounded-full border border-slate-200 bg-white px-3 py-1 text-[13px] text-slate-700 hover:border-primary hover:text-primary-dark"
+                >
+                  {item.name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       {extras.guides.length > 0 && (
         <div className="mt-5">
           <h3 className="text-[15px] font-bold text-slate-800 mb-2">Đọc thêm trước khi chọn ngành</h3>
