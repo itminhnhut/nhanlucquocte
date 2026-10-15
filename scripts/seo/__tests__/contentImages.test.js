@@ -12,6 +12,7 @@ import {
   normalizeHeadingLevels,
 } from "../../../src/utils/html";
 import { CONTENT_IMAGE_SIZES } from "../../../src/content/contentImageSizes";
+import { initialDataForPath } from "../../../src/ssr/initialDataForPath";
 
 const mock = (name) =>
   JSON.parse(fs.readFileSync(path.join(process.cwd(), `scripts/seo/__tests__/fixtures/${name}.json`), "utf8"));
@@ -271,4 +272,22 @@ test("should replace the real CMS alt that ends in an ellipsis", () => {
   // Giá trị THẬT trong CMS có đuôi ba chấm — fixture trước đó của tôi ghi thiếu
   assert.ok(isBorrowedAlt("Đá massage, hoa lan, khăn tắm..."));
   assert.ok(!isBorrowedAlt("Đá massage, hoa lan, khăn tắm"));
+});
+
+test("should clean the alt text in the embedded data too, not just the rendered page", () => {
+  // Nội dung nhúng sẵn là chuỗi THÔ từ CMS. Lọc ảnh và link rồi mà quên lọc alt thì trang
+  // render sạch nhưng "Tuyển Sinh Hueic" vẫn nằm nguyên trong mã nguồn trang.
+  const data = initialDataForPath("/nganh-dao-tao/x", {
+    programs: [
+      {
+        slug: "x",
+        title: "Mộc nội thất và trang trí",
+        content: `<p><img src="/a.jpg" alt="Trang trí nội thất - Tuyển Sinh Hueic"></p>`,
+      },
+    ],
+    news: [],
+  });
+  const embedded = JSON.stringify(data);
+  assert.ok(!embedded.includes("Hueic"), "alt của site khác vẫn nằm trong dữ liệu nhúng");
+  assert.ok(embedded.includes("Mộc nội thất và trang trí"), "mất luôn alt thay thế");
 });
