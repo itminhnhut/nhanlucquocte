@@ -85,7 +85,8 @@ test("should redirect old URLs in nginx exactly as the app does", () => {
     assert.match(conf, new RegExp(`rewrite \\^/${base}\\\\\\.html\\$ /tin-tuc/${slug} permanent;`), old);
   });
   // Trang rác: phải được xử lý TRƯỚC quy tắc chung /<slug>.html → /tin-tuc/<slug>
-  const catchAll = conf.indexOf("rewrite ^/([a-z0-9-]+)\\.html$ /tin-tuc/$1 permanent;");
+  // Quy tắc chung nay có thêm phần loại trừ 404.html/spa.html nên tìm theo đuôi, không khớp cả dòng
+  const catchAll = conf.indexOf("([a-z0-9-]+)\\.html$ /tin-tuc/$1 permanent;");
   assert.ok(catchAll > 0, "vẫn còn quy tắc chung cho bài cũ");
   LEGACY_REMOVED_PATHS.forEach((url) => {
     const slug = url.replace(/\.html$/, "");
@@ -95,4 +96,29 @@ test("should redirect old URLs in nginx exactly as the app does", () => {
   });
   // Dùng rewrite, không dùng location: nginx chạy rewrite mức server trước khi chọn location
   assert.doesNotMatch(conf, /location = \/(gio-hang|san-pham|star-anise-684)\.html/);
+});
+
+test("should let a wrong URL end at a real 404, not bounce around redirects", () => {
+  const conf = fs.readFileSync(path.join(process.cwd(), "docker/nginx.conf"), "utf8");
+  const quetHet = /rewrite \^\/(\(\?![^)]*\))?\(\[a-z0-9-\]\+\)\\\.html\$ \/tin-tuc\/\$1 permanent;/.exec(conf);
+  assert.ok(quetHet, "vẫn còn quy tắc chung cho bài cũ");
+  assert.ok(quetHet[1], "quy tắc chung phải loại trừ trang nội bộ của app");
+
+  // "404" và "spa" khớp [a-z0-9-]+ nên nếu không loại trừ, error_page 404 → /404.html sẽ bị
+  // đẩy thành 301 sang /tin-tuc/404 → 404 → lặp. Mọi URL sai thành soft 404.
+  for (const ten of ["404.html", "spa.html"]) {
+    assert.match(quetHet[1], new RegExp(ten.replace(".", "\\\\.")), `chưa loại trừ ${ten}`);
+  }
+  assert.match(conf, /error_page 404 \/404\.html;/);
+});
+
+test("should serve one address per page instead of four", () => {
+  const conf = fs.readFileSync(path.join(process.cwd(), "docker/nginx.conf"), "utf8");
+  // www và dấu / ở cuối tạo ra bản sao của mọi trang; canonical gộp được nhưng vẫn tốn lượt bò
+  assert.match(conf, /if \(\$http_host ~\* \^www\\\.\(\.\+\)\$\)/, "chưa gộp www");
+  assert.match(conf, /return 301 https:\/\/\$1\$request_uri;/, "www phải 301 sang địa chỉ chuẩn");
+  assert.match(conf, /rewrite \^\/\(\.\+\)\/\$ \/\$1 permanent;/, "chưa bỏ dấu / ở cuối");
+
+  // Quy tắc gộp phải đứng TRƯỚC các rewrite URL cũ, nếu không bản www vẫn đi tiếp vào chuỗi cũ
+  assert.ok(conf.indexOf("$http_host") < conf.indexOf("rewrite ^/trang-chu"), "phải gộp trước");
 });

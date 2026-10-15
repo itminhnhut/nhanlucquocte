@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { programExtras } from "../../../src/content/programExtras";
-import { PROGRAM_NAMES } from "../../../src/content/programFields";
+import { PROGRAM_FIELDS, PROGRAM_NAMES } from "../../../src/content/programFields";
 import { GUIDES, otherGuides } from "../../../src/content/guides";
 import { renderAppHtml } from "../../../src/ssr/renderPage";
 import { initialDataForPath } from "../../../src/ssr/initialDataForPath";
@@ -56,4 +56,39 @@ test("should suggest guides linked from the article first", () => {
   assert.equal(related[0].slug, "tot-nghiep-lop-9-nen-hoc-gi");
   assert.ok(related.every((guide) => guide.slug !== "nen-hoc-nghe-gi"));
   assert.equal(otherGuides(GUIDES[0].slug, 50).length, GUIDES.length - 1);
+});
+
+test("should give every program the same number of inbound links from other programs", () => {
+  // Soát site 15/10/2026: link nội bộ trỏ vào trang ngành lệch từ 3 tới 27. Khối "ngành khác"
+  // xoay vòng để không ngành nào bị bỏ rơi.
+  const demVao = new Map();
+  const slugs = PROGRAM_FIELDS.flatMap((field) => field.programs.map((item) => item.slug));
+  slugs.forEach((slug) => demVao.set(slug, 0));
+
+  slugs.forEach((slug) => {
+    const extras = programExtras(slug);
+    assert.ok(extras, slug);
+    extras.otherPrograms.forEach((item) => {
+      const dich = item.path.replace("/nganh-dao-tao/", "");
+      assert.notEqual(dich, slug, `${slug} tự trỏ vào chính nó`);
+      demVao.set(dich, (demVao.get(dich) ?? 0) + 1);
+    });
+  });
+
+  const so = [...demVao.values()];
+  assert.ok(Math.min(...so) > 0, "ngành nào cũng phải được trỏ tới ít nhất một lần");
+  assert.ok(Math.max(...so) - Math.min(...so) <= 3, `lệch quá nhiều: ${Math.min(...so)}–${Math.max(...so)}`);
+  assert.ok(Math.min(...so) >= 4, `có ngành gần như không ai trỏ tới: ${Math.min(...so)}`);
+});
+
+test("should not repeat a program that is already listed under the same field", () => {
+  PROGRAM_FIELDS.forEach((field) =>
+    field.programs.forEach((item) => {
+      const extras = programExtras(item.slug);
+      const trungLap = extras.otherPrograms.filter((other) =>
+        extras.sameField.some((same) => same.path === other.path)
+      );
+      assert.deepEqual(trungLap, [], `${item.slug} lặp link`);
+    })
+  );
 });

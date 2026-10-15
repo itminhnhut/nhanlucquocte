@@ -44,6 +44,8 @@ const PROGRAMS = "[chương trình đào tạo](/nganh-dao-tao)";
 const ADMISSION = "[thông tin tuyển sinh](/tuyen-sinh)";
 
 const PUBLISHED = "2026-10-08";
+// Đợt bài thứ hai: bám theo ngành trường đang dạy, viết sau khi nội dung 26 ngành lên đủ
+const PUBLISHED_2 = "2026-10-15";
 
 export const GUIDES: readonly Guide[] = [
   {
@@ -384,6 +386,149 @@ export const GUIDES: readonly Guide[] = [
         ],
         paragraphs: [
           `Xem bản đồ và giờ làm việc ở trang [Liên hệ](/lien-he). ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "tro-ly-nha-khoa-la-gi",
+    keyword: "trợ lý nha khoa là gì",
+    title: "Trợ lý nha khoa là gì? Công việc hằng ngày và nơi làm việc",
+    metaTitle: "Trợ lý nha khoa là gì? Làm gì, học ở đâu TPHCM",
+    description:
+      "Trợ lý nha khoa là gì, làm những việc gì bên ghế răng, cần học bao lâu và học ở đâu tại TPHCM. Giải thích theo chương trình đang đào tạo tại trường.",
+    excerpt: "Công việc thật của một trợ lý nha khoa, kỹ năng cần có và chỗ học tại TPHCM.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead:
+      "Trợ lý nha khoa là gì? Là người hỗ trợ nha sĩ trong suốt quá trình khám và điều trị: chuẩn bị dụng cụ, phụ thao tác bên ghế răng, giữ vô trùng, quản lý vật tư và tiếp đón khách. Đây là nghề học ngắn, làm được ngay tại phòng khám và trung tâm nha khoa.",
+    sections: [
+      {
+        heading: "Trợ lý nha khoa làm những việc gì?",
+        list: [
+          "**Phụ nha sĩ bên ghế răng:** chuẩn bị và chuyển dụng cụ đúng thao tác, hỗ trợ trong các thủ thuật và phẫu thuật nha khoa.",
+          "**Giữ vô trùng:** vệ sinh, tiệt trùng dụng cụ, phòng chống lây nhiễm — phần quan trọng nhất của nghề.",
+          "**Quản lý vật tư:** mua sắm, kiểm kê, bảo quản vật tư và hàng hóa trong phòng khám.",
+          "**Tiếp đón và chăm sóc khách:** hướng dẫn quy trình, xử lý tình huống thường gặp, hỗ trợ khi có tình huống khẩn cấp.",
+          "**Hỗ trợ chụp X-quang nha khoa** và các biện pháp bảo vệ an toàn bức xạ.",
+        ],
+      },
+      {
+        heading: "Cần học gì để làm được nghề này?",
+        paragraphs: [
+          "Chương trình chia hai phần: lý thuyết về cấu tạo răng miệng, bệnh lý và phương pháp điều trị; thực hành thao tác thật trên mô hình và tại phòng khám. Người học cần tỉ mỉ, tay nghề chắc và bình tĩnh khi hỗ trợ thủ thuật.",
+          `Xem chi tiết môn học, thời lượng và cách đăng ký tại trang [nghiệp vụ trợ lý nha khoa](/nganh-dao-tao/nghiep-vu-tro-ly-nha-khoa) hoặc ${ADMISSION}.`,
+        ],
+      },
+      {
+        heading: "Học ở đâu tại TPHCM?",
+        paragraphs: [
+          `Khóa học được tổ chức tại Trường Trung cấp nghề Nhân Lực Quốc Tế, ${appConfig.address}. Nếu bạn phân vân giữa nha khoa và các nghề chăm sóc sức khỏe khác, có thể so sánh với [điều dưỡng hệ trung cấp](/nganh-dao-tao/dieu-duong-he-trung-cap) và [chăm sóc người cao tuổi](/nganh-dao-tao/cham-soc-nguoi-cao-tuoi). ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "hoc-duoc-si-trung-cap-ra-lam-gi",
+    keyword: "học dược sĩ trung cấp ra làm gì",
+    title: "Học dược sĩ trung cấp ra làm gì? Các nơi có thể làm việc",
+    metaTitle: "Học dược sĩ trung cấp ra làm gì? Nơi làm việc",
+    description:
+      "Học dược sĩ trung cấp ra làm gì: nhà thuốc, công ty phân phối, cơ sở sản xuất, viện kiểm nghiệm, trình dược viên. Chương trình bốn học kỳ tại TPHCM.",
+    excerpt: "Các vị trí công việc sau khi tốt nghiệp trung cấp Dược và lộ trình học bốn học kỳ.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead:
+      "Học dược sĩ trung cấp ra làm gì phụ thuộc vào nơi bạn chọn: cơ sở bán lẻ và bán buôn thuốc, cơ sở sản xuất, viện và trung tâm kiểm nghiệm, khoa dược trong bệnh viện, hoặc làm trình dược viên và tư vấn dược.",
+    sections: [
+      {
+        heading: "Những nơi dược sĩ trung cấp thường làm việc",
+        list: [
+          "**Cơ sở kinh doanh dược:** nhà thuốc bán lẻ, công ty phân phối, công ty nhập khẩu.",
+          "**Bệnh viện:** cung ứng và bảo đảm chất lượng thuốc, phối hợp với bác sĩ trong việc dùng thuốc cho người bệnh.",
+          "**Cơ sở sản xuất:** theo dõi quy trình sản xuất, bảo đảm thuốc đạt chất lượng, nuôi trồng và chiết xuất dược liệu.",
+          "**Viện, trung tâm kiểm nghiệm:** kiểm tra chất lượng thuốc, phát hiện thuốc giả và thuốc kém chất lượng.",
+          "**Trình dược viên, nhân viên tư vấn dược** tại các đơn vị kinh doanh dược phẩm.",
+        ],
+      },
+      {
+        heading: "Chương trình học ra sao?",
+        paragraphs: [
+          "Ngành Dược mã ngành 5720201 chia thành bốn học kỳ: học kỳ đầu là các môn chung cùng kiến thức nền như hóa phân tích, thực vật dược, y học cơ sở; hai học kỳ giữa đi vào dược liệu, hóa dược – dược lý, bào chế, kiểm nghiệm; học kỳ cuối là thực tập dược lâm sàng và thực tập tốt nghiệp.",
+          `Danh sách môn học từng học kỳ nằm ở trang [dược sĩ hệ trung cấp](/nganh-dao-tao/duoc-si-he-trung-cap). ${CONTACT_LINE}`,
+        ],
+      },
+      {
+        heading: "Học xong có học tiếp được không?",
+        paragraphs: [
+          "Có. Người đã có bằng trung cấp được học liên thông lên trình độ cao hơn; xem [liên thông đại học sau trung cấp](/cam-nang/lien-thong-dai-hoc-sau-trung-cap) để biết điều kiện và hồ sơ.",
+        ],
+      },
+    ],
+  },
+  {
+    slug: "cham-soc-nguoi-cao-tuoi-hoc-bao-lau",
+    keyword: "chăm sóc người cao tuổi học bao lâu",
+    title: "Chăm sóc người cao tuổi học bao lâu? Học gì, nhận gì",
+    metaTitle: "Chăm sóc người cao tuổi học bao lâu? Học những gì",
+    description:
+      "Chăm sóc người cao tuổi học bao lâu, học những nội dung gì, kết thúc khóa nhận chứng chỉ ra sao và làm việc ở đâu — theo khóa đang đào tạo tại TPHCM.",
+    excerpt: "Thời lượng khóa học, nội dung chính và nơi làm việc sau khi hoàn thành.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead:
+      "Chăm sóc người cao tuổi học bao lâu? Khóa tại trường là khóa ngắn hạn 12 tháng, gồm kiến thức nền tảng, kỹ năng chăm sóc cơ bản, chăm sóc tinh thần và phục hồi chức năng nhẹ, cuối khóa có phần thực hành – thực tập và được cấp chứng chỉ hoàn thành khóa học.",
+    sections: [
+      {
+        heading: "Khóa học gồm những phần nào?",
+        list: [
+          "**Kiến thức nền tảng** về đặc điểm sức khỏe và tâm lý người cao tuổi.",
+          "**Kỹ năng chăm sóc cơ bản** hằng ngày.",
+          "**Chăm sóc tinh thần và phục hồi chức năng nhẹ** — phần nhiều người học đánh giá là khó nhất vì cần kiên nhẫn.",
+          "**Thực hành – thực tập** trước khi kết thúc khóa.",
+        ],
+      },
+      {
+        heading: "Ai nên học khóa này?",
+        paragraphs: [
+          "Khóa phù hợp với người muốn đi làm sớm trong lĩnh vực chăm sóc sức khỏe mà chưa cần học dài hạn, người đang chăm sóc thân nhân lớn tuổi tại nhà, và người muốn làm tại trung tâm dưỡng lão hoặc chăm sóc tại nhà.",
+          `Nếu bạn muốn một chương trình dài hơn và có bằng trung cấp, hãy so sánh với [điều dưỡng hệ trung cấp](/nganh-dao-tao/dieu-duong-he-trung-cap). Chi tiết khóa ngắn hạn xem tại [chăm sóc người cao tuổi](/nganh-dao-tao/cham-soc-nguoi-cao-tuoi). ${CONTACT_LINE}`,
+        ],
+      },
+    ],
+  },
+  {
+    slug: "bang-trung-cap-nghe-co-gia-tri-khong",
+    keyword: "bằng trung cấp nghề có giá trị không",
+    title: "Bằng trung cấp nghề có giá trị không? Căn cứ pháp lý",
+    metaTitle: "Bằng trung cấp nghề có giá trị không? Luật nói gì",
+    description:
+      "Bằng trung cấp nghề có giá trị không, do ai cấp, dùng để đi làm và học tiếp thế nào — giải thích theo Luật Giáo dục nghề nghiệp đang có hiệu lực.",
+    excerpt: "Giá trị pháp lý của bằng trung cấp nghề, cách phân biệt bằng và chứng chỉ, cách tra cứu.",
+    datePublished: PUBLISHED_2,
+    dateModified: PUBLISHED_2,
+    lead:
+      "Bằng trung cấp nghề có giá trị không? Có. Bằng tốt nghiệp trung cấp do cơ sở giáo dục nghề nghiệp cấp theo Luật Giáo dục nghề nghiệp số 124/2025/QH15 (hiệu lực từ 01/01/2026), nằm trong hệ thống văn bằng của giáo dục quốc dân, dùng để đi làm và để học liên thông lên trình độ cao hơn.",
+    sections: [
+      {
+        heading: "Bằng và chứng chỉ khác nhau thế nào?",
+        list: [
+          "**Bằng tốt nghiệp trung cấp:** cấp cho người hoàn thành chương trình trung cấp.",
+          "**Chứng chỉ:** cấp cho người hoàn thành khóa sơ cấp hoặc khóa ngắn hạn.",
+          "Cả hai đều do nhà trường cấp và đều [tra cứu trực tuyến](/tra-cuu-van-bang) được bằng số căn cước công dân.",
+        ],
+      },
+      {
+        heading: "Học xong trung cấp có học tiếp được không?",
+        paragraphs: [
+          "Được. Người có bằng trung cấp được học liên thông lên trình độ cao hơn theo Thông tư 52/2026/TT-BGDĐT. Điều kiện và hồ sơ cụ thể xem ở bài [liên thông đại học sau trung cấp](/cam-nang/lien-thong-dai-hoc-sau-trung-cap).",
+          "Người tốt nghiệp THCS khi học trung cấp còn học thêm khối lượng kiến thức văn hóa THPT theo quy định của Bộ Giáo dục và Đào tạo.",
+        ],
+      },
+      {
+        heading: "Nên chọn ngành nào?",
+        paragraphs: [
+          `Giá trị thật của tấm bằng nằm ở nghề bạn chọn và tay nghề bạn luyện được. Xem toàn bộ ${PROGRAMS} của trường, hoặc đọc [nên học nghề gì](/cam-nang/nen-hoc-nghe-gi) nếu còn phân vân. ${CONTACT_LINE}`,
         ],
       },
     ],
