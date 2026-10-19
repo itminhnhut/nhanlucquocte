@@ -78,3 +78,19 @@ test("should prerender a guide with its H1, sections and internal links", () => 
   const list = renderAppHtml("/cam-nang", {});
   GUIDES.forEach((item) => assert.ok(list.includes(`href="${guidePath(item.slug)}"`), item.slug));
 });
+
+test("should answer which level is higher, not only which to choose", () => {
+  // Search Console 19/10/2026: "trung cấp và cao đẳng cái nào cao hơn" đứng hạng 8, "...cái nào
+  // hơn" hạng 9 — sát trang 1. Bài phải trả lời thẳng câu đó chứ không chỉ so sánh lựa chọn.
+  const guide = GUIDES.find((item) => item.slug === "nen-hoc-trung-cap-hay-cao-dang");
+  assert.ok(guide, "vẫn còn bài so sánh trung cấp với cao đẳng");
+
+  const muc = guide.sections[0];
+  assert.match(muc.heading, /cao hơn/i, "câu trả lời phải nằm ở mục đầu tiên");
+
+  const loi = (muc.paragraphs ?? []).join(" ");
+  assert.match(loi, /Cao đẳng là bậc cao hơn trung cấp/, "trả lời thẳng ngay câu đầu");
+  assert.match(loi, /sơ cấp, trung cấp, rồi cao đẳng/, "nêu đủ ba trình độ theo thứ tự");
+  assert.match(loi, /124\/2025\/QH15/, "dẫn đúng luật đang có hiệu lực");
+  assert.match(loi, /không đồng nghĩa với phù hợp hơn/, "không để người đọc hiểu nhầm cao hơn là tốt hơn");
+});
