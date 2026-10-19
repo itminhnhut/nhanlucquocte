@@ -135,10 +135,21 @@ export const GUIDES: readonly Guide[] = [
       "Nên học trung cấp hay cao đẳng: khác nhau về đầu vào, thời gian học, bằng cấp và đường liên thông. Bảng so sánh ngắn giúp bạn chọn theo hoàn cảnh.",
     excerpt: "Khác nhau giữa trung cấp và cao đẳng về đầu vào, thời gian, bằng cấp và liên thông.",
     datePublished: PUBLISHED,
-    dateModified: PUBLISHED,
+    dateModified: PUBLISHED_2,
     lead:
       "Nên học trung cấp hay cao đẳng phụ thuộc vào bằng bạn đang có và thời gian bạn dành được: trung cấp nhận cả người tốt nghiệp THCS và học nhanh hơn, cao đẳng yêu cầu tốt nghiệp THPT và học dài hơn. Cả hai đều học liên thông lên bậc cao hơn được.",
     sections: [
+      {
+        // Search Console 19/10/2026: hai truy vấn "trung cấp và cao đẳng cái nào cao hơn" và
+        // "...cái nào hơn" đang ở hạng 8–9, tức sát trang 1 — nhưng bài chỉ trả lời "nên chọn
+        // cái nào", chưa trả lời thẳng "cái nào cao hơn". Đặt mục này lên đầu để câu trả lời
+        // nằm ngay trên cùng.
+        heading: "Trung cấp và cao đẳng, bậc nào cao hơn?",
+        paragraphs: [
+          "Cao đẳng là bậc cao hơn trung cấp. Giáo dục nghề nghiệp có ba trình độ xếp từ thấp lên cao: sơ cấp, trung cấp, rồi cao đẳng — theo Luật Giáo dục nghề nghiệp số 124/2025/QH15 (hiệu lực từ 01/01/2026). Học xong trung cấp có thể học liên thông lên cao đẳng, còn chiều ngược lại thì không.",
+          "Nhưng bậc cao hơn không đồng nghĩa với phù hợp hơn. Trung cấp nhận cả người mới tốt nghiệp THCS, thời gian học ngắn hơn nên đi làm sớm hơn; cao đẳng đòi tốt nghiệp THPT và học dài hơn. Chọn bậc nào tùy bằng bạn đang có và thời gian bạn dành được — phần dưới so sánh cụ thể.",
+        ],
+      },
       {
         heading: "So sánh trung cấp và cao đẳng",
         table: {
