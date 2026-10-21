@@ -3,6 +3,7 @@
 import appConfig from "../configs/appConfig";
 import type { PageMeta } from "./pageMeta";
 import { canonicalUrl } from "./url";
+import { readEnv } from "../configs/env";
 
 export type HeadTag =
   | { kind: "title"; text: string }
@@ -53,17 +54,44 @@ function preloadTags(meta: PageMeta): HeadTag[] {
       rel: "preload",
       as: "image",
       href: image.href,
-      imagesrcset: image.srcSet,
-      imagesizes: image.sizes,
+      ...(image.srcSet ? { imagesrcset: image.srcSet } : {}),
+      ...(image.sizes ? { imagesizes: image.sizes } : {}),
       fetchpriority: "high",
       ...(image.media ? { media: image.media } : {}),
     },
   }));
 }
 
+/**
+ * Bắt tay sớm với kho ảnh.
+ *
+ * Ảnh bài viết nằm trên tên miền khác (bucket của trường), nên trình duyệt phải làm lại DNS →
+ * TCP → TLS trước khi tải được byte đầu tiên. Đo trên điện thoại 4G ngày 21/10/2026: ảnh bài nổi
+ * bật ở /tin-tuc xong lúc 5.554ms và chính là phần tử LCP. preconnect cho phép làm phần bắt tay
+ * đó song song với lúc đọc HTML.
+ */
+function preconnectTags(): HeadTag[] {
+  const hosts = new Set<string>();
+  for (const raw of [readEnv("VITE_API_URL"), ...readEnv("VITE_IMAGE_HOSTS").split(",")]) {
+    const value = raw.trim();
+    if (!value) continue;
+    try {
+      hosts.add(new URL(value.includes("//") ? value : `https://${value}`).origin);
+    } catch {
+      // Env ghi sai định dạng thì bỏ qua, không được làm hỏng thẻ head
+    }
+  }
+  return [...hosts].flatMap((origin) => [
+    { kind: "link" as const, attrs: { rel: "preconnect", href: origin, crossorigin: "" } },
+    // Trình duyệt cũ không hiểu preconnect thì vẫn tra DNS trước được
+    { kind: "link" as const, attrs: { rel: "dns-prefetch", href: origin } },
+  ]);
+}
+
 export function buildHeadTags(meta: PageMeta): HeadTag[] {
   const url = canonicalUrl(meta.path);
   return [
+    ...preconnectTags(),
     ...preloadTags(meta),
     { kind: "title", text: meta.title },
     named("description", meta.description),

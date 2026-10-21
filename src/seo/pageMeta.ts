@@ -52,8 +52,9 @@ export interface PageMeta {
 
 export interface PreloadImage {
   href: string;
-  srcSet: string;
-  sizes: string;
+  /** Chỉ ảnh có nhiều bản (banner trang chủ) mới cần; ảnh CMS chỉ có một bản */
+  srcSet?: string;
+  sizes?: string;
   /** Khớp với thuộc tính media của <source> tương ứng, để mỗi màn hình chỉ tải 1 ảnh */
   media?: string;
 }
@@ -254,7 +255,14 @@ export function newsListPageMeta(posts: ContentItem[]): PageMeta | null {
   });
   if (!links.length) return base;
   const nodes = [...staticPageNodes("/tin-tuc", base.title, base.description), linkListSchema(links)];
-  return { ...base, jsonLd: [toGraph(nodes)] };
+  // Ảnh bài nổi bật là phần tử LCP của trang này (đo 21/10/2026: xong ở 5.554ms trên 4G). Khai
+  // preload để trình duyệt tải nó song song với HTML thay vì đợi dựng xong cây DOM mới thấy.
+  const anhNoiBat = String(posts[0]?.image ?? "").trim();
+  return {
+    ...base,
+    ...(anhNoiBat ? { preloadImage: { href: anhNoiBat } } : {}),
+    jsonLd: [toGraph(nodes)],
+  };
 }
 
 export function programPageMeta(program: ContentItem, slug: string): PageMeta {

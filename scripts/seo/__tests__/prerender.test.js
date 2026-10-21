@@ -5,6 +5,8 @@ import { prepareArticleContent } from "../../../src/utils/articleContent";
 import { lazyLoadImages } from "../../../src/utils/html";
 import { initialDataForPath } from "../../../src/ssr/initialDataForPath";
 import { renderAppHtml } from "../../../src/ssr/renderPage";
+import { renderHeadTags } from "../../../src/seo/renderHead";
+import { newsListPageMeta, staticPageMeta } from "../../../src/seo/pageMeta";
 
 const PROGRAM = {
   id: 1,
@@ -194,4 +196,48 @@ test("should link every news post from a neighbour so none is orphaned", async (
   const html = renderAppHtml("/tin-tuc/bai-6", initialDataForPath("/tin-tuc/bai-6", content));
   assert.match(html, /Bài viết khác/);
   assert.match(html, /href="\/tin-tuc\/bai-9"/);
+});
+
+test("should start the handshake with the image host before the page needs it", () => {
+  // Ảnh bài nằm trên tên miền khác, phải làm lại DNS → TCP → TLS mới tải được byte đầu.
+  // Đo 21/10/2026 trên 4G: ảnh bài nổi bật ở /tin-tuc xong lúc 5.554ms và là phần tử LCP.
+  const cu = process.env.VITE_IMAGE_HOSTS;
+  process.env.VITE_IMAGE_HOSTS = "https://anh.example";
+  try {
+    const html = renderHeadTags(staticPageMeta("/tin-tuc"));
+    assert.match(html, /rel="preconnect"[^>]*href="https:\/\/anh\.example"/, "thiếu preconnect tới kho ảnh");
+    assert.match(html, /rel="dns-prefetch"/, "thiếu dns-prefetch cho trình duyệt cũ");
+  } finally {
+    if (cu === undefined) delete process.env.VITE_IMAGE_HOSTS;
+    else process.env.VITE_IMAGE_HOSTS = cu;
+  }
+});
+
+test("should not emit a preconnect when no image host is configured", () => {
+  // Chạy ở máy dev không khai env thì không được bịa ra host
+  const cu = process.env.VITE_IMAGE_HOSTS, cuApi = process.env.VITE_API_URL;
+  delete process.env.VITE_IMAGE_HOSTS;
+  delete process.env.VITE_API_URL;
+  try {
+    assert.doesNotMatch(renderHeadTags(staticPageMeta("/tin-tuc")), /rel="preconnect"/);
+  } finally {
+    if (cu !== undefined) process.env.VITE_IMAGE_HOSTS = cu;
+    if (cuApi !== undefined) process.env.VITE_API_URL = cuApi;
+  }
+});
+
+test("should preload the news hero image, which is what LCP waits for", () => {
+  const posts = [{ slug: "bai-moi", title: "Bài mới nhất", image: "https://anh.example/hero.jpg" }];
+  const meta = newsListPageMeta(posts);
+  assert.equal(meta.preloadImage.href, "https://anh.example/hero.jpg");
+
+  const html = renderHeadTags(meta);
+  assert.match(html, /rel="preload"[^>]*as="image"/);
+  assert.match(html, /hero\.jpg/);
+  assert.doesNotMatch(html, /imagesrcset="undefined"|imagesizes="undefined"/, "ảnh một bản không được khai srcset rỗng");
+});
+
+test("should not preload anything when the news list has no image yet", () => {
+  const meta = newsListPageMeta([{ slug: "a", title: "Chưa có ảnh" }]);
+  assert.equal(meta.preloadImage, undefined);
 });
