@@ -1,7 +1,19 @@
 // Ngành ưu tiên tuyển sinh/SEO: luôn nằm đầu danh sách ngành ở trang chủ để có
-// link nội bộ từ trang chủ (trang chủ chỉ hiện 12 ngành đầu).
-// TODO: chốt lại danh sách ngành ưu tiên với nhà trường.
-export const FEATURED_PROGRAM_SLUGS: readonly string[] = ["dieu-duong-he-trung-cap", "cham-soc-sac-dep-he-trung-cap"];
+// link nội bộ từ trang chủ (trang chủ chỉ hiện 12 thẻ đầu).
+//
+// Thứ tự chốt theo dữ liệu Search Console ngày 19/10/2026 và sổ văn bằng đã cấp, không chọn
+// theo cảm tính:
+// - cham-soc-nguoi-cao-tuoi: đang có truy vấn thật "khóa học chăm sóc người cao tuổi (tại tphcm)"
+//   ở hạng 16–25 — gần trang 1 nhất trong tất cả ngành, mà trước đây trang chủ KHÔNG trỏ tới.
+// - ky-thuat-che-bien-mon-an (10 bằng) và trung-cap-ky-thuat-xay-dung (9 bằng): hai ngành có
+//   nhiều văn bằng đã cấp nhất sau Điều dưỡng, cũng không được trang chủ trỏ tới.
+export const FEATURED_PROGRAM_SLUGS: readonly string[] = [
+  "dieu-duong-he-trung-cap",
+  "cham-soc-nguoi-cao-tuoi",
+  "ky-thuat-che-bien-mon-an",
+  "trung-cap-ky-thuat-xay-dung",
+  "cham-soc-sac-dep-he-trung-cap",
+];
 
 /**
  * Hình dạng tối thiểu để sắp thứ tự. Khai thêm các trường mà nơi gọi thật sự đọc, nếu không

@@ -3,6 +3,8 @@ import assert from "node:assert/strict";
 import { ALL_PROGRAMS, PROGRAM_FIELDS, PROGRAM_NAMES, groupProgramsByField } from "../../../src/content/programFields";
 import { renderAppHtml } from "../../../src/ssr/renderPage";
 import { initialDataForPath } from "../../../src/ssr/initialDataForPath";
+import { initialDataKeys } from "../../../src/data/initialData";
+import { FEATURED_PROGRAM_SLUGS } from "../../../src/configs/featuredPrograms";
 
 // Slug ngành theo danh mục trong src/content/programFields.ts (bài ngành sẽ import vào database)
 const REAL_SLUGS = ALL_PROGRAMS.map((program) => program.slug);
@@ -56,4 +58,28 @@ test("should show confirmed quick facts and field comparison guides on program c
   assert.match(html, /Cấp bằng trung cấp/);
   assert.match(html, /Cấp chứng chỉ/);
   assert.match(html, /3 ngành và khóa học đang tuyển sinh/);
+});
+
+test("should let the home page reach every program in one click", () => {
+  // Search Console 19/10/2026: trang chủ gánh 117/145 lượt hiển thị — là trang duy nhất Google
+  // thật sự tin. Trước đây nó chỉ trỏ tới 12/26 ngành, 14 ngành còn lại phải đi vòng.
+  const programs = PROGRAM_FIELDS.flatMap((field) => field.programs).map((item, i) => ({
+    id: i + 1,
+    slug: item.slug,
+    title: item.name,
+    description: "mô tả",
+  }));
+  const html = renderAppHtml("/", { [initialDataKeys.programs]: programs });
+
+  const thieu = programs.filter((p) => !html.includes(`href="/nganh-dao-tao/${p.slug}"`));
+  assert.deepEqual(thieu.map((p) => p.slug), [], "trang chủ phải trỏ tới mọi ngành");
+});
+
+test("should put the programs people actually search for in the card grid", () => {
+  // Chọn theo dữ liệu, không theo cảm tính: chăm sóc người cao tuổi đang ở hạng 16–25, còn
+  // chế biến món ăn và kỹ thuật xây dựng là hai ngành cấp nhiều văn bằng nhất sau điều dưỡng.
+  for (const slug of ["cham-soc-nguoi-cao-tuoi", "ky-thuat-che-bien-mon-an", "trung-cap-ky-thuat-xay-dung"]) {
+    assert.ok(FEATURED_PROGRAM_SLUGS.includes(slug), `${slug} phải nằm trong nhóm ưu tiên`);
+  }
+  assert.ok(FEATURED_PROGRAM_SLUGS.length <= 12, "nhóm ưu tiên không được vượt số thẻ hiện trên trang chủ");
 });
