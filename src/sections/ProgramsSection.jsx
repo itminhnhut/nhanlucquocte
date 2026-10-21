@@ -7,6 +7,7 @@ import { FEATURED_PROGRAM_SLUGS, withFeaturedFirst } from "../configs/featuredPr
 // Xem đủ 26 ngành thì bấm "Xem tất cả ngành đào tạo".
 const MAX_PROGRAMS = 12;
 import { programCardLead, programDisplayName } from "../seo/programCopy";
+import { isReservedSlug } from "../configs/navigation";
 
 function ProgramsSection() {
   // Dùng chung hook với /nganh-dao-tao và /tuyen-sinh: trước đây khối này có bản sao y nguyên
@@ -84,6 +85,31 @@ function ProgramsSection() {
               );
             })}
         </div>
+        {/* Trang chủ là trang duy nhất Google đang thật sự tin (117/145 lượt hiển thị trong
+            Search Console 19/10/2026), nên trang nào được nó trỏ thẳng thì vào chỉ mục nhanh
+            nhất. Giữ 12 thẻ cho gọn mắt, nhưng liệt kê nốt các ngành còn lại thành một hàng chữ
+            để KHÔNG ngành nào phải đi vòng qua trang trung gian mới tới được. */}
+        {programs.length > MAX_PROGRAMS && (
+          <nav aria-label="Các ngành đào tạo khác" className="mt-5">
+            <h3 className="text-center text-[13px] font-semibold text-slate-700 mb-2">Ngành khác đang tuyển sinh</h3>
+            <ul className="flex flex-wrap justify-center gap-x-2 gap-y-1.5 text-[12.5px]">
+              {withFeaturedFirst(programs)
+                .slice(MAX_PROGRAMS)
+                .filter((program) => program?.slug && !isReservedSlug(program.slug))
+                .map((program) => (
+                  <li key={program.id || program.slug}>
+                    <Link
+                      to={`/nganh-dao-tao/${program.slug}`}
+                      className="inline-flex rounded-full border border-slate-200 bg-white px-2.5 py-1 text-slate-700 hover:border-primary hover:text-primary-dark"
+                    >
+                      {programDisplayName(program.title, program.slug)}
+                    </Link>
+                  </li>
+                ))}
+            </ul>
+          </nav>
+        )}
+
         {programs.length > MAX_PROGRAMS && (
           <div className="text-center mt-4">
             <Link
