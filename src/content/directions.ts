@@ -10,8 +10,16 @@ import appConfig from "../configs/appConfig";
 export interface RouteGuide {
   /** Khu vực người học xuất phát */
   from: string;
-  /** Đường đi gợi ý, theo các trục đường chính */
-  route: string;
+  /**
+   * Chuỗi mốc đi qua, theo đúng thứ tự.
+   *
+   * Trước đây mỗi tuyến là một câu dài liền mạch ("Đi Nam Kỳ Khởi Nghĩa hoặc Cách Mạng Tháng
+   * Tám hướng sân bay, qua Nguyễn Văn Trỗi – Hoàng Văn Thụ tới vòng xoay Lăng Cha Cả rồi rẽ
+   * vào Phan Đình Giót") — đúng nhưng phải đọc hết mới biết đi đâu. Tách thành chuỗi mốc thì
+   * người đọc bắt được tuyến của mình trong một lượt nhìn, và trên điện thoại chữ không dồn
+   * thành khối.
+   */
+  steps: readonly string[];
 }
 
 /** Mốc dễ nhận ra quanh trường */
@@ -24,47 +32,61 @@ export const LANDMARKS: readonly string[] = [
 export const ROUTES: readonly RouteGuide[] = [
   {
     from: "Quận 1, Quận 3 (trung tâm)",
-    route:
-      "Đi Nam Kỳ Khởi Nghĩa hoặc Cách Mạng Tháng Tám hướng sân bay, qua Nguyễn Văn Trỗi – Hoàng Văn Thụ tới vòng xoay Lăng Cha Cả rồi rẽ vào Phan Đình Giót.",
+    steps: ["Nam Kỳ Khởi Nghĩa hoặc Cách Mạng Tháng Tám", "Nguyễn Văn Trỗi", "Hoàng Văn Thụ", "Vòng xoay Lăng Cha Cả", "Phan Đình Giót"],
   },
   {
     from: "Phú Nhuận, Bình Thạnh",
-    route:
-      "Theo Phan Đình Phùng hoặc Phan Đăng Lưu ra Hoàng Văn Thụ, chạy thẳng tới vòng xoay Lăng Cha Cả, vào Phan Đình Giót.",
+    steps: ["Phan Đình Phùng hoặc Phan Đăng Lưu", "Hoàng Văn Thụ", "Vòng xoay Lăng Cha Cả", "Phan Đình Giót"],
   },
   {
     from: "Gò Vấp, Quận 12",
-    route:
-      "Theo Nguyễn Kiệm hoặc Quang Trung – Nguyễn Oanh về Hoàng Văn Thụ, tới vòng xoay Lăng Cha Cả rồi vào Phan Đình Giót.",
+    steps: ["Nguyễn Kiệm hoặc Quang Trung – Nguyễn Oanh", "Hoàng Văn Thụ", "Vòng xoay Lăng Cha Cả", "Phan Đình Giót"],
   },
   {
     from: "Tân Phú, Bình Tân",
-    route:
-      "Theo Trường Chinh hoặc Âu Cơ ra Cộng Hòa, chạy hướng Lăng Cha Cả, qua vòng xoay rẽ vào Phan Đình Giót.",
+    steps: ["Trường Chinh hoặc Âu Cơ", "Cộng Hòa", "Vòng xoay Lăng Cha Cả", "Phan Đình Giót"],
   },
   {
     from: "Quận 7, Nhà Bè",
-    route:
-      "Theo Nguyễn Văn Linh – Nguyễn Hữu Thọ về trung tâm, qua Nguyễn Văn Trỗi – Hoàng Văn Thụ tới Lăng Cha Cả, vào Phan Đình Giót.",
+    steps: ["Nguyễn Văn Linh – Nguyễn Hữu Thọ", "Nguyễn Văn Trỗi", "Hoàng Văn Thụ", "Vòng xoay Lăng Cha Cả", "Phan Đình Giót"],
   },
   {
     from: "Thủ Đức, Bình Dương, Đồng Nai",
-    route:
-      "Theo Phạm Văn Đồng về Hoàng Văn Thụ (qua ngã tư Nguyễn Kiệm), tới vòng xoay Lăng Cha Cả rồi vào Phan Đình Giót.",
+    steps: ["Phạm Văn Đồng", "Hoàng Văn Thụ (qua ngã tư Nguyễn Kiệm)", "Vòng xoay Lăng Cha Cả", "Phan Đình Giót"],
   },
   {
     from: "Long An, miền Tây",
-    route:
-      "Theo Quốc lộ 1 – Trường Chinh vào Cộng Hòa, chạy tới vòng xoay Lăng Cha Cả, rẽ vào Phan Đình Giót.",
+    steps: ["Quốc lộ 1 – Trường Chinh", "Cộng Hòa", "Vòng xoay Lăng Cha Cả", "Phan Đình Giót"],
   },
 ];
 
-export const TRANSPORT_NOTES: readonly string[] = [
-  "**Xe buýt:** các tuyến chạy qua Hoàng Văn Thụ – Cộng Hòa – Trường Sơn đều có trạm gần vòng xoay Lăng Cha Cả, xuống trạm rồi đi bộ vào Phan Đình Giót.",
-  "**Đi máy bay tới:** từ ga quốc nội Tân Sơn Nhất ra đường Trường Sơn là tới khu vực trường, rất gần nếu bạn ở tỉnh lên nhập học.",
-  "**Giờ cao điểm:** khu vực Lăng Cha Cả – Cộng Hòa thường đông vào 7:00–8:30 và 16:30–18:30, nên trừ hao thời gian khi có lịch hẹn.",
-  "**Ở gần trường:** người học tại Tân Bình, Tân Phú, Phú Nhuận, Gò Vấp đọc thêm bài [trường trung cấp nghề ở Tân Bình](/cam-nang/truong-trung-cap-nghe-tan-binh) để biết các nghề đang đào tạo và đường đi theo từng khu vực.",
-  `**Trước khi đến:** gọi ${appConfig.phone} hoặc nhắn Zalo để được hướng dẫn lối vào và chỗ để xe, nhất là khi đi theo đoàn hoặc mang hồ sơ nhập học.`,
+export interface TravelNote {
+  /** Nhãn ngắn đứng đầu dòng, để mắt bắt ngay chủ đề thay vì đọc cả câu */
+  label: string;
+  text: string;
+}
+
+export const TRANSPORT_NOTES: readonly TravelNote[] = [
+  {
+    label: "Xe buýt",
+    text: "Các tuyến chạy qua Hoàng Văn Thụ – Cộng Hòa – Trường Sơn đều có trạm gần vòng xoay Lăng Cha Cả, xuống trạm rồi đi bộ vào Phan Đình Giót.",
+  },
+  {
+    label: "Đi máy bay tới",
+    text: "Từ ga quốc nội Tân Sơn Nhất ra đường Trường Sơn là tới khu vực trường, rất gần nếu bạn ở tỉnh lên nhập học.",
+  },
+  {
+    label: "Giờ cao điểm",
+    text: "Khu vực Lăng Cha Cả – Cộng Hòa thường đông vào 7:00–8:30 và 16:30–18:30, nên trừ hao thời gian khi có lịch hẹn.",
+  },
+  {
+    label: "Ở gần trường",
+    text: "Người học tại Tân Bình, Tân Phú, Phú Nhuận, Gò Vấp đọc thêm bài [trường trung cấp nghề ở Tân Bình](/cam-nang/truong-trung-cap-nghe-tan-binh) để biết các nghề đang đào tạo và đường đi theo từng khu vực.",
+  },
+  {
+    label: "Trước khi đến",
+    text: `Gọi ${appConfig.phone} hoặc nhắn Zalo để được hướng dẫn lối vào và chỗ để xe, nhất là khi đi theo đoàn hoặc mang hồ sơ nhập học.`,
+  },
 ];
 
 export const VISIT_NOTES: readonly string[] = [

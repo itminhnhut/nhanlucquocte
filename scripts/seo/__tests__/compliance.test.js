@@ -5,6 +5,8 @@ import path from "path";
 import { renderAppHtml } from "../../../src/ssr/renderPage";
 import { consentNote, PRIVACY_POLICY_VERSION } from "../../../src/content/privacy";
 import { staticPageMeta } from "../../../src/seo/pageMeta";
+import appConfig from "../../../src/configs/appConfig";
+import { ROUTES } from "../../../src/content/directions";
 
 const read = (file) => fs.readFileSync(path.join(process.cwd(), file), "utf8");
 const strip = (html) => html.replace(/<!-- -->/g, "");
@@ -67,4 +69,53 @@ test("should publish privacy policy and disclosure pages as indexable pages", ()
   assert.match(privacy, /không chạy ở trang tra cứu văn bằng/);
   // Ô đồng ý ở form tư vấn thì vẫn là đồng ý thật, phải giữ
   assert.match(privacy, /tự tích ô đồng ý/);
+});
+
+test("should tell search engines the Google profile and the website are the same school", () => {
+  // Hồ sơ Google Maps lập 21/10/2026. Thiếu khai báo này thì Google coi hồ sơ bản đồ và website
+  // là hai thực thể rời nhau, không cái nào đủ mạnh để giữ vị trí 1 cho chính tên trường.
+  const graph = JSON.stringify(staticPageMeta("/")?.jsonLd ?? {});
+  assert.match(graph, /place_id:ChIJB2eeS-EpdTERRdxvFwK6VRQ/, "sameAs phải có hồ sơ Google");
+
+  const node = (staticPageMeta("/").jsonLd[0]["@graph"] ?? []).find((item) =>
+    String(item["@type"]).includes("LocalBusiness")
+  );
+  assert.ok(node, "vẫn còn khối LocalBusiness");
+  assert.ok(node.sameAs.some((url) => url.includes("place_id:")), "hồ sơ bản đồ nằm trong sameAs");
+  assert.match(node.hasMap, /query_place_id=ChIJB2eeS-EpdTERRdxvFwK6VRQ/, "hasMap trỏ đúng hồ sơ");
+});
+
+test("should open turn-by-turn directions to the school profile, not a bare address", () => {
+  // Nút cũ chỉ tra theo chữ nên Maps mở ra "Số 6 Phan Đình Giót" — một địa chỉ vô danh, không
+  // phải hồ sơ trường. Kèm place_id thì mở đúng hồ sơ, nơi có ảnh, đánh giá, giờ mở cửa.
+  assert.match(appConfig.directionsLink, /^https:\/\/www\.google\.com\/maps\/dir\/\?api=1/);
+  assert.match(appConfig.directionsLink, /destination_place_id=ChIJB2eeS-EpdTERRdxvFwK6VRQ/);
+  assert.match(appConfig.mapLink, /query_place_id=ChIJB2eeS-EpdTERRdxvFwK6VRQ/);
+
+  // Khung nhúng KHÔNG nhận place_id (đã thử: ra bản đồ thế giới) nên vẫn phải dò theo chữ
+  assert.doesNotMatch(appConfig.mapUrl, /place_id/);
+  assert.match(appConfig.mapUrl, /output=embed/);
+});
+
+test("should show the directions call to action on the contact page", () => {
+  const html = renderAppHtml("/lien-he", {});
+  assert.match(html, /Chỉ đường tới trường/);
+  assert.match(html, /maps\/dir\/\?api=1/);
+});
+
+test("should show each route as a chain of landmarks, not one long sentence", () => {
+  // Câu dài liền mạch đúng nhưng phải đọc hết mới biết đi đâu; trên điện thoại thành khối chữ.
+  ROUTES.forEach((tuyen) => {
+    assert.ok(tuyen.steps.length >= 3, `${tuyen.from}: tuyến phải có ít nhất 3 mốc`);
+    assert.equal(tuyen.steps.at(-1), "Phan Đình Giót", `${tuyen.from}: mốc cuối phải là địa chỉ trường`);
+    tuyen.steps.forEach((step) => {
+      assert.ok(step.length <= 45, `${tuyen.from}: mốc "${step}" còn dài như một câu`);
+    });
+  });
+
+  const html = renderAppHtml("/lien-he", {});
+  // Tên đường vẫn nằm trong HTML để tìm kiếm theo khu vực đọc được
+  for (const moc of ["Lăng Cha Cả", "Hoàng Văn Thụ", "Cộng Hòa", "Phạm Văn Đồng"]) {
+    assert.ok(html.includes(moc), `mất mốc ${moc}`);
+  }
 });

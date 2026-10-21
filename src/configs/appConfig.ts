@@ -7,7 +7,15 @@
 // không có chỗ nào công bố giờ làm việc, nên không được ghi giờ ra trang. Khi nhà trường xác nhận
 // thì thêm lại `openingHours` + `openingHoursLabel` và gắn vào schema (src/seo/schema.ts).
 // Google Maps vẫn định vị theo tên cũ "Phường 2, Tân Bình" nên giữ nguyên cho phần bản đồ
-const MAP_QUERY = "Số 6 Phan Đình Giót, Phường 2, Tân Bình, TP. Hồ Chí Minh";
+/** Mã định danh cơ sở trên Google Maps — lấy từ link chia sẻ hồ sơ của trường */
+const GOOGLE_PLACE_ID = "ChIJB2eeS-EpdTERRdxvFwK6VRQ";
+
+// Khung bản đồ nhúng KHÔNG nhận place_id (đã thử: ra bản đồ thế giới). Tra bằng mỗi địa chỉ thì
+// Google thả ghim "6 Đ. Phan Đình Giót" — một địa chỉ trơ, không phải hồ sơ trường. Thêm TÊN
+// TRƯỜNG vào trước địa chỉ thì ghim hiện đúng "Trung cấp nghề Nhân Lực Quốc Tế".
+const MAP_EMBED_QUERY = "Trung cấp nghề Nhân Lực Quốc Tế, 6 Phan Đình Giót, Tân Sơn Hòa, TP. Hồ Chí Minh";
+
+const MAP_QUERY = "Số 6 Phan Đình Giót, Phường Tân Sơn Hòa, TP. Hồ Chí Minh";
 
 const appConfig = {
   name: "Trường Trung cấp nghề Nhân Lực Quốc Tế",
@@ -32,7 +40,9 @@ const appConfig = {
   // → Facebook/YouTube/TikTok nếu trường đang chạy → trang hồ sơ trên cổng giáo dục nghề nghiệp.
   // Cách lấy link Google: tạo/nhận quyền quản lý hồ sơ doanh nghiệp, mở hồ sơ → Chia sẻ → copy link.
   officialProfiles: {
-    googleBusinessProfile: "",
+    // Hồ sơ trên Google Maps, lập ngày 21/10/2026. Dùng dạng place_id thay vì link rút gọn
+    // g.page vì place_id không đổi khi trường sửa tên hay địa chỉ trong hồ sơ.
+    googleBusinessProfile: `https://www.google.com/maps/place/?q=place_id:${GOOGLE_PLACE_ID}`,
     facebook: "",
     youtube: "",
     tiktok: "",
@@ -50,8 +60,11 @@ const appConfig = {
   // Toạ độ lấy từ bản đồ Google trên website của trường (trungcapnhanlucquocte.vn, mục BẢN ĐỒ).
   // Dùng cho schema (tìm kiếm theo khu vực) và cho iframe bản đồ ở trang Liên hệ.
   geo: { latitude: "10.8031003", longitude: "106.6625271" },
-  mapLink: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}`,
-  mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(MAP_QUERY)}&output=embed`,
+  mapLink: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(MAP_QUERY)}&query_place_id=${GOOGLE_PLACE_ID}`,
+  mapUrl: `https://www.google.com/maps?q=${encodeURIComponent(MAP_EMBED_QUERY)}&output=embed`,
+  // Mở thẳng chế độ dẫn đường, Maps tự lấy vị trí người dùng làm điểm đi. Kèm place_id để đích
+  // đến là HỒ SƠ của trường (có ảnh, đánh giá, giờ mở cửa) chứ không phải một địa chỉ vô danh.
+  directionsLink: `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(MAP_QUERY)}&destination_place_id=${GOOGLE_PLACE_ID}`,
 
   // logo: ảnh cho schema.org (Google đọc URL, KHÔNG tải về) → giữ PNG 512 cho đúng chuẩn.
   // logoImage: ảnh THẬT SỰ hiện trên trang. Hai logo PNG cũ nặng 235 KB và nằm trên đường tới

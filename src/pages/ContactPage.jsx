@@ -210,30 +210,72 @@ function ContactPage() {
 
             <ul className="mt-4 grid gap-3 sm:grid-cols-2">
               {ROUTES.map((item) => (
-                <li key={item.from} className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5">
-                  <p className="text-[13px] font-bold text-primary-dark">{item.from}</p>
-                  <p className="mt-1 text-[13px] leading-relaxed text-slate-600">{item.route}</p>
+                <li
+                  key={item.from}
+                  className="rounded-xl border border-slate-100 bg-slate-50/60 p-3.5 transition hover:border-primary/30 hover:bg-white"
+                >
+                  {/* Hiện rõ "từ đâu → tới đâu" để người đọc bắt đúng thẻ của mình trong một
+                      lượt nhìn, thay vì phải đọc cả đoạn mới biết tuyến này có phải của mình */}
+                  <p className="text-[13px] font-bold text-primary-dark">Từ {item.from}</p>
+                  {/* Chuỗi mốc thay cho câu dài: mắt bắt được từng chặng, và trên điện thoại
+                      mỗi mốc tự xuống dòng thay vì dồn thành khối chữ */}
+                  <ol className="mt-1.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-[13px] text-slate-600">
+                    {item.steps.map((step, i) => (
+                      <li key={step} className="flex items-center gap-1.5">
+                        {i > 0 && <span aria-hidden="true" className="text-slate-300">→</span>}
+                        <span className={i === item.steps.length - 1 ? "font-semibold text-slate-800" : undefined}>
+                          {step}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
                 </li>
               ))}
             </ul>
 
+            <div className="mt-4 flex flex-wrap gap-2.5">
+              <a
+                href={appConfigs.directionsLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary-dark px-4 py-2 text-[13px] font-semibold text-white shadow transition hover:bg-primary-dark/90"
+              >
+                Chỉ đường tới trường
+                <span aria-hidden="true">→</span>
+              </a>
+              <a
+                href={`tel:${appConfigs.phoneE164}`}
+                className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-white px-4 py-2 text-[13px] font-semibold text-slate-700 transition hover:border-primary hover:text-primary-dark"
+              >
+                Gọi {hotline} nếu khó tìm
+              </a>
+            </div>
+
             <div className="mt-4 grid gap-4 sm:grid-cols-2">
               <div>
-                <h3 className="text-[14px] font-bold text-slate-900 mb-1.5">Phương tiện và lưu ý</h3>
-                <ul className="list-disc pl-5 space-y-1.5 text-[13px] text-slate-600">
+                <h3 className="text-[14px] font-bold text-slate-900 mb-2">Phương tiện và lưu ý</h3>
+                {/* Nhãn tách khỏi nội dung: người đọc quét nhãn trước, chỉ dừng ở dòng cần đọc.
+                    Trước đây là gạch đầu dòng với chữ in đậm lẫn trong câu nên phải đọc cả câu. */}
+                <ul className="space-y-2 text-[13px]">
                   {TRANSPORT_NOTES.map((item) => (
-                    <li key={item}>
-                      <InlineText text={item} />
+                    <li key={item.label} className="rounded-lg border border-slate-100 bg-slate-50/60 px-3 py-2">
+                      <p className="font-semibold text-primary-dark">{item.label}</p>
+                      <p className="mt-0.5 leading-relaxed text-slate-600">
+                        <InlineText text={item.text} />
+                      </p>
                     </li>
                   ))}
                 </ul>
               </div>
               <div>
-                <h3 className="text-[14px] font-bold text-slate-900 mb-1.5">Khi đến trường</h3>
-                <ul className="list-disc pl-5 space-y-1.5 text-[13px] text-slate-600">
+                <h3 className="text-[14px] font-bold text-slate-900 mb-2">Khi đến trường</h3>
+                <ul className="space-y-2 text-[13px]">
                   {VISIT_NOTES.map((item) => (
-                    <li key={item}>
-                      <InlineText text={item} />
+                    <li key={item} className="flex gap-2 rounded-lg border border-slate-100 bg-white px-3 py-2">
+                      <span aria-hidden="true" className="mt-0.5 shrink-0 text-primary-dark">✓</span>
+                      <span className="leading-relaxed text-slate-600">
+                        <InlineText text={item} />
+                      </span>
                     </li>
                   ))}
                 </ul>
